@@ -151,6 +151,9 @@ typings/
 # typescript source
 src/
 
+# typescript tests
+test/
+
 # Optional npm cache directory
 .npm
 
