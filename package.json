@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -r ts-node/register test/**/*.ts",
+    "doc-build": "typedoc --module commonjs --target ES5 --out doc src/"
   },
   "repository": {
     "type": "git",
@@ -12,6 +13,19 @@
   },
   "author": "Ian Burns <iwburns8@gmail.com>",
   "license": "MIT",
+  "devDependencies": {
+    "@types/chai": "^4.0.4",
+    "@types/mocha": "^2.2.43",
+    "chai": "^4.1.2",
+    "eslint": "^4.8.0",
+    "eslint-config-airbnb-base": "^12.0.2",
+    "eslint-plugin-import": "^2.7.0",
+    "mocha": "^4.0.1",
+    "ts-node": "^3.3.0",
+    "tslint": "^5.8.0",
+    "tslint-config-airbnb": "^5.3.0",
+    "typedoc": "^0.9.0"
+  },
   "bugs": {
     "url": "https://github.com/iwburns/nullshield/issues"
   },
