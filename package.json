@@ -1,0 +1,19 @@
+{
+  "name": "nullshield",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iwburns/nullshield.git"
+  },
+  "author": "Ian Burns <iwburns8@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/iwburns/nullshield/issues"
+  },
+  "homepage": "https://github.com/iwburns/nullshield#readme"
+}
