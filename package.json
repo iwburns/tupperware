@@ -1,11 +1,13 @@
 {
   "name": "nullshield",
   "version": "0.1.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A package containing Option and Result types",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "mocha -r ts-node/register test/**/*.ts",
-    "doc-build": "typedoc --module commonjs --target ES5 --out doc src/"
+    "doc-build": "typedoc --module commonjs --target ES5 --out doc src/",
+    "prepublishOnly": "tsc"
   },
   "repository": {
     "type": "git",
