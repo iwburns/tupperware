@@ -1,6 +1,6 @@
 {
   "name": "nullshield",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A package containing Option and Result types",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
