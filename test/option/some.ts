@@ -98,6 +98,22 @@ describe('#OptionT.some', () => {
     expect(two).to.have.property('unwrap');
     expect(two.unwrap).to.be.a('function');
     expect(two.unwrap()).to.equal(2);
+
+    const three = one.map(() => null);
+
+    expect(three)
+      .to.be.a('object')
+      .that.has.property('isSome');
+    expect(three.isSome).to.be.a('function');
+    expect(three.isSome()).to.equal(false);
+
+    const four = one.map(() => {return;});
+
+    expect(four)
+      .to.be.a('object')
+      .that.has.property('isSome');
+    expect(four.isSome).to.be.a('function');
+    expect(four.isSome()).to.equal(false);
   });
 
   it('should have the function and', () => {
@@ -109,7 +125,6 @@ describe('#OptionT.some', () => {
     expect(one.and).to.be.a('function');
 
     const two = OptionT.some(2);
-
     const maybeTwo = one.and(two);
 
     expect(maybeTwo)
@@ -122,6 +137,16 @@ describe('#OptionT.some', () => {
     expect(maybeTwo).to.have.property('unwrap');
     expect(maybeTwo.unwrap).to.be.a('function');
     expect(maybeTwo.unwrap()).to.equal(2);
+
+    const none = OptionT.none();
+    const maybeThree = one.and(none);
+
+    expect(maybeThree)
+      .to.be.a('object')
+      .that.has.property('isSome');
+
+    expect(maybeThree.isSome).to.be.a('function');
+    expect(maybeThree.isSome()).to.equal(false);
   });
 
   it('should have the function flatMap', () => {
@@ -146,6 +171,17 @@ describe('#OptionT.some', () => {
     expect(maybeTwo).to.have.property('unwrap');
     expect(maybeTwo.unwrap).to.be.a('function');
     expect(maybeTwo.unwrap()).to.equal(2);
+
+    const maybeThree = one.flatMap(() => {
+      return OptionT.none();
+    });
+
+    expect(maybeThree)
+      .to.be.a('object')
+      .that.has.property('isSome');
+
+    expect(maybeThree.isSome).to.be.a('function');
+    expect(maybeThree.isSome()).to.equal(false);
   });
 
 });

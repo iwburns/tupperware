@@ -41,7 +41,7 @@ export class SomeT<T> implements OptT<T> {
   }
 
   map<U>(func: (val: T) => U): OptT<U> {
-    return new SomeT(func(this.value));
+    return getSome(func(this.value));
   }
 
   and<U>(other: OptT<U>): OptT<U> {
