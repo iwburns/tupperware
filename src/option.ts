@@ -236,7 +236,7 @@ export interface OptT<T> {
    * @param {(val: T) => OptT<T>} func
    * @returns {OptT<T>}
    */
-  orElse(func: () => OptT<T>): OptT<T>;
+  orElse(func: () => OptT<any>): OptT<any>;
 
   /**
    * Calls the appropriate function in `options` and returns the result.

@@ -220,4 +220,39 @@ describe('#OptionT.some', () => {
     expect(maybeOneAgain.unwrap).to.be.a('function');
     expect(maybeOneAgain.unwrap()).to.equal(1);
   });
+
+  it('should have the function orElse', () => {
+    const one = OptionT.some(1);
+
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('or');
+    expect(one.or).to.be.a('function');
+
+    const maybeOne = one.orElse(() => OptionT.some(2));
+
+    expect(maybeOne)
+      .to.be.a('object')
+      .that.has.property('isSome');
+
+    expect(maybeOne.isSome).to.be.a('function');
+    expect(maybeOne.isSome()).to.equal(true);
+
+    expect(maybeOne).to.have.property('unwrap');
+    expect(maybeOne.unwrap).to.be.a('function');
+    expect(maybeOne.unwrap()).to.equal(1);
+
+    const maybeOneAgain = one.orElse(() => OptionT.none());
+
+    expect(maybeOneAgain)
+      .to.be.a('object')
+      .that.has.property('isSome');
+
+    expect(maybeOneAgain.isSome).to.be.a('function');
+    expect(maybeOneAgain.isSome()).to.equal(true);
+
+    expect(maybeOneAgain).to.have.property('unwrap');
+    expect(maybeOneAgain.unwrap).to.be.a('function');
+    expect(maybeOneAgain.unwrap()).to.equal(1);
+  });
 });
