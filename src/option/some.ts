@@ -41,15 +41,7 @@ export class SomeT<T> implements OptT<T> {
   }
 
   map<U>(func: (val: T) => U): OptT<U> {
-    throw new Error('Method not implemented.');
-  }
-
-  mapOr<U>(other: U, func: (val: T) => U): U {
-    throw new Error('Method not implemented.');
-  }
-
-  mapOrElse<U>(other: () => U, func: (val: T) => U): U {
-    throw new Error('Method not implemented.');
+    return new SomeT(func(this.value));
   }
 
   and<U>(other: OptT<U>): OptT<U> {

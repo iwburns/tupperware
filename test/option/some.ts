@@ -79,4 +79,25 @@ describe('#OptionT.some', () => {
     expect(one.unwrapOrElse(() => 2)).to.equal(1);
   });
 
+  it('should have the function map', () => {
+    const one = OptionT.some(1);
+
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('map');
+    expect(one.map).to.be.a('function');
+
+    const two = one.map((val) => 2);
+
+    expect(two)
+      .to.be.a('object')
+      .that.has.property('isSome');
+    expect(two.isSome).to.be.a('function');
+    expect(two.isSome()).to.equal(true);
+
+    expect(two).to.have.property('unwrap');
+    expect(two.unwrap).to.be.a('function');
+    expect(two.unwrap()).to.equal(2);
+  });
+
 });
