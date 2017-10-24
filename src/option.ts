@@ -20,7 +20,7 @@ export interface OptT<T> {
    * Returns `true` if this [[OptT]] is a `Some`, returns false if it is a `None`.
    *
    * ```
-   * const one = OptionT.Some(1);
+   * const one = OptionT.some(1);
    * if (one.isSome()) { // always going to be true.
    *   // ...
    * }
@@ -34,7 +34,7 @@ export interface OptT<T> {
    * Returns `true` if this [[OptT]] is a `None`, returns false if it is a `Some`.
    *
    * ```
-   * const nope = OptionT.None();
+   * const nope = OptionT.none();
    * if (nope.isNone()) { // always going to be true.
    *   // ...
    * }
@@ -49,12 +49,12 @@ export interface OptT<T> {
    * containing `message` if this [[OptT]] is a `None`.
    *
    * ```
-   * const maybeOne = OptionT.Some(1);
+   * const maybeOne = OptionT.some(1);
    * // this won't throw, because it's a Some value.
    * const one = maybeOne.expect("couldn't unwrap a Some");
    *
    * // but:
-   * const maybeTwo = OptionT.None();
+   * const maybeTwo = OptionT.none();
    * // this will throw, because it's a None value.
    * const two = maybeTwo.expect("couldn't unwrap a Some");
    * ```
@@ -69,12 +69,12 @@ export interface OptT<T> {
    * error if this [[OptT]] is a `None`.
    *
    * ```
-   * const maybeOne = OptionT.Some(1);
+   * const maybeOne = OptionT.some(1);
    * // this won't throw, because it's a Some value.
    * const one = maybeOne.unwrap();
    *
    * // but:
-   * const maybeTwo = OptionT.None();
+   * const maybeTwo = OptionT.none();
    * // this will throw, because it's a None value.
    * const two = maybeTwo.unwrap();
    * ```
@@ -88,10 +88,10 @@ export interface OptT<T> {
    * this [[OptT]] is a `None`.
    *
    * ```
-   * const maybeOne = OptionT.Some(1);
+   * const maybeOne = OptionT.some(1);
    * const one = maybeOne.unwrapOr(3); // one === 1
    *
-   * const maybeTwo = OptionT.None();
+   * const maybeTwo = OptionT.none();
    * const two = maybeTwo.unwrapOr(3); // two === 3
    * ```
    *
@@ -105,10 +105,10 @@ export interface OptT<T> {
    * value of `func` if this [[OptT]] is a `None`.
    *
    * ```
-   * const maybeOne = OptionT.Some(1);
+   * const maybeOne = OptionT.some(1);
    * const one = maybeOne.unwrapOr(() => 3); // one === 1
    *
-   * const maybeTwo = OptionT.None();
+   * const maybeTwo = OptionT.none();
    * const two = maybeTwo.unwrapOr(() => 3); // two === 3
    * ```
    *
@@ -130,12 +130,12 @@ export interface OptT<T> {
    * is guaranteed to be a `None` value.
    *
    * ```
-   * const maybeOne = OptionT.Some(1);
+   * const maybeOne = OptionT.some(1);
    * const maybeTwo = maybeOne.map(x => x * 2);
    * // maybeTwo.isSome() === true
    * // maybeTwo.unwrap() === 2
    *
-   * const maybeThree = OptionT.None();
+   * const maybeThree = OptionT.none();
    * const maybeSix = maybeThree.map(x => x * 2);
    * // maybeSix.isNone() === true
    * ```
@@ -149,16 +149,16 @@ export interface OptT<T> {
    * Returns a `None` value if this [[OptT]] is a `None`; otherwise returns `other`.
    *
    * ```
-   * const one = OptionT.Some(1);
-   * const two = OptionT.Some(2);
+   * const one = OptionT.some(1);
+   * const two = OptionT.some(2);
    *
    * const twoAgain = one.and(two);
    * // twoAgain.isSome() === true
    * // twoAgain.unwrap() === 2
    *
    *
-   * const three = OptionT.None();
-   * const four = OptionT.Some(4);
+   * const three = OptionT.none();
+   * const four = OptionT.some(4);
    *
    * const fourAgain = three.and(four);
    * // fourAgain.isSome() === false
@@ -174,15 +174,15 @@ export interface OptT<T> {
    * the result.
    *
    * ```
-   * const square = x => OptionT.Some(x * x);
-   * const nothing = () => OptionT.None();
+   * const square = x => OptionT.some(x * x);
+   * const nothing = () => OptionT.none();
    *
-   * const two = OptionT.Some(2);
+   * const two = OptionT.some(2);
    * const sixteen = two.flatMap(square).flatMap(square);
    * // sixteen.isSome() === true
    * // sixteen.unwrap() === 16
    *
-   * const none = OptionT.None();
+   * const none = OptionT.none();
    * const result = none.flatMap(square).flatMap(square);
    * // result.isSome() === false
    *
@@ -199,8 +199,8 @@ export interface OptT<T> {
    * Returns "this" [[OptT]] if it is a `Some` value; otherwise returns `other`.
    *
    * ```
-   * const one = OptionT.Some(1);
-   * const none = OptionT.Some(1);
+   * const one = OptionT.some(1);
+   * const none = OptionT.some(1);
    *
    * const either = one.or(none);
    * // either.isSome() === true
@@ -221,8 +221,8 @@ export interface OptT<T> {
    * result.
    *
    * ```
-   * const one = OptionT.Some(1);
-   * const none = OptionT.None();
+   * const one = OptionT.some(1);
+   * const none = OptionT.none();
    *
    * const either = one.orElse(() => none);
    * // either.isSome() === true
@@ -246,6 +246,26 @@ export interface OptT<T> {
    *
    * See [[OptMatch]] for more details.
    *
+   * ```
+   * const maybeOne = OptionT.some(1);
+   *
+   * const doubled = maybeOne.match({
+   *   some: (val) => val * 2, // double it
+   *   none: () => 0,          // we'll pretend None implies a 0
+   * });
+   *
+   * // doubled === 2
+   *
+   * const maybeTwo = OptionT.none();
+   *
+   * const tripled = maybeTwo.match({
+   *   some: (val) => val * 3,
+   *   none: () => 0,
+   * });
+   *
+   * // tripled === 0
+   * ```
+   *
    * @param {OptMatch<T, U, V>} options
    * @returns {V | U}
    */
@@ -253,7 +273,7 @@ export interface OptT<T> {
 }
 
 /**
- * Wrapper for `Some` and `None` functions.
+ * Wrapper for `some` and `none` functions.
  */
 export namespace OptionT {
   /**
