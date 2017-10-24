@@ -124,4 +124,28 @@ describe('#OptionT.some', () => {
     expect(maybeTwo.unwrap()).to.equal(2);
   });
 
+  it('should have the function flatMap', () => {
+    const one = OptionT.some(1);
+
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('flatMap');
+    expect(one.flatMap).to.be.a('function');
+
+    const maybeTwo = one.flatMap((val) => {
+      return OptionT.some(val * 2);
+    });
+
+    expect(maybeTwo)
+      .to.be.a('object')
+      .that.has.property('isSome');
+
+    expect(maybeTwo.isSome).to.be.a('function');
+    expect(maybeTwo.isSome()).to.equal(true);
+
+    expect(maybeTwo).to.have.property('unwrap');
+    expect(maybeTwo.unwrap).to.be.a('function');
+    expect(maybeTwo.unwrap()).to.equal(2);
+  });
+
 });

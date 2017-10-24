@@ -49,7 +49,7 @@ export class SomeT<T> implements OptT<T> {
   }
 
   flatMap<U>(func: (val: T) => OptT<U>): OptT<U> {
-    throw new Error('Method not implemented.');
+    return func(this.value);
   }
 
   or(other: OptT<T>): OptT<T> {
