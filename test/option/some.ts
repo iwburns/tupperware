@@ -3,10 +3,12 @@ import { OptionT } from '../../src/index';
 import { expect } from 'chai';
 
 describe('#OptionT', () => {
-  it('should be an object with Some', () => {
+  it('should be an object with some', () => {
     expect(OptionT)
       .to.be.a('object')
       .that.has.property('some');
+
+    expect(OptionT.some).to.be.a('function');
   });
 });
 
@@ -64,6 +66,17 @@ describe('#OptionT.some', () => {
 
     expect(one.unwrapOr).to.be.a('function');
     expect(one.unwrapOr(10)).to.equal(1);
+  });
+
+  it('should have the function unwrapOrElse', () => {
+    const one = OptionT.some(1);
+
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('unwrapOrElse');
+
+    expect(one.unwrapOrElse).to.be.a('function');
+    expect(one.unwrapOrElse(() => 2)).to.equal(1);
   });
 
 });

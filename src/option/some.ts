@@ -37,7 +37,7 @@ export class SomeT<T> implements OptT<T> {
   }
 
   unwrapOrElse(func: () => T): T {
-    throw new Error('Method not implemented.');
+    return this.value;
   }
 
   map<U>(func: (val: T) => U): OptT<U> {
