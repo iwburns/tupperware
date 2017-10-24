@@ -226,8 +226,8 @@ describe('#OptionT.some', () => {
 
     expect(one)
       .to.be.a('object')
-      .that.has.property('or');
-    expect(one.or).to.be.a('function');
+      .that.has.property('orElse');
+    expect(one.orElse).to.be.a('function');
 
     const maybeOne = one.orElse(() => OptionT.some(2));
 
