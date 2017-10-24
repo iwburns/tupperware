@@ -61,7 +61,7 @@ export class SomeT<T> implements OptT<T> {
   }
 
   match<U, V>(options: OptMatch<T, U, V>): U | V {
-    throw new Error('Method not implemented.');
+    return options.some(this.value);
   }
 }
 

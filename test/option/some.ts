@@ -255,4 +255,29 @@ describe('#OptionT.some', () => {
     expect(maybeOneAgain.unwrap).to.be.a('function');
     expect(maybeOneAgain.unwrap()).to.equal(1);
   });
+
+  it('should have the function match', () => {
+    const one = OptionT.some(1);
+
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('match');
+    expect(one.match).to.be.a('function');
+
+    const doubled = one.match({
+      some: (val) => val * 2,
+      none: () => 0,
+    });
+
+    expect(doubled).to.be.a('number');
+    expect(doubled).to.equal(2);
+
+    let three = 0;
+    one.match({
+      some: () => {three = 3;},
+      none: () => {},
+    });
+
+    expect(three).to.equal(3);
+  });
 });
