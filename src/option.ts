@@ -233,8 +233,8 @@ export interface OptT<T> {
    * // eitherAgain.unwrap() === 1
    * ```
    *
-   * @param {(val: T) => OptT<T>} func
-   * @returns {OptT<T>}
+   * @param {() => OptT<any>} func
+   * @returns {OptT<any>}
    */
   orElse(func: () => OptT<any>): OptT<any>;
 
