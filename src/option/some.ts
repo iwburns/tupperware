@@ -53,7 +53,7 @@ export class SomeT<T> implements OptT<T> {
   }
 
   or(other: OptT<T>): OptT<T> {
-    throw new Error('Method not implemented.');
+    return this;
   }
 
   orElse(func: () => OptT<T>): OptT<T> {

@@ -184,4 +184,40 @@ describe('#OptionT.some', () => {
     expect(maybeThree.isSome()).to.equal(false);
   });
 
+  it('should have the function or', () => {
+    const one = OptionT.some(1);
+
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('or');
+    expect(one.or).to.be.a('function');
+
+    const two = OptionT.some(2);
+    const maybeOne = one.or(two);
+
+    expect(maybeOne)
+      .to.be.a('object')
+      .that.has.property('isSome');
+
+    expect(maybeOne.isSome).to.be.a('function');
+    expect(maybeOne.isSome()).to.equal(true);
+
+    expect(maybeOne).to.have.property('unwrap');
+    expect(maybeOne.unwrap).to.be.a('function');
+    expect(maybeOne.unwrap()).to.equal(1);
+
+    const three = OptionT.none();
+    const maybeOneAgain = one.or(three);
+
+    expect(maybeOneAgain)
+      .to.be.a('object')
+      .that.has.property('isSome');
+
+    expect(maybeOneAgain.isSome).to.be.a('function');
+    expect(maybeOneAgain.isSome()).to.equal(true);
+
+    expect(maybeOneAgain).to.have.property('unwrap');
+    expect(maybeOneAgain.unwrap).to.be.a('function');
+    expect(maybeOneAgain.unwrap()).to.equal(1);
+  });
 });
