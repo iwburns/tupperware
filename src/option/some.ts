@@ -45,7 +45,7 @@ export class SomeT<T> implements OptT<T> {
   }
 
   and<U>(other: OptT<U>): OptT<U> {
-    throw new Error('Method not implemented.');
+    return other;
   }
 
   flatMap<U>(func: (val: T) => OptT<U>): OptT<U> {

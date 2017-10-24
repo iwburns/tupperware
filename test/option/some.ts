@@ -100,4 +100,28 @@ describe('#OptionT.some', () => {
     expect(two.unwrap()).to.equal(2);
   });
 
+  it('should have the function and', () => {
+    const one = OptionT.some(1);
+
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('and');
+    expect(one.and).to.be.a('function');
+
+    const two = OptionT.some(2);
+
+    const maybeTwo = one.and(two);
+
+    expect(maybeTwo)
+      .to.be.a('object')
+      .that.has.property('isSome');
+
+    expect(maybeTwo.isSome).to.be.a('function');
+    expect(maybeTwo.isSome()).to.equal(true);
+
+    expect(maybeTwo).to.have.property('unwrap');
+    expect(maybeTwo.unwrap).to.be.a('function');
+    expect(maybeTwo.unwrap()).to.equal(2);
+  });
+
 });
