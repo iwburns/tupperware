@@ -146,7 +146,7 @@ jspm_packages/
 typings/
 
 # compiled Javascript
-# dist/
+dist/
 
 # typescript source
 src/
@@ -176,5 +176,4 @@ test/
 # End of https://www.gitignore.io/api/node
 
 # docs dir
-/doc
-# End of docs dir
+doc/
