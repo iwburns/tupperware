@@ -37,39 +37,31 @@ export class SomeT<T> implements OptT<T> {
   }
 
   unwrapOrElse(func: () => T): T {
-    throw new Error('Method not implemented.');
+    return this.value;
   }
 
   map<U>(func: (val: T) => U): OptT<U> {
-    throw new Error('Method not implemented.');
-  }
-
-  mapOr<U>(other: U, func: (val: T) => U): U {
-    throw new Error('Method not implemented.');
-  }
-
-  mapOrElse<U>(other: () => U, func: (val: T) => U): U {
-    throw new Error('Method not implemented.');
+    return getSome(func(this.value));
   }
 
   and<U>(other: OptT<U>): OptT<U> {
-    throw new Error('Method not implemented.');
+    return other;
   }
 
   flatMap<U>(func: (val: T) => OptT<U>): OptT<U> {
-    throw new Error('Method not implemented.');
+    return func(this.value);
   }
 
   or(other: OptT<T>): OptT<T> {
-    throw new Error('Method not implemented.');
+    return this;
   }
 
   orElse(func: () => OptT<T>): OptT<T> {
-    throw new Error('Method not implemented.');
+    return this;
   }
 
   match<U, V>(options: OptMatch<T, U, V>): U | V {
-    throw new Error('Method not implemented.');
+    return options.some(this.value);
   }
 }
 

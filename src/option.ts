@@ -211,10 +211,10 @@ export interface OptT<T> {
    * // eitherAgain.unwrap() === 1
    * ```
    *
-   * @param {OptT<T>} other
-   * @returns {OptT<T>}
+   * @param {OptT<any>} other
+   * @returns {OptT<any>}
    */
-  or(other: OptT<T>): OptT<T>;
+  or(other: OptT<any>): OptT<any>;
 
   /**
    * Returns "this" [[OptT]] if it is a `Some` value; otherwise calls `func` and returns the
@@ -233,10 +233,10 @@ export interface OptT<T> {
    * // eitherAgain.unwrap() === 1
    * ```
    *
-   * @param {(val: T) => OptT<T>} func
-   * @returns {OptT<T>}
+   * @param {() => OptT<any>} func
+   * @returns {OptT<any>}
    */
-  orElse(func: () => OptT<T>): OptT<T>;
+  orElse(func: () => OptT<any>): OptT<any>;
 
   /**
    * Calls the appropriate function in `options` and returns the result.

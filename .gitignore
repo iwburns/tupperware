@@ -145,8 +145,14 @@ jspm_packages/
 # Typescript v1 declaration files
 typings/
 
-# compiled Javascript
-dist/
+# _any_ compiled Javascript
+*.js
+
+# map files
+*.js.map
+
+# declaration files (ts will build those for us during prepublishOnly)
+*.d.ts
 
 # Optional npm cache directory
 .npm
@@ -170,5 +176,4 @@ dist/
 # End of https://www.gitignore.io/api/node
 
 # docs dir
-/doc
-# End of docs dir
+doc/
