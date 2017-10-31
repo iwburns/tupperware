@@ -48,7 +48,7 @@ export class NoneT<T> implements OptT<T> {
   }
 
   flatMap<U>(func: (val: T) => OptT<U>): OptT<U> {
-    throw new Error('Method not implemented.');
+    return getNone();
   }
 
   or(other: OptT<T>): OptT<T> {

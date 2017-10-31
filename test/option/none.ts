@@ -118,4 +118,19 @@ describe('#OptionT.none', () => {
     expect(one.or(OptionT.none()).isNone()).to.be.true;
   });
 
+  it('should have the function flatMap', () => {
+    const one = OptionT.none();
+    const nothing = () => OptionT.none();
+    const something = () => OptionT.some(1);
+
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('flatMap');
+
+    expect(one.flatMap).to.be.a('function');
+
+    expect(one.flatMap(nothing).isNone()).to.be.true;
+    expect(one.flatMap(something).isNone()).to.be.true;    
+  });
+
 });
