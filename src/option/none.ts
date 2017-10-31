@@ -60,7 +60,7 @@ export class NoneT<T> implements OptT<T> {
   }
 
   match<U, V>(options: OptMatch<T, U, V>): V | U {
-    throw new Error('Method not implemented.');
+    return options.none();
   }
 }
 

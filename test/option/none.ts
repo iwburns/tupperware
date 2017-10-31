@@ -149,4 +149,19 @@ describe('#OptionT.none', () => {
     expect(one.orElse(() => OptionT.some('foobar')).unwrap()).to.equal('foobar');
   });
 
+  it('should have the function match', () => {
+    const one = OptionT.none();
+
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('match');
+
+    expect(one.match).to.be.a('function');
+
+    expect(one.match({
+      some: () => 1, 
+      none: () => 0
+    })).to.equal(0);
+  });
+
 });
