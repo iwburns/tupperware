@@ -32,7 +32,7 @@ export class NoneT<T> implements OptT<T> {
   }
 
   map<U>(func: (val: T) => U): OptT<U> {
-    throw new Error('Method not implemented.');
+    return getNone();
   }
 
   mapOr<U>(other: U, func: (val: T) => U): U {

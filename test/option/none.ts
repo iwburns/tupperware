@@ -77,4 +77,17 @@ describe('#OptionT.none', () => {
     expect(one.unwrapOrElse(() => 1)).to.equal(1);
   });
 
+  it('should have the function map', () => {
+    const one = OptionT.none();
+
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('map');
+
+    expect(one.map).to.be.a('function');
+
+    const mapResult = one.map((x: number) => x * 2);
+    expect(mapResult.isNone()).to.be.true;
+  });
+
 });
