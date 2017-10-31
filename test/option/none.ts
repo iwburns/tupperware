@@ -90,4 +90,32 @@ describe('#OptionT.none', () => {
     expect(mapResult.isNone()).to.be.true;
   });
 
+  it('should have the function and', () => {
+    const one = OptionT.none();
+
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('and');
+
+    expect(one.and).to.be.a('function');
+
+    expect(one.and(OptionT.some(1)).isNone()).to.be.true;
+    expect(one.and(OptionT.none()).isNone()).to.be.true;
+  });
+
+  it('should have the function or', () => {
+    const one = OptionT.none();
+
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('or');
+
+    expect(one.or).to.be.a('function');
+
+    const orResult = one.or(OptionT.some(1));
+    expect(orResult.isSome()).to.be.true;
+    expect(orResult.unwrap()).to.equal(1);
+    expect(one.or(OptionT.none()).isNone()).to.be.true;
+  });
+
 });

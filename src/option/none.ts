@@ -44,7 +44,7 @@ export class NoneT<T> implements OptT<T> {
   }
 
   and<U>(other: OptT<U>): OptT<U> {
-    throw new Error('Method not implemented.');
+    return getNone();
   }
 
   flatMap<U>(func: (val: T) => OptT<U>): OptT<U> {
@@ -52,7 +52,7 @@ export class NoneT<T> implements OptT<T> {
   }
 
   or(other: OptT<T>): OptT<T> {
-    throw new Error('Method not implemented.');
+    return other;
   }
 
   orElse(func: () => OptT<T>): OptT<T> {
