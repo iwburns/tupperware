@@ -56,7 +56,7 @@ export class NoneT<T> implements OptT<T> {
   }
 
   orElse(func: () => OptT<T>): OptT<T> {
-    throw new Error('Method not implemented.');
+    return func();
   }
 
   match<U, V>(options: OptMatch<T, U, V>): V | U {

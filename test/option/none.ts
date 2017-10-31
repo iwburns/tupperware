@@ -133,4 +133,20 @@ describe('#OptionT.none', () => {
     expect(one.flatMap(something).isNone()).to.be.true;    
   });
 
+  it('should have the function orElse', () => {
+    const one = OptionT.none();
+    const nothing = () => OptionT.none();
+    const something = () => OptionT.some(1);
+
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('orElse');
+
+    expect(one.orElse).to.be.a('function');
+
+    expect(one.orElse(nothing).isNone()).to.be.true;
+    expect(one.orElse(something).isSome()).to.be.true;    
+    expect(one.orElse(() => OptionT.some('foobar')).unwrap()).to.equal('foobar');
+  });
+
 });
