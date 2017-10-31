@@ -106,10 +106,10 @@ export interface OptT<T> {
    *
    * ```
    * const maybeOne = OptionT.some(1);
-   * const one = maybeOne.unwrapOr(() => 3); // one === 1
+   * const one = maybeOne.unwrapOrElse(() => 3); // one === 1
    *
    * const maybeTwo = OptionT.none();
-   * const two = maybeTwo.unwrapOr(() => 3); // two === 3
+   * const two = maybeTwo.unwrapOrElse(() => 3); // two === 3
    * ```
    *
    * @param {() => T} func
