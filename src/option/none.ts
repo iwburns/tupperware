@@ -15,11 +15,11 @@ export class NoneT<T> implements OptT<T> {
     return true;
   }
 
-  expect(message: string): T {
+  expect(message: string): never {
     throw new Error(message);
   }
 
-  unwrap(): T {
+  unwrap(): never {
     throw new Error('Called unwrap on a None value.');
   }
 
@@ -32,7 +32,7 @@ export class NoneT<T> implements OptT<T> {
   }
 
   map<U>(func: (val: T) => U): OptT<U> {
-    return getNone();
+    return <OptT<U>>getNone();
   }
 
   mapOr<U>(other: U, func: (val: T) => U): U {
@@ -44,19 +44,19 @@ export class NoneT<T> implements OptT<T> {
   }
 
   and<U>(other: OptT<U>): OptT<U> {
-    return getNone();
+    return <OptT<U>>getNone();
   }
 
   flatMap<U>(func: (val: T) => OptT<U>): OptT<U> {
-    return getNone();
+    return <OptT<U>>getNone();
   }
 
   or(other: OptT<T>): OptT<T> {
-    return other;
+    return <OptT<T>>other;
   }
 
   orElse(func: () => OptT<T>): OptT<T> {
-    return func();
+    return <OptT<T>>func();
   }
 
   match<U, V>(options: OptMatch<T, U, V>): V | U {
@@ -70,5 +70,5 @@ export class NoneT<T> implements OptT<T> {
  * @returns {OptT<T>}
  */
 export function getNone<T>(): OptT<T> {
-  return new NoneT();
+  return new NoneT() as OptT<T>;
 }
