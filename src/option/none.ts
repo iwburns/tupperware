@@ -15,7 +15,11 @@ export class NoneT<T> implements OptT<T> {
     return true;
   }
 
-  expect(message: string): never {
+  toString(): string {
+    return 'None()';
+  }
+
+  expect(message: string): T {
     throw new Error(message);
   }
 

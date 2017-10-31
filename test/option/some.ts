@@ -280,4 +280,16 @@ describe('#OptionT.some', () => {
 
     expect(three).to.equal(3);
   });
+
+  it('should have the function toString', () => {
+    const one = OptionT.some(1);
+
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('toString');
+    expect(one.toString).to.be.a('function');
+    expect(one.toString()).to.equal('Some( 1 )');
+  });
+
+
 });

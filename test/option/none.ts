@@ -66,11 +66,13 @@ describe('#OptionT.none', () => {
     expect(one.unwrapOr(10)).to.equal(10);
   });
 
+
   it('should have the function unwrapOrElse', () => {
     const one = OptionT.none();
 
     expect(one)
       .to.be.a('object')
+
       .that.has.property('unwrapOrElse');
 
     expect(one.unwrapOrElse).to.be.a('function');
@@ -162,6 +164,17 @@ describe('#OptionT.none', () => {
       some: () => 1, 
       none: () => 0
     })).to.equal(0);
+  });
+
+
+  it('should have the function toString', () => {
+    const one = OptionT.none();
+  
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('toString');
+    expect(one.toString).to.be.a('function');
+    expect(one.toString()).to.equal('None()');
   });
 
 });
