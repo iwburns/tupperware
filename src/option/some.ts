@@ -24,6 +24,10 @@ export class SomeT<T> implements OptT<T> {
     return false;
   }
 
+  toString(): string {
+    return `Some( ${this.value} )`;
+  }
+
   expect(message: string): T {
     return this.value;
   }

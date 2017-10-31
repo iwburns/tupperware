@@ -45,6 +45,18 @@ export interface OptT<T> {
   isNone(): boolean;
 
   /**
+   * Returns `None()` if this [[OptT]] is a `None`, returns `Some( val )` if it is a `Some`.
+   *
+   * ```
+   * OptionT.some(1).toString() //Some(1)
+   * OptionT.none().toString() //None()
+   * ```
+   *
+   * @returns {boolean}
+   */
+  toString(): string;
+
+  /**
    * Returns the value contained by this [[OptT]] if it is a `Some`.  Throws an error
    * containing `message` if this [[OptT]] is a `None`.
    *
