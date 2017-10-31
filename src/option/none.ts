@@ -28,7 +28,7 @@ export class NoneT<T> implements OptT<T> {
   }
 
   unwrapOrElse(func: () => T): T {
-    throw new Error('Method not implemented.');
+    return func();
   }
 
   map<U>(func: (val: T) => U): OptT<U> {

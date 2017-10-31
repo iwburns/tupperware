@@ -66,4 +66,15 @@ describe('#OptionT.none', () => {
     expect(one.unwrapOr(10)).to.equal(10);
   });
 
+  it('should have the function unwrapOrElse', () => {
+    const one = OptionT.none();
+
+    expect(one)
+      .to.be.a('object')
+      .that.has.property('unwrapOrElse');
+
+    expect(one.unwrapOrElse).to.be.a('function');
+    expect(one.unwrapOrElse(() => 1)).to.equal(1);
+  });
+
 });
