@@ -70,5 +70,5 @@ export class NoneT<T> implements OptT<T> {
  * @returns {OptT<T>}
  */
 export function getNone<T>(): OptT<T> {
-  return new NoneT() as OptT<T>;
+  return new NoneT();
 }
