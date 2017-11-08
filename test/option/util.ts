@@ -5,9 +5,9 @@ import { expect } from 'chai';
 export function expectAnOption (val) : void {
 	expect(val)
 		.to.be.a('object');
-	expect(val)	
+	expect(val)
 		.to.have.property('isSome').that.is.a('function');
-	expect(val)	
+	expect(val)
 		.to.have.property('isNone').that.is.a('function');
 	expect(val)
 		.to.have.property('toString').that.is.a('function');
@@ -30,7 +30,7 @@ export function expectAnOption (val) : void {
 	expect(val)
 		.to.have.property('orElse').that.is.a('function');
 	expect(val)
-		.to.have.property('match').that.is.a('function');		
+		.to.have.property('match').that.is.a('function');
 }
 
 export function expectASome (val) : void {

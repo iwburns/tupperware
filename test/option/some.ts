@@ -178,4 +178,12 @@ describe('#OptionT.some', () => {
 
     expect(three).to.equal(3);
   });
+
+  it('should have the function toString', () => {
+    const one = OptionT.some(1);
+
+    expectASome(one);
+    
+    expect(one.toString()).to.equal('Some( 1 )');
+  });
 });
