@@ -183,6 +183,7 @@ describe('#OptionT.some', () => {
     const one = OptionT.some(1);
 
     expectASome(one);
+    
     expect(one.toString()).to.equal('Some( 1 )');
   });
 });
