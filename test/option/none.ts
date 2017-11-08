@@ -12,7 +12,7 @@ describe('#OptionT', () => {
   it('should be an object with None', () => {
     expect(OptionT)
       .to.be.a('object')
-      .that.has.property('none'); 
+      .that.has.property('none');
   });
 });
 
