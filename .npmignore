@@ -177,3 +177,8 @@ test/
 
 # docs dir
 doc/
+
+# configuration files
+.travis.yml
+tsconfig.json
+tslint.json
