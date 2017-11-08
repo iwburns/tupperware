@@ -96,7 +96,7 @@ describe('#OptionT.none', () => {
     expectANone(none);
 
     expect(none.flatMap(nothing).isNone()).to.be.true;
-    expect(none.flatMap(something).isNone()).to.be.true;    
+    expect(none.flatMap(something).isNone()).to.be.true;
   });
 
   it('should have the function orElse', () => {
@@ -107,7 +107,7 @@ describe('#OptionT.none', () => {
     expectANone(none);
 
     expect(none.orElse(nothing).isNone()).to.be.true;
-    expect(none.orElse(something).isSome()).to.be.true;    
+    expect(none.orElse(something).isSome()).to.be.true;
     expect(none.orElse(() => OptionT.some('foobar')).unwrap()).to.equal('foobar');
   });
 
@@ -117,7 +117,7 @@ describe('#OptionT.none', () => {
     expectANone(none);
 
     expect(none.match({
-      some: () => 1, 
+      some: () => 1,
       none: () => 0
     })).to.equal(0);
   });
