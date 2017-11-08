@@ -122,4 +122,12 @@ describe('#OptionT.none', () => {
     })).to.equal(0);
   });
 
+  it('should have the function toString', () => {
+    const none = OptionT.none();
+
+    expectANone(none);
+
+    expect(none.toString()).to.equal('None()');
+  });
+
 });
