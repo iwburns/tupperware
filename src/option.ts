@@ -158,8 +158,8 @@ export interface OptT<T> {
   map<U>(func: (val: T) => U): OptT<U>;
 
   /**
-   * Maps an [[OptT]]&lt;T&gt; to an [[OptT]]&lt;U&gt; by applying `func` to the value
-   * contained in this [[OptT]].
+   * Maps an [[OptT]]&lt;T&gt; to a U by applying `func` to the value contained in this
+   * [[OptT]].
    *
    * If this [[OptT]] is a `Some` value, the returned value will be the return of `func`;
    * otherwise the returned value will be `other`.
