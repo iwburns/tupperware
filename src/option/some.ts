@@ -52,6 +52,10 @@ export class SomeT<T> implements OptT<T> {
     return func(this.value);
   }
 
+  mapOrElse<U>(other: () => U, func: (val: T) => U): U {
+    return func(this.value);
+  }
+
   and<U>(other: OptT<U>): OptT<U> {
     return other;
   }

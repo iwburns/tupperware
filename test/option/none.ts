@@ -78,6 +78,16 @@ describe('#OptionT.none', () => {
     expect(mapResult).to.equal(1);
   });
 
+  it('should have the function mapOrElse', () => {
+    const none = OptionT.none();
+
+    expectANone(none);
+
+    const mapResult = none.mapOrElse(() => 1, (x: number) => x * 2);
+
+    expect(mapResult).to.equal(1);
+  });
+
   it('should have the function and', () => {
     const none = OptionT.none();
 

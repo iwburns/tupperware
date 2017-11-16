@@ -43,6 +43,10 @@ export class NoneT<T> implements OptT<T> {
     return other;
   }
 
+  mapOrElse<U>(other: () => U, func: (val: T) => U): U {
+    return other();
+  }
+
   and<U>(other: OptT<U>): OptT<U> {
     return <OptT<U>>getNone();
   }
