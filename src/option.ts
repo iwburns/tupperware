@@ -181,6 +181,29 @@ export interface OptT<T> {
   mapOr<U>(other: U, func: (val: T) => U): U;
 
   /**
+   * Maps an [[OptT]]&lt;T&gt; to a U by applying `func` to the value contained in this
+   * [[OptT]].
+   *
+   * If this [[OptT]] is a `Some` value, the returned value will be the return of `func`;
+   * otherwise the returned value will be the value returned from `other`.
+   *
+   * ```
+   * const maybeOne = OptionT.some(1);
+   * const maybeTwo = maybeOne.mapOrElse(() => 3, x => x * 2);
+   * // maybeTwo === 2
+   *
+   * const maybeThree = OptionT.none();
+   * const maybeSix = maybeThree.mapOr(() => 7, x => x * 2);
+   * // maybeSix === 7
+   * ```
+   *
+   * @param {() => U} other
+   * @param {(val: T) => U} func
+   * @returns {U}
+   */
+  mapOrElse<U>(other: () => U, func: (val: T) => U): U;
+
+  /**
    * Returns a `None` value if this [[OptT]] is a `None`; otherwise returns `other`.
    *
    * ```
