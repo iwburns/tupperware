@@ -23,6 +23,8 @@ export function expectAnOption (val) : void {
   expect(val)
     .to.have.property('mapOr').that.is.a('function');
   expect(val)
+    .to.have.property('mapOrElse').that.is.a('function');
+  expect(val)
     .to.have.property('and').that.is.a('function');
   expect(val)
     .to.have.property('flatMap').that.is.a('function');
