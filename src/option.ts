@@ -161,24 +161,17 @@ export interface OptT<T> {
    * Maps an [[OptT]]&lt;T&gt; to an [[OptT]]&lt;U&gt; by applying `func` to the value
    * contained in this [[OptT]].
    *
-   * If this [[OptT]] is a `Some` value, the returned value will be the return of `func`
-   * wrapped in a new [[OptT]] (resulting in a `Some` value); otherwise the returned value
-   * will be `other` wrapped in a new `Some` value.
-   *
-   * ### Note:
-   * If the return value of `func` is `null` or `undefined`, the [[OptT]] that is returned
-   * is guaranteed to be a `None` value.
+   * If this [[OptT]] is a `Some` value, the returned value will be the return of `func`;
+   * otherwise the returned value will be `other`.
    *
    * ```
    * const maybeOne = OptionT.some(1);
    * const maybeTwo = maybeOne.mapOr(3, x => x * 2);
-   * // maybeTwo.isSome() === true
-   * // maybeTwo.unwrap() === 2
+   * // maybeTwo === 2
    *
    * const maybeThree = OptionT.none();
-   * const maybeSix = maybeThree.mapOr(6, x => x * 2);
-   * // maybeSix.isSome() === true
-   * // maybeSix.unwrap() === 6
+   * const maybeSix = maybeThree.mapOr(7, x => x * 2);
+   * // maybeSix === 7
    * ```
    *
    * @param {U} other
