@@ -40,11 +40,11 @@ export class NoneT<T> implements OptT<T> {
   }
 
   mapOr<U>(other: U, func: (val: T) => U): U {
-    throw new Error('Method not implemented.');
+    return other;
   }
 
   mapOrElse<U>(other: () => U, func: (val: T) => U): U {
-    throw new Error('Method not implemented.');
+    return other();
   }
 
   and<U>(other: OptT<U>): OptT<U> {

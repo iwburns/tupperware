@@ -1,7 +1,7 @@
 import 'mocha';
 import { OptionT } from '../../src/index';
 import { expect } from 'chai';
-import { expectASome, expectANone } from './util';
+import { expectANone } from './util';
 
 /*
   expectASome() and expectANone() will check that all expected functions exist on the Option
@@ -66,6 +66,26 @@ describe('#OptionT.none', () => {
 
     const mapResult = none.map((x: number) => x * 2);
     expect(mapResult.isNone()).to.be.true;
+  });
+
+  it('should have the function mapOr', () => {
+    const none = OptionT.none();
+
+    expectANone(none);
+
+    const mapResult = none.mapOr(1, (x: number) => x * 2);
+
+    expect(mapResult).to.equal(1);
+  });
+
+  it('should have the function mapOrElse', () => {
+    const none = OptionT.none();
+
+    expectANone(none);
+
+    const mapResult = none.mapOrElse(() => 1, (x: number) => x * 2);
+
+    expect(mapResult).to.equal(1);
   });
 
   it('should have the function and', () => {

@@ -78,6 +78,24 @@ describe('#OptionT.some', () => {
     expect(four.isSome()).to.equal(false);
   });
 
+  it('should have the function mapOr', () => {
+    const one = OptionT.some(1);
+    expectASome(one);
+
+    const mapResult = one.mapOr(3, (x: number) => x * 2);
+
+    expect(mapResult).to.equal(2);
+  });
+
+  it('should have the function mapOrElse', () => {
+    const one = OptionT.some(1);
+    expectASome(one);
+
+    const mapResult = one.mapOrElse(() => 3, (x: number) => x * 2);
+
+    expect(mapResult).to.equal(2);
+  });
+
   it('should have the function and', () => {
     const one = OptionT.some(1);
 
