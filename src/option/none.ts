@@ -66,6 +66,10 @@ export class NoneT<T> implements OptT<T> {
   match<U, V>(options: OptMatch<T, U, V>): V | U {
     return options.none();
   }
+
+  clone(): OptT<T> {
+    return getNone();
+  }
 }
 
 /**

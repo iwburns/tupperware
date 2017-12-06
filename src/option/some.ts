@@ -75,6 +75,10 @@ export class SomeT<T> implements OptT<T> {
   match<U, V>(options: OptMatch<T, U, V>): U | V {
     return options.some(this.value);
   }
+
+  clone(): OptT<T> {
+    return getSome(this.value);
+  }
 }
 
 /**
