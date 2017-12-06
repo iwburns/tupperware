@@ -328,6 +328,36 @@ export interface OptT<T> {
    * @returns {V | U}
    */
   match<U, V>(options: OptMatch<T, U, V>): U | V;
+
+  /**
+   * Returns a new [[OptT]] containing the same data as the current one.
+   *
+   * Note: does not perform any deep copying of the contained data.
+   *
+   * ```
+   * const one = OptionT.some(1);
+   *
+   * const oneAgain = maybeOne.clone();
+   * // one !== oneAgain
+   * // one.unwrap() === oneAgain.unwrap()
+   *
+   * const foo = OptionT.some({
+   *   bar: 'baz'
+   * });
+   *
+   * const fooAgain = foo.clone();
+   * // foo !== fooAgain
+   * // foo.unwrap() === fooAgain.unwrap()
+   * // because they're the same object
+   *
+   * const nope = OptionT.none();
+   * const nada = nope.clone();
+   * // nope !== nada
+   * ```
+   *
+   * @returns {OptT<T>}
+   */
+  clone(): OptT<T>;
 }
 
 /**

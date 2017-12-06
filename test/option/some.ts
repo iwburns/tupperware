@@ -14,6 +14,14 @@ describe('#OptionT', () => {
 });
 
 describe('#OptionT.some', () => {
+  it('should return a none when given null or undefined', () => {
+    const one = OptionT.some(null);
+    expectANone(one);
+
+    const two = OptionT.some(undefined);
+    expectANone(two);
+  });
+
   it('should have the function isSome', () => {
     const one = OptionT.some(1);
 
@@ -26,6 +34,14 @@ describe('#OptionT.some', () => {
 
     expectASome(one);
     expect(one.isNone()).to.be.false;
+  });
+
+  it('should have the function toString', () => {
+    const one = OptionT.some(1);
+
+    expectASome(one);
+
+    expect(one.toString()).to.equal('Some( 1 )');
   });
 
   it('should have the function expect', () => {
@@ -197,11 +213,14 @@ describe('#OptionT.some', () => {
     expect(three).to.equal(3);
   });
 
-  it('should have the function toString', () => {
+  it('should have the function clone', () => {
     const one = OptionT.some(1);
-
     expectASome(one);
-    
-    expect(one.toString()).to.equal('Some( 1 )');
+
+    const oneAgain = one.clone();
+    expectASome(oneAgain);
+
+    expect(one.unwrap()).to.equal(oneAgain.unwrap());
+    expect(one).to.not.equal(oneAgain);
   });
 });

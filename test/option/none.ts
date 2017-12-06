@@ -31,6 +31,14 @@ describe('#OptionT.none', () => {
     expect(none.isNone()).to.be.true;
   });
 
+  it('should have the function toString', () => {
+    const none = OptionT.none();
+
+    expectANone(none);
+
+    expect(none.toString()).to.equal('None()');
+  });
+
   it('should have the function expect', () => {
     const none = OptionT.none();
 
@@ -142,12 +150,13 @@ describe('#OptionT.none', () => {
     })).to.equal(0);
   });
 
-  it('should have the function toString', () => {
+  it('should have the function clone', () => {
     const none = OptionT.none();
-
     expectANone(none);
 
-    expect(none.toString()).to.equal('None()');
-  });
+    const noneAgain = none.clone();
+    expectANone(noneAgain);
 
+    expect(none).to.not.equal(noneAgain);
+  });
 });
