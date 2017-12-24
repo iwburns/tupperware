@@ -70,6 +70,10 @@ export class NoneT<T> implements OptT<T> {
   clone(): OptT<T> {
     return getNone();
   }
+
+  filter(condition: (T) => boolean): OptT<T> {
+    return getNone();
+  }
 }
 
 /**

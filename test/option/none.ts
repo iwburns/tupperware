@@ -1,7 +1,7 @@
 import 'mocha';
 import { OptionT } from '../../src/index';
 import { expect } from 'chai';
-import { expectANone } from './util';
+import {expectANone, expectASome} from './util';
 
 /*
   expectASome() and expectANone() will check that all expected functions exist on the Option
@@ -158,5 +158,13 @@ describe('#OptionT.none', () => {
     expectANone(noneAgain);
 
     expect(none).to.not.equal(noneAgain);
+  });
+
+  it('should have the function filter', () => {
+    const none = OptionT.none();
+    expectANone(none);
+
+    const filtered = none.filter(x => x > 0);
+    expectANone(filtered);
   });
 });

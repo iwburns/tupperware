@@ -223,4 +223,18 @@ describe('#OptionT.some', () => {
     expect(one.unwrap()).to.equal(oneAgain.unwrap());
     expect(one).to.not.equal(oneAgain);
   });
+
+  it('should have the function filter', () => {
+    const one = OptionT.some(1);
+    expectASome(one);
+
+    const filtered = one.filter(x => x > 0);
+    expectASome(filtered);
+
+    expect(filtered.unwrap()).to.equal(1);
+    expect(filtered).to.equal(one); //they should be the same object
+
+    const filteredAgain = one.filter(x => x < 0);
+    expectANone(filteredAgain);
+  });
 });
