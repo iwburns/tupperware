@@ -71,7 +71,7 @@ export class NoneT<T> implements OptT<T> {
     return getNone();
   }
 
-  filter(condition: (T) => boolean): OptT<T> {
+  filter(condition: (val: T) => boolean): OptT<T> {
     return getNone();
   }
 }

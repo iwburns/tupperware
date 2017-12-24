@@ -80,7 +80,7 @@ export class SomeT<T> implements OptT<T> {
     return getSome(this.value);
   }
 
-  filter(condition: (T) => boolean): OptT<T> {
+  filter(condition: (val: T) => boolean): OptT<T> {
     if (condition(this.value)) {
       return this;
     }
