@@ -78,6 +78,10 @@ export class NoneT<T> implements OptT<T> {
   forEach(func: (val: any) => void): void {
     return;
   }
+
+  equals(other: OptT<T>): boolean {
+    return other.isNone();
+  }
 }
 
 /**

@@ -2,6 +2,7 @@ import 'mocha';
 import { OptionT } from '../../src/index';
 import { expect } from 'chai';
 import { expectASome, expectANone } from './util';
+import { OptT } from "../../src/option";
 
 describe('#OptionT', () => {
   it('should be an object with some', () => {
@@ -246,5 +247,39 @@ describe('#OptionT.some', () => {
 
     one.forEach(x => { val = x; });
     expect(val).to.equal(1);
+  });
+
+  it('should have the function equals', () => {
+    const a = OptionT.some(1);
+    const b = OptionT.some(1);
+    expectASome(a);
+    expectASome(b);
+
+    expect(a.equals(b)).to.be.true;
+
+    const c = OptionT.some({ foo: 'bar' });
+    const d = OptionT.some({ foo: 'bar' });
+    expectASome(c);
+    expectASome(d);
+
+    expect(c.equals(d)).to.be.false;
+
+    const obj = {
+      foo: 'bar',
+    };
+
+    const e = OptionT.some(obj);
+    const f = OptionT.some(obj);
+    expectASome(e);
+    expectASome(f);
+
+    expect(e.equals(f)).to.be.true;
+
+    const g = OptionT.some(1);
+    const h = OptionT.none();
+    expectASome(e);
+    expectANone(h);
+
+    expect(g.equals(h)).to.be.false;
   });
 });

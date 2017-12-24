@@ -397,6 +397,32 @@ export interface OptT<T> {
    * @param {(val: any) => void} func
    */
   forEach(func: (val: any) => void): void;
+
+  /**
+   * Returns `true` if both [[OptT]]s are `None`s or (if they are both `Some`s) if they both
+   * contain the same value;  otherwise returns `false`.
+   *
+   * Note: No deep comparison is done on the contained values.
+   *
+   * ```
+   * const a = OptionT.some(1);
+   * const b = OptionT.some(1);
+   * // a.equals(b) === true
+   *
+   * const c = OptionT.none();
+   * const d = OptionT.none();
+   * // c.equals(d) === true
+   *
+   * const e = OptionT.some({ foo: 'bar' });
+   * const f = OptionT.some({ foo: 'bar' });
+   * // e.equals(f) === false
+   * // because they're different objects
+   * ```
+   *
+   * @param {OptT<any>} other
+   * @returns {boolean}
+   */
+  equals(other: OptT<any>): boolean;
 }
 
 /**

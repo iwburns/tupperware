@@ -177,4 +177,20 @@ describe('#OptionT.none', () => {
     none.forEach(x => { val = x; });
     expect(val).to.equal(0);
   });
+
+  it('should have the function equals', () => {
+    const a = OptionT.none();
+    const b = OptionT.some(1);
+    expectANone(a);
+    expectASome(b);
+
+    expect(a.equals(b)).to.be.false;
+
+    const c = OptionT.none();
+    const d = OptionT.none();
+    expectANone(c);
+    expectANone(d);
+
+    expect(c.equals(d)).to.be.true;
+  });
 });

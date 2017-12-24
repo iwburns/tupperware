@@ -90,6 +90,13 @@ export class SomeT<T> implements OptT<T> {
   forEach(func: (val: any) => void): void {
     func(this.value);
   }
+
+  equals(other: OptT<T>): boolean {
+    if (other.isNone()) {
+      return false;
+    }
+    return this.value === other.unwrap();
+  }
 }
 
 /**
