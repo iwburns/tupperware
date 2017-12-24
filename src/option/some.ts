@@ -97,6 +97,10 @@ export class SomeT<T> implements OptT<T> {
     }
     return this.value === other.unwrap();
   }
+
+  hasValue(val: T): boolean {
+    return this.value === val;
+  }
 }
 
 /**

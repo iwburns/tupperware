@@ -193,4 +193,11 @@ describe('#OptionT.none', () => {
 
     expect(c.equals(d)).to.be.true;
   });
+
+  it('should have the function hasValue', () => {
+    const none = OptionT.none();
+    expectANone(none);
+
+    expect(none.hasValue(1)).to.be.false;
+  });
 });

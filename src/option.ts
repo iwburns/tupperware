@@ -423,6 +423,29 @@ export interface OptT<T> {
    * @returns {boolean}
    */
   equals(other: OptT<any>): boolean;
+
+  /**
+   * Returns `true` if the [[OptT]] is a `Some` and contains the given value `val`, otherwise
+   * returns `false`.
+   *
+   * Note: No deep comparison is done on the contained values.
+   *
+   * ```
+   * const one = OptionT.some(1);
+   * // one.hasValue(1) === true
+   *
+   * const none = OptionT.none();
+   * // none.hasValue(1) === false
+   *
+   * const obj = OptionT.some({ foo: 'bar' });
+   * // obj.hasValue({ foo: 'bar' }) === false
+   * // because they're different objects
+   * ```
+   *
+   * @param {T} val
+   * @returns {boolean}
+   */
+  hasValue(val: any): boolean;
 }
 
 /**

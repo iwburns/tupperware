@@ -282,4 +282,25 @@ describe('#OptionT.some', () => {
 
     expect(g.equals(h)).to.be.false;
   });
+
+  it('should have the function hasValue', () => {
+    const one = OptionT.some(1);
+    expectASome(one);
+
+    expect(one.hasValue(1)).to.be.true;
+    expect(one.hasValue(2)).to.be.false;
+
+    const another = OptionT.some({ foo: 'bar' });
+    expectASome(another);
+
+    expect(another.hasValue({ foo: 'bar' })).to.be.false;
+
+    const obj = {
+      foo: 'bar',
+    };
+    const maybeObj = OptionT.some(obj);
+    expectASome(maybeObj);
+
+    expect(maybeObj.hasValue(obj)).to.be.true;
+  });
 });
