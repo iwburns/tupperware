@@ -86,6 +86,10 @@ export class NoneT<T> implements OptT<T> {
   hasValue(val: any): boolean {
     return false;
   }
+
+  contains(condition: (val: T) => boolean): boolean {
+    return false;
+  }
 }
 
 /**

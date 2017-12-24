@@ -303,4 +303,18 @@ describe('#OptionT.some', () => {
 
     expect(maybeObj.hasValue(obj)).to.be.true;
   });
+
+  it('should have the function contains', () => {
+    const one = OptionT.some(1);
+    expectASome(one);
+
+    expect(one.contains(x => x > 0)).to.be.true;
+    expect(one.contains(x => x < 0)).to.be.false;
+
+    const obj = OptionT.some({ foo: 'bar' });
+    expectASome(obj);
+
+    expect(obj.contains(x => x.foo === 'bar')).to.be.true;
+    expect(obj.contains(x => x.foo === 'baz')).to.be.false;
+  });
 });

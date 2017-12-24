@@ -101,6 +101,10 @@ export class SomeT<T> implements OptT<T> {
   hasValue(val: any): boolean {
     return this.value === val;
   }
+
+  contains(condition: (val: T) => boolean): boolean {
+    return condition(this.value);
+  }
 }
 
 /**

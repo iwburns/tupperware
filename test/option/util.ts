@@ -44,6 +44,8 @@ export function expectAnOption (val) : void {
     .to.have.property('equals').that.is.a('function');
   expect(val)
     .to.have.property('hasValue').that.is.a('function');
+  expect(val)
+    .to.have.property('contains').that.is.a('function');
 }
 
 export function expectASome (val) : void {

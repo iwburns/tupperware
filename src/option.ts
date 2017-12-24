@@ -428,7 +428,8 @@ export interface OptT<T> {
    * Returns `true` if the [[OptT]] is a `Some` and contains the given value `val`, otherwise
    * returns `false`.
    *
-   * Note: No deep comparison is done on the contained values.
+   * Note: No deep comparison is done on the contained values.  If you need to do deep
+   * comparisons against the contained value, consider using [[contains]] instead.
    *
    * ```
    * const one = OptionT.some(1);
@@ -446,6 +447,26 @@ export interface OptT<T> {
    * @returns {boolean}
    */
   hasValue(val: any): boolean;
+
+  /**
+   * Returns `false` if the [[OptT]] is a `None`, otherwise calls `condition` with the contained
+   * value and returns the result.
+   *
+   * ```
+   * const one = OptionT.some(1);
+   * // one.contains(x => x > 0) === true
+   *
+   * const obj = OptionT.some({ foo: 'bar' });
+   * // obj.contains(x => x.foo === 'bar') === true
+   *
+   * const none = OptionT.none();
+   * // none.contains(x => x.a === 'b') === false
+   * ```
+   *
+   * @param {(val: T) => boolean} condition
+   * @returns {boolean}
+   */
+  contains(condition: (val: T) => boolean): boolean;
 }
 
 /**

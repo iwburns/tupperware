@@ -200,4 +200,15 @@ describe('#OptionT.none', () => {
 
     expect(none.hasValue(1)).to.be.false;
   });
+
+  it('should have the function contains', () => {
+    const none = OptionT.none();
+    expectANone(none);
+
+    expect(none.contains(x => x > 0)).to.be.false;
+    expect(none.contains(x => x < 0)).to.be.false;
+
+    const noneAgain = OptionT.none();
+    expect(noneAgain.contains(x => x.hasOwnProperty('foo'))).to.be.false;
+  });
 });
