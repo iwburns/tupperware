@@ -83,7 +83,7 @@ export class NoneT<T> implements OptT<T> {
     return other.isNone();
   }
 
-  hasValue(val: T): boolean {
+  hasValue(val: any): boolean {
     return false;
   }
 }
