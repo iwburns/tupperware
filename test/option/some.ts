@@ -237,4 +237,14 @@ describe('#OptionT.some', () => {
     const filteredAgain = one.filter(x => x < 0);
     expectANone(filteredAgain);
   });
+
+  it('should have the function forEach', () => {
+    const one = OptionT.some(1);
+    expectASome(one);
+
+    let val = 0;
+
+    one.forEach(x => { val = x; });
+    expect(val).to.equal(1);
+  });
 });

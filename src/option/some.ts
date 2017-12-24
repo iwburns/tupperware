@@ -86,6 +86,10 @@ export class SomeT<T> implements OptT<T> {
     }
     return getNone();
   }
+
+  forEach(func: (val: any) => void): void {
+    func(this.value);
+  }
 }
 
 /**

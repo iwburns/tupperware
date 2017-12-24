@@ -377,6 +377,26 @@ export interface OptT<T> {
    * @returns {OptT<T>}
    */
   filter(condition: (val: T) => boolean): OptT<T>;
+
+  /**
+   * Calls `func` with the contained value if this [[OptT]] is a `Some` value; otherwise does
+   * nothing.
+   *
+   * Note: This is intended for causing side-effects.  If you need a return value, consider
+   * using [[match]] instead.
+   *
+   * ```
+   * const one = OptionT.some(1);
+   *
+   * let val = 0;
+   *
+   * one.forEach(x => { val = x; });
+   * // val === 1
+   * ```
+   *
+   * @param {(val: any) => void} func
+   */
+  forEach(func: (val: any) => void): void;
 }
 
 /**

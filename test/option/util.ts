@@ -38,6 +38,8 @@ export function expectAnOption (val) : void {
     .to.have.property('clone').that.is.a('function');
   expect(val)
     .to.have.property('filter').that.is.a('function');
+  expect(val)
+    .to.have.property('forEach').that.is.a('function');
 }
 
 export function expectASome (val) : void {

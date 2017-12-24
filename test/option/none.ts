@@ -167,4 +167,14 @@ describe('#OptionT.none', () => {
     const filtered = none.filter(x => x > 0);
     expectANone(filtered);
   });
+
+  it('should have the function forEach', () => {
+    const none = OptionT.none();
+    expectANone(none);
+
+    let val = 0;
+
+    none.forEach(x => { val = x; });
+    expect(val).to.equal(0);
+  });
 });

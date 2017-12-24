@@ -74,6 +74,10 @@ export class NoneT<T> implements OptT<T> {
   filter(condition: (val: T) => boolean): OptT<T> {
     return getNone();
   }
+
+  forEach(func: (val: any) => void): void {
+    return;
+  }
 }
 
 /**
