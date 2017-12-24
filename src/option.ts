@@ -358,6 +358,25 @@ export interface OptT<T> {
    * @returns {OptT<T>}
    */
   clone(): OptT<T>;
+
+  /**
+   * Returns `this` [[OptT]] if it is a `Some` value and if `condition` returns `true`; otherwise
+   * returns a `None` value.
+   *
+   * ```
+   * const one = OptionT.some(1);
+   *
+   * const greaterThanZero = one.filter(x => x > 0);
+   * // greaterThanZero.unwrap() === 1
+   *
+   * const lessThanZero = one.filter(x => x < 0);
+   * // lessThanZero.isNone() === true
+   * ```
+   *
+   * @param {(val: T) => boolean} condition
+   * @returns {OptT<T>}
+   */
+  filter(condition: (val: T) => boolean): OptT<T>;
 }
 
 /**
