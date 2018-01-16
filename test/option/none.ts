@@ -1,7 +1,7 @@
 import 'mocha';
 import { OptionT } from '../../src/index';
 import { expect } from 'chai';
-import { expectANone } from './util';
+import {expectANone, expectASome} from './util';
 
 /*
   expectASome() and expectANone() will check that all expected functions exist on the Option
@@ -158,5 +158,57 @@ describe('#OptionT.none', () => {
     expectANone(noneAgain);
 
     expect(none).to.not.equal(noneAgain);
+  });
+
+  it('should have the function filter', () => {
+    const none = OptionT.none();
+    expectANone(none);
+
+    const filtered = none.filter(x => x > 0);
+    expectANone(filtered);
+  });
+
+  it('should have the function forEach', () => {
+    const none = OptionT.none();
+    expectANone(none);
+
+    let val = 0;
+
+    none.forEach(x => { val = x; });
+    expect(val).to.equal(0);
+  });
+
+  it('should have the function equals', () => {
+    const a = OptionT.none();
+    const b = OptionT.some(1);
+    expectANone(a);
+    expectASome(b);
+
+    expect(a.equals(b)).to.be.false;
+
+    const c = OptionT.none();
+    const d = OptionT.none();
+    expectANone(c);
+    expectANone(d);
+
+    expect(c.equals(d)).to.be.true;
+  });
+
+  it('should have the function hasValue', () => {
+    const none = OptionT.none();
+    expectANone(none);
+
+    expect(none.hasValue(1)).to.be.false;
+  });
+
+  it('should have the function contains', () => {
+    const none = OptionT.none();
+    expectANone(none);
+
+    expect(none.contains(x => x > 0)).to.be.false;
+    expect(none.contains(x => x < 0)).to.be.false;
+
+    const noneAgain = OptionT.none();
+    expect(noneAgain.contains(x => x.hasOwnProperty('foo'))).to.be.false;
   });
 });

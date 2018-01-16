@@ -70,6 +70,26 @@ export class NoneT<T> implements OptT<T> {
   clone(): OptT<T> {
     return getNone();
   }
+
+  filter(condition: (val: T) => boolean): OptT<T> {
+    return getNone();
+  }
+
+  forEach(func: (val: any) => void): void {
+    return;
+  }
+
+  equals(other: OptT<T>): boolean {
+    return other.isNone();
+  }
+
+  hasValue(val: any): boolean {
+    return false;
+  }
+
+  contains(condition: (val: T) => boolean): boolean {
+    return false;
+  }
 }
 
 /**

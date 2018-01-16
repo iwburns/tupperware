@@ -2,6 +2,7 @@ import 'mocha';
 import { OptionT } from '../../src/index';
 import { expect } from 'chai';
 import { expectASome, expectANone } from './util';
+import { OptT } from "../../src/option";
 
 describe('#OptionT', () => {
   it('should be an object with some', () => {
@@ -222,5 +223,98 @@ describe('#OptionT.some', () => {
 
     expect(one.unwrap()).to.equal(oneAgain.unwrap());
     expect(one).to.not.equal(oneAgain);
+  });
+
+  it('should have the function filter', () => {
+    const one = OptionT.some(1);
+    expectASome(one);
+
+    const filtered = one.filter(x => x > 0);
+    expectASome(filtered);
+
+    expect(filtered.unwrap()).to.equal(1);
+    expect(filtered).to.equal(one); //they should be the same object
+
+    const filteredAgain = one.filter(x => x < 0);
+    expectANone(filteredAgain);
+  });
+
+  it('should have the function forEach', () => {
+    const one = OptionT.some(1);
+    expectASome(one);
+
+    let val = 0;
+
+    one.forEach(x => { val = x; });
+    expect(val).to.equal(1);
+  });
+
+  it('should have the function equals', () => {
+    const a = OptionT.some(1);
+    const b = OptionT.some(1);
+    expectASome(a);
+    expectASome(b);
+
+    expect(a.equals(b)).to.be.true;
+
+    const c = OptionT.some({ foo: 'bar' });
+    const d = OptionT.some({ foo: 'bar' });
+    expectASome(c);
+    expectASome(d);
+
+    expect(c.equals(d)).to.be.false;
+
+    const obj = {
+      foo: 'bar',
+    };
+
+    const e = OptionT.some(obj);
+    const f = OptionT.some(obj);
+    expectASome(e);
+    expectASome(f);
+
+    expect(e.equals(f)).to.be.true;
+
+    const g = OptionT.some(1);
+    const h = OptionT.none();
+    expectASome(e);
+    expectANone(h);
+
+    expect(g.equals(h)).to.be.false;
+  });
+
+  it('should have the function hasValue', () => {
+    const one = OptionT.some(1);
+    expectASome(one);
+
+    expect(one.hasValue(1)).to.be.true;
+    expect(one.hasValue(2)).to.be.false;
+
+    const another = OptionT.some({ foo: 'bar' });
+    expectASome(another);
+
+    expect(another.hasValue({ foo: 'bar' })).to.be.false;
+
+    const obj = {
+      foo: 'bar',
+    };
+    const maybeObj = OptionT.some(obj);
+    expectASome(maybeObj);
+
+    expect(maybeObj.hasValue(obj)).to.be.true;
+  });
+
+  it('should have the function contains', () => {
+    const one = OptionT.some(1);
+    expectASome(one);
+
+    expect(one.contains(x => x > 0)).to.be.true;
+    expect(one.contains(x => x < 0)).to.be.false;
+
+    const obj = OptionT.some({ foo: 'bar' });
+    expectASome(obj);
+
+    expect(obj.contains(x => x.foo === 'bar')).to.be.true;
+    expect(obj.contains(x => x.foo === 'baz')).to.be.false;
   });
 });

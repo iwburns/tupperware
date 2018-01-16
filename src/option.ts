@@ -358,6 +358,115 @@ export interface OptT<T> {
    * @returns {OptT<T>}
    */
   clone(): OptT<T>;
+
+  /**
+   * Returns `this` [[OptT]] if it is a `Some` value and if `condition` returns `true`; otherwise
+   * returns a `None` value.
+   *
+   * ```
+   * const one = OptionT.some(1);
+   *
+   * const greaterThanZero = one.filter(x => x > 0);
+   * // greaterThanZero.unwrap() === 1
+   *
+   * const lessThanZero = one.filter(x => x < 0);
+   * // lessThanZero.isNone() === true
+   * ```
+   *
+   * @param {(val: T) => boolean} condition
+   * @returns {OptT<T>}
+   */
+  filter(condition: (val: T) => boolean): OptT<T>;
+
+  /**
+   * Calls `func` with the contained value if this [[OptT]] is a `Some` value; otherwise does
+   * nothing.
+   *
+   * Note: This is intended for causing side-effects.  If you need a return value, consider
+   * using [[match]] instead.
+   *
+   * ```
+   * const one = OptionT.some(1);
+   *
+   * let val = 0;
+   *
+   * one.forEach(x => { val = x; });
+   * // val === 1
+   * ```
+   *
+   * @param {(val: any) => void} func
+   */
+  forEach(func: (val: any) => void): void;
+
+  /**
+   * Returns `true` if both [[OptT]]s are `None`s or (if they are both `Some`s) if they both
+   * contain the same value;  otherwise returns `false`.
+   *
+   * Note: No deep comparison is done on the contained values.
+   *
+   * ```
+   * const a = OptionT.some(1);
+   * const b = OptionT.some(1);
+   * // a.equals(b) === true
+   *
+   * const c = OptionT.none();
+   * const d = OptionT.none();
+   * // c.equals(d) === true
+   *
+   * const e = OptionT.some({ foo: 'bar' });
+   * const f = OptionT.some({ foo: 'bar' });
+   * // e.equals(f) === false
+   * // because they're different objects
+   * ```
+   *
+   * @param {OptT<any>} other
+   * @returns {boolean}
+   */
+  equals(other: OptT<any>): boolean;
+
+  /**
+   * Returns `true` if the [[OptT]] is a `Some` and contains the given value `val`, otherwise
+   * returns `false`.
+   *
+   * Note: No deep comparison is done on the contained values.  If you need to do deep
+   * comparisons against the contained value, consider using [[contains]] instead.
+   *
+   * ```
+   * const one = OptionT.some(1);
+   * // one.hasValue(1) === true
+   *
+   * const none = OptionT.none();
+   * // none.hasValue(1) === false
+   *
+   * const obj = OptionT.some({ foo: 'bar' });
+   * // obj.hasValue({ foo: 'bar' }) === false
+   * // because they're different objects
+   * ```
+   *
+   * @param {T} val
+   * @returns {boolean}
+   */
+  hasValue(val: any): boolean;
+
+  /**
+   * Returns `false` if the [[OptT]] is a `None`, otherwise calls `condition` with the contained
+   * value and returns the result.
+   *
+   * ```
+   * const one = OptionT.some(1);
+   * // one.contains(x => x > 0) === true
+   *
+   * const obj = OptionT.some({ foo: 'bar' });
+   * // obj.contains(x => x.foo === 'bar') === true
+   *
+   * const none = OptionT.none();
+   * // none.contains(x => x.a === 'b') === false
+   * ```
+   *
+   * @param {(val: T) => boolean} condition
+   * @returns {boolean}
+   */
+  contains(condition: (val: T) => boolean): boolean;
 }
 
 /**

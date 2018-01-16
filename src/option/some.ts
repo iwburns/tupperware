@@ -1,5 +1,5 @@
 import { OptT, OptMatch } from '../option';
-import { NoneT } from './none';
+import { getNone, NoneT } from './none';
 
 /**
  * A class representing the `Some`-type variant of the `OptionT` type.
@@ -78,6 +78,32 @@ export class SomeT<T> implements OptT<T> {
 
   clone(): OptT<T> {
     return getSome(this.value);
+  }
+
+  filter(condition: (val: T) => boolean): OptT<T> {
+    if (condition(this.value)) {
+      return this;
+    }
+    return getNone();
+  }
+
+  forEach(func: (val: any) => void): void {
+    func(this.value);
+  }
+
+  equals(other: OptT<T>): boolean {
+    if (other.isNone()) {
+      return false;
+    }
+    return this.value === other.unwrap();
+  }
+
+  hasValue(val: any): boolean {
+    return this.value === val;
+  }
+
+  contains(condition: (val: T) => boolean): boolean {
+    return condition(this.value);
   }
 }
 
