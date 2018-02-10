@@ -12,15 +12,20 @@ describe('#OptionT', () => {
 
     expect(OptionT.some).to.be.a('function');
   });
+
+  it('should be an object with wrap', () => {
+    expect(OptionT)
+      .to.be.a('object')
+      .that.has.property('wrap');
+
+    expect(OptionT.wrap).to.be.a('function');
+  });
 });
 
 describe('#OptionT.some', () => {
-  it('should return a none when given null or undefined', () => {
-    const one = OptionT.some(null);
-    expectANone(one);
-
-    const two = OptionT.some(undefined);
-    expectANone(two);
+  it('should throw an error when given null or undefined', () => {
+    expect(() => { OptionT.some(null); }).to.throw();
+    expect(() => { OptionT.some(undefined); }).to.throw();
   });
 
   it('should have the function isSome', () => {
