@@ -112,9 +112,9 @@ export class SomeT<T> implements OptT<T> {
  * containing `val`.
  *
  * @param {T} val The value with which to create the [[NoneT]] or [[SomeT]].
- * @returns {OptT<T>}
+ * @returns {OptT<any>}
  */
-export function getSome<T>(val: T): OptT<T> {
+export function getSome<T>(val: T): OptT<any> {
   if (val === null || typeof val === 'undefined') {
     return new NoneT();
   }

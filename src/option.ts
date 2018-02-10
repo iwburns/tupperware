@@ -480,7 +480,7 @@ export namespace OptionT {
    * @param {T} val
    * @returns {OptT<any>}
    */
-  export function some<T>(val: T) {
+  export function some<T>(val: T): OptT<any> {
     return getSome(val);
   }
 
@@ -489,7 +489,7 @@ export namespace OptionT {
    *
    * @returns {OptT<any>}
    */
-  export function none() {
+  export function none(): OptT<any> {
     return getNone();
   }
 }
