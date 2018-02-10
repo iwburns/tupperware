@@ -24,8 +24,8 @@ describe('#OptionT.some and #OptionT.none', () => {
   });
 
   it('should be of the same type when a some turns into a none', () => {
-    const one = OptionT.some(undefined);
-    const two = OptionT.some(null);
+    const one = OptionT.wrap(undefined);
+    const two = OptionT.wrap(null);
     const nope = OptionT.none();
 
     expectANone(one);

@@ -474,13 +474,15 @@ export interface OptT<T> {
  */
 export namespace OptionT {
   /**
-   * Returns a `None` value if `val` is `null` or `undefined`, otherwise returns a `Some`
-   * value containing `val`.
+   * Returns a `Some` value containing `val`.
    *
    * @param {T} val
-   * @returns {OptT<any>}
+   * @returns {OptT<T>}
    */
-  export function some<T>(val: T): OptT<any> {
+  export function some<T>(val: T): OptT<T> {
+    if (val === null || typeof val === 'undefined') {
+      throw new TypeError('Cannot create a `SomeT` containing either `null` or `undefined`.');
+    }
     return getSome(val);
   }
 
@@ -491,5 +493,16 @@ export namespace OptionT {
    */
   export function none(): OptT<any> {
     return getNone();
+  }
+
+  /**
+   * Returns a `None` value if `val` is `null` or `undefined`, otherwise returns a `Some`
+   * value containing `val`.
+   *
+   * @param {T} val
+   * @returns {OptT<any>}
+   */
+  export function wrap<T>(val: T): OptT<any> {
+    return getSome(val)
   }
 }
