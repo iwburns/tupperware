@@ -284,10 +284,10 @@ export abstract class ResultT<T, E> {
    * // maybeSix.unwrapErr() === 4
    * ```
    *
-   * @param {(val: T) => U} func
-   * @returns {ResultT<U, E>}
+   * @param {(val: E) => F} func
+   * @returns {ResultT<T, F | TypeError>}
    */
-  abstract mapErr<F>(func: (val: E) => F): ResultT<T, F>;
+  abstract mapErr<F>(func: (val: E) => F): ResultT<T, F | TypeError>;
   abstract and<U>(other: ResultT<U, E>): ResultT<U, E>;
   abstract flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E>;
   abstract or<F>(other: ResultT<T, F>): ResultT<T, F>;
@@ -352,7 +352,7 @@ class Ok<T, E> extends ResultT<T, E> {
     return ResultT.ok(func(this.value));
   }
 
-  mapErr<F>(func: (val: E) => F): ResultT<T, F> {
+  mapErr<F>(func: (val: E) => F): ResultT<T, F | TypeError> {
     throw 'unimplemented';
   }
 
@@ -437,7 +437,7 @@ class Err<T, E> extends ResultT<T, E> {
     throw 'unimplemented';
   }
 
-  mapErr<F>(func: (val: E) => F): ResultT<T, F> {
+  mapErr<F>(func: (val: E) => F): ResultT<T, F | TypeError> {
     throw 'unimplemented';
   }
 
