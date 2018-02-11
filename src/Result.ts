@@ -1,7 +1,7 @@
 import OptionT from './OptionT';
 
 /**
- * An interface describing the argument passed to [[Result]]'s `match` function.
+ * An interface describing the argument passed to [[ResultT]]'s `match` function.
  */
 export interface ResultMatch<T, E, U, F> {
   ok: (ok: T) => U;
@@ -9,15 +9,15 @@ export interface ResultMatch<T, E, U, F> {
 }
 
 /**
- * An abstract class describing the `Result` type.
+ * An abstract class describing the `ResultT` type.
  *
  * Items of this type can either be an `Ok` value (implying the absence of an error),
  * or an `Err` value (implying the presence of an error).
  */
-export abstract class Result<T, E> {
+export abstract class ResultT<T, E> {
   constructor() {}
 
-  static ok<T>(val: T): Result<T, TypeError> {
+  static ok<T>(val: T): ResultT<T, TypeError> {
     if (val === null || typeof val === 'undefined') {
       const typeError = new TypeError(
         'The argument "val" cannot be "null" and cannot be "undefined".',
@@ -27,7 +27,7 @@ export abstract class Result<T, E> {
     return new Ok(val);
   }
 
-  static err<T, E>(error: E): Result<T, E> | Result<T, TypeError> {
+  static err<T, E>(error: E): ResultT<T, E> | ResultT<T, TypeError> {
     if (error === null || typeof error === 'undefined') {
       const typeError = new TypeError(
         'The argument "val" cannot be "null" and cannot be "undefined".',
@@ -38,10 +38,10 @@ export abstract class Result<T, E> {
   }
 
   /**
-   * Returns `true` if this [[Result]] is an `Ok`, returns `false` if it is an `Err`.
+   * Returns `true` if this [[ResultT]] is an `Ok`, returns `false` if it is an `Err`.
    *
    * ```
-   * const one = Result.ok(1);
+   * const one = ResultT.ok(1);
    * // one.isOk() === true
    * ```
    *
@@ -50,10 +50,10 @@ export abstract class Result<T, E> {
   abstract isOk(): boolean;
 
   /**
-   * Returns `true` if this [[Result]] is an `Err`, returns `false` if it is an `Ok`.
+   * Returns `true` if this [[ResultT]] is an `Err`, returns `false` if it is an `Ok`.
    *
    * ```
-   * const one = Result.err('Failed to parse integer');
+   * const one = ResultT.err('Failed to parse integer');
    * // one.isErr() === true
    * ```
    *
@@ -62,11 +62,11 @@ export abstract class Result<T, E> {
   abstract isErr(): boolean;
 
   /**
-   * Returns `Ok( val )` if this [[Result]] is an `Ok`, returns `Err( err )` if it is an `Err`.
+   * Returns `Ok( val )` if this [[ResultT]] is an `Ok`, returns `Err( err )` if it is an `Err`.
    *
    * ```
-   * Result.ok(1).toString() //Ok( 1 )
-   * Result.err('parsing failure').toString() //Err( parsing failure )
+   * ResultT.ok(1).toString() //Ok( 1 )
+   * ResultT.err('parsing failure').toString() //Err( parsing failure )
    * ```
    *
    * @returns {string}
@@ -74,17 +74,17 @@ export abstract class Result<T, E> {
   abstract toString(): string;
 
   /**
-   * Tries to return the internal `Ok` value of this [[Result]].  Returns a `Some` containing the value
+   * Tries to return the internal `Ok` value of this [[ResultT]].  Returns a `Some` containing the value
    * if it is an `Ok`, returns a `None` if it is an `Err`.
    *
    * ```
-   * const one = Result.ok(1);
+   * const one = ResultT.ok(1);
    * const maybeOne = one.getOk();
    *
    * // maybeOne.isSome() === true
    * // maybeOne.unwrap() === 1
    *
-   * const one = Result.err('parsing error');
+   * const one = ResultT.err('parsing error');
    * const maybeOne = one.getOk();
    *
    * // maybeOne.isNone() === true
@@ -95,17 +95,17 @@ export abstract class Result<T, E> {
   abstract getOk(): OptionT<T>;
 
   /**
-   * Tries to return the internal `Err` value of this [[Result]].  Returns a `Some` containing the
+   * Tries to return the internal `Err` value of this [[ResultT]].  Returns a `Some` containing the
    * value if it is an `Err`, returns a `None` if it is an `Ok`.
    *
    * ```
-   * const one = Result.err('parsing error');
+   * const one = ResultT.err('parsing error');
    * const maybeOne = one.getErr();
    *
    * // maybeOne.isSome() === true
    * // maybeOne.unwrap() === 'parsing error'
    *
-   * const one = Result.ok(1);
+   * const one = ResultT.ok(1);
    * const maybeOne = one.getErr();
    *
    * // maybeOne.isNone() === true
@@ -116,16 +116,16 @@ export abstract class Result<T, E> {
   abstract getErr(): OptionT<E>;
 
   /**
-   * Returns the value contained by this [[Result]] if it is an `Ok`.  Throws an error
+   * Returns the value contained by this [[ResultT]] if it is an `Ok`.  Throws an error
    * containing `message` if it is an `Err`.
    *
    * ```
-   * const maybeOne = Result.ok(1);
+   * const maybeOne = ResultT.ok(1);
    * // this won't throw because it's an `Ok` value.
    * const one = maybeOne.expect("couldn't unwrap an Ok");
    *
    * // but:
-   * const maybeOne = Result.err('parsing error');
+   * const maybeOne = ResultT.err('parsing error');
    * // this will throw because it's an `Err` value.
    * const one = maybeOne.expect("couldn't unwrap an Ok");
    * ```
@@ -136,16 +136,16 @@ export abstract class Result<T, E> {
   abstract expect(message: string): T;
 
   /**
-   * Returns the value contained by this [[Result]] if it is an `Err`.  Throws an error
+   * Returns the value contained by this [[ResultT]] if it is an `Err`.  Throws an error
    * containing `message` if it is an `Ok`.
    *
    * ```
-   * const maybeError = Result.ok(1);
+   * const maybeError = ResultT.ok(1);
    * // this will throw because it's an `Ok` value.
    * const error = maybeError.expectErr("couldn't unwrap an Err");
    *
    * // but:
-   * const maybeError = Result.err('parsing error');
+   * const maybeError = ResultT.err('parsing error');
    * // this won't throw because it's an `Err` value.
    * const error = maybeError.expectErr("couldn't unwrap an Err");
    * ```
@@ -156,16 +156,16 @@ export abstract class Result<T, E> {
   abstract expectErr(message: string): E;
 
   /**
-   * Returns the value contained by this [[Result]] if it is an `Ok`.  Throws a
+   * Returns the value contained by this [[ResultT]] if it is an `Ok`.  Throws a
    * pre-defined error if it is an `Err`.
    *
    * ```
-   * const maybeOne = Result.ok(1);
+   * const maybeOne = ResultT.ok(1);
    * // this won't throw, because it's an Ok value.
    * const one = maybeOne.unwrap();
    *
    * // but:
-   * const maybeOne = Result.err('parsing error');
+   * const maybeOne = ResultT.err('parsing error');
    * // this will throw, because it's a Err value.
    * const one = maybeOne.unwrap();
    * ```
@@ -175,16 +175,16 @@ export abstract class Result<T, E> {
   abstract unwrap(): T;
 
   /**
-   * Returns the value contained by this [[Result]] if it is an `Err`.  Throws a
+   * Returns the value contained by this [[ResultT]] if it is an `Err`.  Throws a
    * pre-defined error if it is an `Ok`.
    *
    * ```
-   * const maybeOne = Result.ok(1);
+   * const maybeOne = ResultT.ok(1);
    * // this will throw, because it's an Ok value.
    * const error = maybeOne.unwrapErr();
    *
    * // but:
-   * const maybeOne = Result.err('parsing error');
+   * const maybeOne = ResultT.err('parsing error');
    * // this won't throw, because it's a Err value.
    * const error = maybeOne.unwrapErr();
    * ```
@@ -194,15 +194,15 @@ export abstract class Result<T, E> {
   abstract unwrapErr(): E;
 
   /**
-   * Returns the value contained by this [[Result]] if it is an `Ok`, otherwise
+   * Returns the value contained by this [[ResultT]] if it is an `Ok`, otherwise
    * returns `other`.
    *
    * ```
-   * const maybeOne = Result.ok(1);
+   * const maybeOne = ResultT.ok(1);
    * const one = maybeOne.unwrapOr(2);
    * // one === 1
    *
-   * const maybeOne = Result.err('parse error');
+   * const maybeOne = ResultT.err('parse error');
    * const one = maybeOne.unwrapOr(2);
    * // one === 2
    * ```
@@ -213,15 +213,15 @@ export abstract class Result<T, E> {
   abstract unwrapOr(other: T): T;
 
   /**
-   * Returns the value contained by this [[Result]] if it is an 'Ok', otherwise
+   * Returns the value contained by this [[ResultT]] if it is an 'Ok', otherwise
    * calls `func` with the `Err` value and returns the result.
    *
    * ```
-   * const maybeOne = Result.ok(1);
+   * const maybeOne = ResultT.ok(1);
    * const one = maybeOne.unwrapOrElse((err) => err.length);
    * // one === 1
    *
-   * const maybeOne = Result.err('parse error');
+   * const maybeOne = ResultT.err('parse error');
    * const one = maybeOne.unwrapOrElse((err) => err.length);
    * // one === 11
    * ```
@@ -232,71 +232,71 @@ export abstract class Result<T, E> {
   abstract unwrapOrElse(func: (err: E) => T): T;
 
   /**
-   * Maps a [[Result]]&lt;T, E&gt; to an [[Result]]&lt;U, E&gt; by applying `func` to the value
-   * contained in this [[Result]].
+   * Maps a [[ResultT]]&lt;T, E&gt; to an [[ResultT]]&lt;U, E&gt; by applying `func` to the value
+   * contained in this [[ResultT]].
    *
-   * If this [[Result]] is an `Ok` value, the returned value will be the return of `func`
-   * wrapped in a new [[Result]] (resulting in an `Ok` value); otherwise the returned value
+   * If this [[ResultT]] is an `Ok` value, the returned value will be the return of `func`
+   * wrapped in a new [[ResultT]] (resulting in an `Ok` value); otherwise the returned value
    * will be a new `Err` value.
    *
    * ### Note:
-   * If the return value of `func` is `null` or `undefined`, the [[Result]] that is returned
+   * If the return value of `func` is `null` or `undefined`, the [[ResultT]] that is returned
    * is guaranteed to be an `Err` value containing a `TypeError`.
    *
    * ```
-   * const maybeOne = Result.ok(1);
+   * const maybeOne = ResultT.ok(1);
    * const maybeTwo = maybeOne.map(x => x * 2);
    * // maybeTwo.isOk() === true
    * // maybeTwo.unwrap() === 2
    *
-   * const maybeThree = Result.err(2);
+   * const maybeThree = ResultT.err(2);
    * const maybeSix = maybeThree.map(x => x * 2);
    * // maybeSix.isErr() === true
    * // maybeSix.unwrapErr() === 2
    * ```
    *
    * @param {(val: T) => U} func
-   * @returns {Result<U, E>}
+   * @returns {ResultT<U, E>}
    */
-  abstract map<U>(func: (val: T) => U): Result<U, E>;
+  abstract map<U>(func: (val: T) => U): ResultT<U, E>;
 
   /**
-   * Maps a [[Result]]&lt;T, E&gt; to an [[Result]]&lt;T, F&gt; by applying `func` to the value
-   * contained in this [[Result]].
+   * Maps a [[ResultT]]&lt;T, E&gt; to an [[ResultT]]&lt;T, F&gt; by applying `func` to the value
+   * contained in this [[ResultT]].
    *
-   * If this [[Result]] is an `Err` value, the returned value will be the return of `func`
-   * wrapped in a new [[Result]] (resulting in an `Err` value); otherwise the returned value
+   * If this [[ResultT]] is an `Err` value, the returned value will be the return of `func`
+   * wrapped in a new [[ResultT]] (resulting in an `Err` value); otherwise the returned value
    * will be a new `Ok` value.
    *
    * ### Note:
-   * If the return value of `func` is `null` or `undefined`, the [[Result]] that is returned
+   * If the return value of `func` is `null` or `undefined`, the [[ResultT]] that is returned
    * is guaranteed to be an `Err` value containing a `TypeError`.
    *
    * ```
-   * const maybeOne = Result.ok(1);
+   * const maybeOne = ResultT.ok(1);
    * const maybeTwo = maybeOne.mapErr(x => x * 2);
    * // maybeTwo.isOk() === true
    * // maybeTwo.unwrap() === 1
    *
-   * const maybeThree = Result.err(2);
+   * const maybeThree = ResultT.err(2);
    * const maybeSix = maybeThree.mapErr(x => x * 2);
    * // maybeSix.isErr() === true
    * // maybeSix.unwrapErr() === 4
    * ```
    *
    * @param {(val: T) => U} func
-   * @returns {Result<U, E>}
+   * @returns {ResultT<U, E>}
    */
-  abstract mapErr<F>(func: (val: E) => F): Result<T, F>;
-  abstract and<U>(other: Result<U, E>): Result<U, E>;
-  abstract flatMap<U>(func: (ok: T) => Result<U, E>): Result<U, E>;
-  abstract or<F>(other: Result<T, F>): Result<T, F>;
-  abstract orElse<F>(func: (err: E) => Result<T, F>): Result<T, F>;
+  abstract mapErr<F>(func: (val: E) => F): ResultT<T, F>;
+  abstract and<U>(other: ResultT<U, E>): ResultT<U, E>;
+  abstract flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E>;
+  abstract or<F>(other: ResultT<T, F>): ResultT<T, F>;
+  abstract orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F>;
   abstract match<U, F>(options: ResultMatch<T, E, U, F>): U | F;
-  abstract clone(): Result<T, E>;
+  abstract clone(): ResultT<T, E>;
 }
 
-class Ok<T, E> extends Result<T, E> {
+class Ok<T, E> extends ResultT<T, E> {
   private value: T;
 
   constructor(val: T) {
@@ -305,70 +305,75 @@ class Ok<T, E> extends Result<T, E> {
   }
 
   isOk(): boolean {
-    throw 'unimplemented';
+    return true;
   }
 
   isErr(): boolean {
-    throw 'unimplemented';
+    return false;
   }
 
   toString(): string {
-    throw 'unimplemented';
+    return `Ok( ${this.value} )`;
   }
 
   getOk(): OptionT<T> {
-    throw 'unimplemented';
+    return OptionT.some(this.value);
   }
 
   getErr(): OptionT<E> {
-    throw 'unimplemented';
+    return OptionT.none();
   }
 
   expect(message: string): T {
-    throw 'unimplemented';
+    return this.value;
   }
 
   expectErr(message: string): E {
-    throw 'unimplemented';
+    throw new Error(message);
   }
 
   unwrap(): T {
-    throw 'unimplemented';
+    return this.value;
   }
 
   unwrapErr(): E {
-    throw 'unimplemented';
+    throw new Error('Called unwrap on an Ok value.');
   }
 
   unwrapOr(other: T): T {
-    throw 'unimplemented';
+    return this.value;
   }
 
   unwrapOrElse(func: (err: E) => T): T {
+    return this.value;
+  }
+
+  map<U>(func: (val: T) => U): ResultT<U, E> {
+    /*
+    src/ResultT.ts(352,5): error TS2322: Type 'ResultT<U, TypeError>' is not assignable to type 'ResultT<U, E>'.
+      Type 'TypeError' is not assignable to type 'E'.
+     */
+    //return ResultT.ok(func(this.value));
     throw 'unimplemented';
   }
 
-  map<U>(func: (val: T) => U): Result<U, E> {
+  mapErr<F>(func: (val: E) => F): ResultT<T, F> {
     throw 'unimplemented';
   }
 
-  mapErr<F>(func: (val: E) => F): Result<T, F> {
+  and<U>(other: ResultT<U, E>): ResultT<U, E> {
     throw 'unimplemented';
   }
 
-  and<U>(other: Result<U, E>): Result<U, E> {
+  flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E> {
     throw 'unimplemented';
   }
 
-  flatMap<U>(func: (ok: T) => Result<U, E>): Result<U, E> {
+  or<F>(other: ResultT<T, F>): ResultT<T, F> {
     throw 'unimplemented';
   }
 
-  or<F>(other: Result<T, F>): Result<T, F> {
-    throw 'unimplemented';
-  }
-
-  orElse<F>(func: (err: E) => Result<T, F>): Result<T, F> {
+  orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F> {
     throw 'unimplemented';
   }
 
@@ -376,12 +381,12 @@ class Ok<T, E> extends Result<T, E> {
     throw 'unimplemented';
   }
 
-  clone(): Result<T, E> {
+  clone(): ResultT<T, E> {
     throw 'unimplemented';
   }
 }
 
-class Err<T, E> extends Result<T, E> {
+class Err<T, E> extends ResultT<T, E> {
   private error: E;
 
   constructor(err: E) {
@@ -390,70 +395,70 @@ class Err<T, E> extends Result<T, E> {
   }
 
   isOk(): boolean {
-    throw 'unimplemented';
+    return false;
   }
 
   isErr(): boolean {
-    throw 'unimplemented';
+    return true;
   }
 
   toString(): string {
-    throw 'unimplemented';
+    return `Err( ${this.error} )`;
   }
 
   getOk(): OptionT<T> {
-    throw 'unimplemented';
+    return OptionT.none();
   }
 
   getErr(): OptionT<E> {
-    throw 'unimplemented';
+    return OptionT.some(this.error);
   }
 
   expect(message: string): T {
-    throw 'unimplemented';
+    throw new Error(message);
   }
 
   expectErr(message: string): E {
-    throw 'unimplemented';
+    return this.error;
   }
 
   unwrap(): T {
-    throw 'unimplemented';
+    throw new Error('Called unwrap on a Err value.');
   }
 
   unwrapErr(): E {
-    throw 'unimplemented';
+    return this.error;
   }
 
   unwrapOr(other: T): T {
-    throw 'unimplemented';
+    return other;
   }
 
   unwrapOrElse(func: (err: E) => T): T {
+    return func(this.error);
+  }
+
+  map<U>(func: (val: T) => U): ResultT<U, E> {
     throw 'unimplemented';
   }
 
-  map<U>(func: (val: T) => U): Result<U, E> {
+  mapErr<F>(func: (val: E) => F): ResultT<T, F> {
     throw 'unimplemented';
   }
 
-  mapErr<F>(func: (val: E) => F): Result<T, F> {
+  and<U>(other: ResultT<U, E>): ResultT<U, E> {
     throw 'unimplemented';
   }
 
-  and<U>(other: Result<U, E>): Result<U, E> {
+  flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E> {
     throw 'unimplemented';
   }
 
-  flatMap<U>(func: (ok: T) => Result<U, E>): Result<U, E> {
+  or<F>(other: ResultT<T, F>): ResultT<T, F> {
     throw 'unimplemented';
   }
 
-  or<F>(other: Result<T, F>): Result<T, F> {
-    throw 'unimplemented';
-  }
-
-  orElse<F>(func: (err: E) => Result<T, F>): Result<T, F> {
+  orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F> {
     throw 'unimplemented';
   }
 
@@ -461,7 +466,7 @@ class Err<T, E> extends Result<T, E> {
     throw 'unimplemented';
   }
 
-  clone(): Result<T, E> {
+  clone(): ResultT<T, E> {
     throw 'unimplemented';
   }
 
