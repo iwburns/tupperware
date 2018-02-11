@@ -256,9 +256,9 @@ export abstract class ResultT<T, E> {
    * ```
    *
    * @param {(val: T) => U} func
-   * @returns {ResultT<U, E>}
+   * @returns {ResultT<U, E | TypeError>}
    */
-  abstract map<U>(func: (val: T) => U): ResultT<U, E>;
+  abstract map<U>(func: (val: T) => U): ResultT<U, E | TypeError>;
 
   /**
    * Maps a [[ResultT]]&lt;T, E&gt; to an [[ResultT]]&lt;T, F&gt; by applying `func` to the value
@@ -348,13 +348,8 @@ class Ok<T, E> extends ResultT<T, E> {
     return this.value;
   }
 
-  map<U>(func: (val: T) => U): ResultT<U, E> {
-    /*
-    src/ResultT.ts(352,5): error TS2322: Type 'ResultT<U, TypeError>' is not assignable to type 'ResultT<U, E>'.
-      Type 'TypeError' is not assignable to type 'E'.
-     */
-    //return ResultT.ok(func(this.value));
-    throw 'unimplemented';
+  map<U>(func: (val: T) => U): ResultT<U, E | TypeError> {
+    return ResultT.ok(func(this.value));
   }
 
   mapErr<F>(func: (val: E) => F): ResultT<T, F> {
@@ -438,7 +433,7 @@ class Err<T, E> extends ResultT<T, E> {
     return func(this.error);
   }
 
-  map<U>(func: (val: T) => U): ResultT<U, E> {
+  map<U>(func: (val: T) => U): ResultT<U, E | TypeError> {
     throw 'unimplemented';
   }
 
