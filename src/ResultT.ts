@@ -14,7 +14,7 @@ export interface ResultMatch<T, E, U, F> {
  * Items of this type can either be an `Ok` value (implying the absence of an error),
  * or an `Err` value (implying the presence of an error).
  */
-export abstract class ResultT<T, E> {
+export default abstract class ResultT<T, E> {
   constructor() {}
 
   static ok<T>(val: T): ResultT<T, TypeError> {
@@ -73,9 +73,11 @@ export abstract class ResultT<T, E> {
    */
   abstract toString(): string;
 
+  abstract getOk(): OptionT<T>;
   /**
-   * Tries to return the internal `Ok` value of this [[ResultT]].  Returns a `Some` containing the value
-   * if it is an `Ok`, returns a `None` if it is an `Err`.
+   * Tries to return the internal `Ok` value of this [[ResultT]].
+   * Returns a `Some` containing the value if it is an `Ok`,
+   * returns a `None` if it is an `Err`.
    *
    * ```
    * const one = ResultT.ok(1);
@@ -92,7 +94,6 @@ export abstract class ResultT<T, E> {
    *
    * @returns {OptionT<T>}
    */
-  abstract getOk(): OptionT<T>;
 
   /**
    * Tries to return the internal `Err` value of this [[ResultT]].  Returns a `Some` containing the

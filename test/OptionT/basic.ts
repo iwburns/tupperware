@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import OptionT from '../../src/OptionT';
-import { expectASome, expectANone } from './util';
+import { expectASome, expectANone } from '../util';
 
 describe('basic test', () => {
   it('should be able to create a some', () => {

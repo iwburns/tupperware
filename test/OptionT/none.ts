@@ -2,7 +2,7 @@ import 'mocha';
 
 import OptionT from '../../src/OptionT';
 import { expect } from 'chai';
-import { expectANone, expectASome } from './util';
+import { expectANone, expectASome } from '../util';
 
 /*
   expectASome() and expectANone() will check that all expected functions exist on the Option

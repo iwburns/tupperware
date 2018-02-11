@@ -1,7 +1,7 @@
 import 'mocha';
 import OptionT from '../../src/OptionT';
 import { expect } from 'chai';
-import { expectASome, expectANone } from './util';
+import { expectASome, expectANone } from '../util';
 
 describe('#OptionT.some', () => {
   it('should throw an error when given null or undefined', () => {
