@@ -71,4 +71,38 @@ describe('#OptionT.some and #OptionT.none', () => {
     expectANone(twoAgain);
     expectANone(nopeAgain);
   });
+
+  it('none should throw an error if you provide it with a value', () => {
+    expect(() => {
+      OptionT.none('value');
+    }).to.throw();
+  });
+
+  it('some should throw an error if you do not provide it with a value', () => {
+    expect(() => {
+      OptionT.some(null);
+    }).to.throw();
+
+    expect(() => {
+      OptionT.some(undefined);
+    }).to.throw();
+  });
+});
+
+describe('#OptionT.of', () => {
+  it('should choose the appropriate class based on the value', () => {
+
+    expect(OptionT.of(null).isNone()).to.be.true;
+    expect(OptionT.of(undefined).isNone()).to.be.true;
+    expect(OptionT.of().isNone()).to.be.true;
+    expect(OptionT.of('foo').isNone()).to.be.false;
+
+    expect(OptionT.of(null).isSome()).to.be.false;
+    expect(OptionT.of(undefined).isSome()).to.be.false;
+    expect(OptionT.of().isSome()).to.be.false;
+    expect(OptionT.of('foo').isSome()).to.be.true;
+
+
+
+  });
 });

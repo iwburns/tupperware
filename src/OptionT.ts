@@ -13,7 +13,7 @@ export default abstract class OptionT<T> {
   constructor(value?: T) {
   }
 
-  static of<T>(value: T): OptionT<T> {
+  static of<T>(value?: T): OptionT<T> {
     if (value === null || typeof value === 'undefined') {
       return new None();
     }
@@ -86,7 +86,7 @@ export default abstract class OptionT<T> {
    * // but:
    * const maybeTwo = OptionT.none();
    * // this will throw, because it's a None value.
-   * const two = maybeTwo.expect('couldn't unwrap a Some');
+   * const two = maybeTwo.expect('can not unwrap a Some');
    * ```
    *
    * @param {string} message
@@ -548,11 +548,11 @@ class None<T> extends OptionT<T> {
   }
 
   or(other: OptionT<T>): OptionT<T> {
-    return <OptionT<T>>other;
+    return other;
   }
 
   orElse(func: () => OptionT<T>): OptionT<T> {
-    return <OptionT<T>>func();
+    return func();
   }
 
   match<U, V>(options: OptMatch<T, U, V>): V | U {
