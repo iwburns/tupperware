@@ -1,26 +1,17 @@
 import 'mocha';
-import { OptionT } from '../../src/index';
+import OptionT from '../../src/OptionT';
 import { expect } from 'chai';
 import { expectASome, expectANone } from './util';
-import { OptT } from "../../src/option";
-
-describe('#OptionT', () => {
-  it('should be an object with some', () => {
-    expect(OptionT)
-      .to.be.a('object')
-      .that.has.property('some');
-
-    expect(OptionT.some).to.be.a('function');
-  });
-});
 
 describe('#OptionT.some', () => {
-  it('should return a none when given null or undefined', () => {
-    const one = OptionT.some(null);
-    expectANone(one);
+  it('should throw an error when given null or undefined', () => {
+    expect(() => {
+      OptionT.some(null);
+    }).to.throw();
 
-    const two = OptionT.some(undefined);
-    expectANone(two);
+    expect(() => {
+      OptionT.some(undefined);
+    }).to.throw();
   });
 
   it('should have the function isSome', () => {
@@ -78,7 +69,7 @@ describe('#OptionT.some', () => {
 
     expectASome(one);
 
-    const two = one.map((val) => 2);
+    const two = one.map(val => 2);
 
     expectASome(two);
     expect(two.isSome()).to.equal(true);
@@ -198,7 +189,7 @@ describe('#OptionT.some', () => {
     expectASome(one);
 
     const doubled = one.match({
-      some: (val) => val * 2,
+      some: val => val * 2,
       none: () => 0,
     });
 
@@ -233,7 +224,7 @@ describe('#OptionT.some', () => {
     expectASome(filtered);
 
     expect(filtered.unwrap()).to.equal(1);
-    expect(filtered).to.equal(one); //they should be the same object
+    expect(filtered).to.equal(one); // they should be the same object
 
     const filteredAgain = one.filter(x => x < 0);
     expectANone(filteredAgain);
@@ -245,7 +236,7 @@ describe('#OptionT.some', () => {
 
     let val = 0;
 
-    one.forEach(x => { val = x; });
+    one.forEach(x => val = x);
     expect(val).to.equal(1);
   });
 

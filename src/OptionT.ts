@@ -1,21 +1,39 @@
-import { getSome } from './option/some';
-import { getNone } from './option/none';
 
-/**
- * An interface describing the argument passed to [[OptT]]'s `match` function.
- */
 export interface OptMatch<T, U, V> {
   some: (val: T) => U;
   none: () => V;
 }
 
+
 /**
- * An interface describing the `OptionT` type.
- *
- * Items of this type can either be a `Some` value (with something of
- * type `T` in them), or a `None` value (with nothing in them).
+ * An interface describing the argument passed to [[OptT]]'s `match` function.
  */
-export interface OptT<T> {
+
+export default abstract class OptionT<T> {
+  constructor(value?: T) {
+  }
+
+  static of<T>(value: T): OptionT<T> {
+    if (value === null || typeof value === 'undefined') {
+      return new None();
+    }
+    return new Some(value);
+  }
+
+  static some<T>(value: T): OptionT<T> {
+    if (value === null || typeof value === 'undefined') {
+      throw('Cannot create a Some of a null or undefined value');
+    }
+    return new Some(value);
+  }
+
+  static none<T>(value?: T): OptionT<T> {
+    if (value === null || typeof value === 'undefined') {
+      return new None();
+    }
+    throw('Cannot create a None of a non-null or undefined value');
+  }
+
   /**
    * Returns `true` if this [[OptT]] is a `Some`, returns false if it is a `None`.
    *
@@ -28,7 +46,7 @@ export interface OptT<T> {
    *
    * @returns {boolean}
    */
-  isSome(): boolean;
+  abstract isSome(): boolean;
 
   /**
    * Returns `true` if this [[OptT]] is a `None`, returns false if it is a `Some`.
@@ -42,7 +60,7 @@ export interface OptT<T> {
    *
    * @returns {boolean}
    */
-  isNone(): boolean;
+  abstract isNone(): boolean;
 
   /**
    * Returns `None()` if this [[OptT]] is a `None`, returns `Some( val )` if it is a `Some`.
@@ -54,7 +72,7 @@ export interface OptT<T> {
    *
    * @returns {boolean}
    */
-  toString(): string;
+  abstract toString(): string;
 
   /**
    * Returns the value contained by this [[OptT]] if it is a `Some`.  Throws an error
@@ -63,18 +81,18 @@ export interface OptT<T> {
    * ```
    * const maybeOne = OptionT.some(1);
    * // this won't throw, because it's a Some value.
-   * const one = maybeOne.expect("couldn't unwrap a Some");
+   * const one = maybeOne.expect('couldn't unwrap a Some');
    *
    * // but:
    * const maybeTwo = OptionT.none();
    * // this will throw, because it's a None value.
-   * const two = maybeTwo.expect("couldn't unwrap a Some");
+   * const two = maybeTwo.expect('couldn't unwrap a Some');
    * ```
    *
    * @param {string} message
    * @returns {T}
    */
-  expect(message: string): T;
+  abstract expect(message: string): T;
 
   /**
    * Returns the value contained by this [[OptT]] if it is a `Some`.  Throws a pre-defined
@@ -93,7 +111,7 @@ export interface OptT<T> {
    *
    * @returns {T}
    */
-  unwrap(): T;
+  abstract unwrap(): T;
 
   /**
    * Returns the value contained by this [[OptT]] if it is a `Some`.  Returns `other` if
@@ -110,7 +128,7 @@ export interface OptT<T> {
    * @param {T} other
    * @returns {T}
    */
-  unwrapOr(other: T): T;
+  abstract unwrapOr(other: T): T;
 
   /**
    * Returns the value contained by this [[OptT]] if it is a `Some`.  Returns the return
@@ -127,7 +145,7 @@ export interface OptT<T> {
    * @param {() => T} func
    * @returns {T}
    */
-  unwrapOrElse(func: () => T): T;
+  abstract unwrapOrElse(func: () => T): T;
 
   /**
    * Maps an [[OptT]]&lt;T&gt; to an [[OptT]]&lt;U&gt; by applying `func` to the value
@@ -153,9 +171,9 @@ export interface OptT<T> {
    * ```
    *
    * @param {(val: T) => U} func
-   * @returns {OptT<U>}
+   * @returns {OptionT<U>}
    */
-  map<U>(func: (val: T) => U): OptT<U>;
+  abstract map<U>(func: (val: T) => U): OptionT<U>;
 
   /**
    * Maps an [[OptT]]&lt;T&gt; to a U by applying `func` to the value contained in this
@@ -176,9 +194,9 @@ export interface OptT<T> {
    *
    * @param {U} other
    * @param {(val: T) => U} func
-   * @returns {OptT<U>}
+   * @returns {OptionT<U>}
    */
-  mapOr<U>(other: U, func: (val: T) => U): U;
+  abstract mapOr<U>(other: U, func: (val: T) => U): U;
 
   /**
    * Maps an [[OptT]]&lt;T&gt; to a U by applying `func` to the value contained in this
@@ -201,7 +219,7 @@ export interface OptT<T> {
    * @param {(val: T) => U} func
    * @returns {U}
    */
-  mapOrElse<U>(other: () => U, func: (val: T) => U): U;
+  abstract mapOrElse<U>(other: () => U, func: (val: T) => U): U;
 
   /**
    * Returns a `None` value if this [[OptT]] is a `None`; otherwise returns `other`.
@@ -222,10 +240,10 @@ export interface OptT<T> {
    * // fourAgain.isSome() === false
    * ```
    *
-   * @param {OptT<U>} other
-   * @returns {OptT<U>}
+   * @param {OptionT<U>} other
+   * @returns {OptionT<U>}
    */
-  and<U>(other: OptT<U>): OptT<U>;
+  abstract and<U>(other: OptionT<U>): OptionT<U>;
 
   /**
    * Returns a `None` value if this [[OptT]] is a `None`; otherwise calls `func` and returns
@@ -248,13 +266,13 @@ export interface OptT<T> {
    * // resultAgain.isSome() === false
    * ```
    *
-   * @param {(val: T) => OptT<U>} func
-   * @returns {OptT<U>}
+   * @param {(val: T) => OptionT<U>} func
+   * @returns {OptionT<U>}
    */
-  flatMap<U>(func: (val: T) => OptT<U>): OptT<U>;
+  abstract flatMap<U>(func: (val: T) => OptionT<U>): OptionT<U>;
 
   /**
-   * Returns "this" [[OptT]] if it is a `Some` value; otherwise returns `other`.
+   * Returns 'this' [[OptT]] if it is a `Some` value; otherwise returns `other`.
    *
    * ```
    * const one = OptionT.some(1);
@@ -269,13 +287,13 @@ export interface OptT<T> {
    * // eitherAgain.unwrap() === 1
    * ```
    *
-   * @param {OptT<any>} other
-   * @returns {OptT<any>}
+   * @param {OptionT<any>} other
+   * @returns {OptionT<any>}
    */
-  or(other: OptT<any>): OptT<any>;
+  abstract or(other: OptionT<any>): OptionT<any>;
 
   /**
-   * Returns "this" [[OptT]] if it is a `Some` value; otherwise calls `func` and returns the
+   * Returns 'this' [[OptT]] if it is a `Some` value; otherwise calls `func` and returns the
    * result.
    *
    * ```
@@ -291,15 +309,15 @@ export interface OptT<T> {
    * // eitherAgain.unwrap() === 1
    * ```
    *
-   * @param {() => OptT<any>} func
-   * @returns {OptT<any>}
+   * @param {() => OptionT<any>} func
+   * @returns {OptionT<any>}
    */
-  orElse(func: () => OptT<any>): OptT<any>;
+  abstract orElse(func: () => OptionT<any>): OptionT<any>;
 
   /**
    * Calls the appropriate function in `options` and returns the result.
    *
-   * If "this" [[OptT]] if it is a `Some` value, `options.some` is called;
+   * If 'this' [[OptT]] if it is a `Some` value, `options.some` is called;
    * otherwise `options.none` is called.
    *
    * See [[OptMatch]] for more details.
@@ -327,7 +345,7 @@ export interface OptT<T> {
    * @param {OptMatch<T, U, V>} options
    * @returns {V | U}
    */
-  match<U, V>(options: OptMatch<T, U, V>): U | V;
+  abstract match<U, V>(options: OptMatch<T, U, V>): U | V;
 
   /**
    * Returns a new [[OptT]] containing the same data as the current one.
@@ -355,9 +373,9 @@ export interface OptT<T> {
    * // nope !== nada
    * ```
    *
-   * @returns {OptT<T>}
+   * @returns {OptionT<T>}
    */
-  clone(): OptT<T>;
+  abstract clone(): OptionT<T>;
 
   /**
    * Returns `this` [[OptT]] if it is a `Some` value and if `condition` returns `true`; otherwise
@@ -374,9 +392,9 @@ export interface OptT<T> {
    * ```
    *
    * @param {(val: T) => boolean} condition
-   * @returns {OptT<T>}
+   * @returns {OptionT<T>}
    */
-  filter(condition: (val: T) => boolean): OptT<T>;
+  abstract filter(condition: (val: T) => boolean): OptionT<T>;
 
   /**
    * Calls `func` with the contained value if this [[OptT]] is a `Some` value; otherwise does
@@ -396,7 +414,7 @@ export interface OptT<T> {
    *
    * @param {(val: any) => void} func
    */
-  forEach(func: (val: any) => void): void;
+  abstract forEach(func: (val: any) => void): void;
 
   /**
    * Returns `true` if both [[OptT]]s are `None`s or (if they are both `Some`s) if they both
@@ -419,10 +437,10 @@ export interface OptT<T> {
    * // because they're different objects
    * ```
    *
-   * @param {OptT<any>} other
+   * @param {OptionT<any>} other
    * @returns {boolean}
    */
-  equals(other: OptT<any>): boolean;
+  abstract equals(other: OptionT<any>): boolean;
 
   /**
    * Returns `true` if the [[OptT]] is a `Some` and contains the given value `val`, otherwise
@@ -446,7 +464,7 @@ export interface OptT<T> {
    * @param {T} val
    * @returns {boolean}
    */
-  hasValue(val: any): boolean;
+  abstract hasValue(val: any): boolean;
 
   /**
    * Returns `false` if the [[OptT]] is a `None`, otherwise calls `condition` with the contained
@@ -466,30 +484,201 @@ export interface OptT<T> {
    * @param {(val: T) => boolean} condition
    * @returns {boolean}
    */
-  contains(condition: (val: T) => boolean): boolean;
+  abstract contains(condition: (val: T) => boolean): boolean;
 }
 
+
 /**
- * Wrapper for `some` and `none` functions.
+ * A class representing the `None`-type variant of the `OptionT` type.
+ *
+ * Instances of this class contain no internal value.  They simply wrap the concept of 'nothing'
+ * inside the same `OptionT` API defined by [[OptT]].
  */
-export namespace OptionT {
-  /**
-   * Returns a `None` value if `val` is `null` or `undefined`, otherwise returns a `Some`
-   * value containing `val`.
-   *
-   * @param {T} val
-   * @returns {OptT<any>}
-   */
-  export function some<T>(val: T) {
-    return getSome(val);
+class None<T> extends OptionT<T> {
+  constructor() {
+    super();
   }
 
-  /**
-   * Returns a `None` value.
-   *
-   * @returns {OptT<any>}
-   */
-  export function none() {
-    return getNone();
+  isSome(): boolean {
+    return false;
+  }
+
+  isNone(): boolean {
+    return true;
+  }
+
+  toString(): string {
+    return 'None()';
+  }
+
+  expect(message: string): never {
+    throw new Error(message);
+  }
+
+  unwrap(): never {
+    throw new Error('Called unwrap on a None value.');
+  }
+
+  unwrapOr(other: T): T {
+    return other;
+  }
+
+  unwrapOrElse(func: () => T): T {
+    return func();
+  }
+
+  map<U>(func: (val: T) => U): OptionT<U> {
+    return <OptionT<U>>new None();
+  }
+
+  mapOr<U>(other: U, func: (val: T) => U): U {
+    return other;
+  }
+
+  mapOrElse<U>(other: () => U, func: (val: T) => U): U {
+    return other();
+  }
+
+  and<U>(other: OptionT<U>): OptionT<U> {
+    return <OptionT<U>>new None();
+  }
+
+  flatMap<U>(func: (val: T) => OptionT<U>): OptionT<U> {
+    return <OptionT<U>>new None();
+  }
+
+  or(other: OptionT<T>): OptionT<T> {
+    return <OptionT<T>>other;
+  }
+
+  orElse(func: () => OptionT<T>): OptionT<T> {
+    return <OptionT<T>>func();
+  }
+
+  match<U, V>(options: OptMatch<T, U, V>): V | U {
+    return options.none();
+  }
+
+  clone(): OptionT<T> {
+    return new None();
+  }
+
+  filter(condition: (val: T) => boolean): OptionT<T> {
+    return new None();
+  }
+
+  forEach(func: (val: any) => void): void {
+    return;
+  }
+
+  equals(other: OptionT<T>): boolean {
+    return other.isNone();
+  }
+
+  hasValue(val: any): boolean {
+    return false;
+  }
+
+  contains(condition: (val: T) => boolean): boolean {
+    return false;
+  }
+}
+
+
+class Some<T> extends OptionT<T> {
+  private value: T;
+  constructor(value: T) {
+    super(value);
+    this.value = value;
+  }
+
+  isSome(): boolean {
+    return true;
+  }
+
+  isNone(): boolean {
+    return false;
+  }
+
+  toString(): string {
+    return `Some( ${this.value} )`;
+  }
+
+  expect(message: string): T {
+    return this.value;
+  }
+
+  unwrap(): T {
+    return this.value;
+  }
+
+  unwrapOr(other: T): T {
+    return this.value;
+  }
+
+  unwrapOrElse(func: () => T): T {
+    return this.value;
+  }
+
+  map<U>(func: (val: T) => U): OptionT<U> {
+    return OptionT.of(func(this.value));
+  }
+
+  mapOr<U>(other: U, func: (val: T) => U): U {
+    return func(this.value);
+  }
+
+  mapOrElse<U>(other: () => U, func: (val: T) => U): U {
+    return func(this.value);
+  }
+
+  and<U>(other: OptionT<U>): OptionT<U> {
+    return other;
+  }
+
+  flatMap<U>(func: (val: T) => OptionT<U>): OptionT<U> {
+    return func(this.value);
+  }
+
+  or(other: OptionT<T>): OptionT<T> {
+    return this;
+  }
+
+  orElse(func: () => OptionT<T>): OptionT<T> {
+    return this;
+  }
+
+  match<U, V>(options: OptMatch<T, U, V>): U | V {
+    return options.some(this.value);
+  }
+
+  clone(): OptionT<T> {
+    return OptionT.of(this.value);
+  }
+
+  filter(condition: (val: T) => boolean): OptionT<T> {
+    if (condition(this.value)) {
+      return this;
+    }
+    return new None();
+  }
+
+  forEach(func: (val: any) => void): void {
+    func(this.value);
+  }
+
+  equals(other: OptionT<T>): boolean {
+    if (other.isNone()) {
+      return false;
+    }
+    return this.value === other.unwrap();
+  }
+
+  hasValue(val: any): boolean {
+    return this.value === val;
+  }
+
+  contains(condition: (val: T) => boolean): boolean {
+    return condition(this.value);
   }
 }

@@ -1,3 +1,10 @@
-// todo: interface Result<T, E>
+/*
+import {default as OptionT, OptMatch} from './OptionT';
+export default OptionT;
+//export type OptMatch;
+*/
 
-export { OptionT } from './option';
+export { default } from './OptionT';
+
+
+// todo: interface Result<T, E>
