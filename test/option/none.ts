@@ -1,20 +1,14 @@
 import 'mocha';
-import { OptionT } from '../../src/index';
+
+import OptionT from '../../src/OptionT';
 import { expect } from 'chai';
-import {expectANone, expectASome} from './util';
+import { expectANone, expectASome } from './util';
 
 /*
   expectASome() and expectANone() will check that all expected functions exist on the Option
   and that the value is a None or a Some.
 */
 
-describe('#OptionT', () => {
-  it('should be an object with None', () => {
-    expect(OptionT)
-      .to.be.a('object')
-      .that.has.property('none');
-  });
-});
 
 describe('#OptionT.none', () => {
   it('should have the function isSome', () => {
@@ -146,7 +140,7 @@ describe('#OptionT.none', () => {
 
     expect(none.match({
       some: () => 1,
-      none: () => 0
+      none: () => 0,
     })).to.equal(0);
   });
 
@@ -174,7 +168,7 @@ describe('#OptionT.none', () => {
 
     let val = 0;
 
-    none.forEach(x => { val = x; });
+    none.forEach(x => val = x);
     expect(val).to.equal(0);
   });
 

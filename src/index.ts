@@ -1,3 +1,3 @@
-// todo: interface Result<T, E>
+export { default } from './OptionT';
 
-export { OptionT } from './option';
+// todo: interface Result<T, E>
