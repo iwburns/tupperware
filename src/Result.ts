@@ -288,7 +288,31 @@ export abstract class ResultT<T, E> {
    * @returns {ResultT<T, F | TypeError>}
    */
   abstract mapErr<F>(func: (val: E) => F): ResultT<T, F | TypeError>;
-  abstract and<U>(other: ResultT<U, E>): ResultT<U, E>;
+
+  /**
+   * Returns the `Err` value if this [[ResultT]] is a `Err`; otherwise returns `other`.
+   *
+   * ```
+   * const one = ResultT.ok(1);
+   * const two = ResultT.ok(2);
+   *
+   * const twoAgain = one.and(two);
+   * // twoAgain.isOk() === true
+   * // twoAgain.unwrap() === 2
+   *
+   *
+   * const three = ResultT.err('something broke');
+   * const four = ResultT.ok(4);
+   *
+   * const fourAgain = three.and(four);
+   * // fourAgain.isOK() === false
+   * // fourAgain.unwrap() === 'something broke'
+   * ```
+   *
+   * @param {ResultT<U, E>} other
+   * @returns {ResultT<U, E>}
+   */
+  abstract and<U>(other: ResultT<U, E>): ResultT<U, E>; //todo: does `other` need to be `Result<U, F>` to avoid forcing `E` types to match?  Need a test for this.
   abstract flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E>;
   abstract or<F>(other: ResultT<T, F>): ResultT<T, F>;
   abstract orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F>;
