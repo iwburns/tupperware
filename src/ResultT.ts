@@ -233,7 +233,7 @@ export default abstract class ResultT<T, E> {
   abstract unwrapOrElse(func: (err: E) => T): T;
 
   /**
-   * Maps a [[ResultT]]&lt;T, E&gt; to an [[ResultT]]&lt;U, E&gt; by applying `func` to the value
+   * Maps a [[ResultT]]&lt;T, E&gt; to an [[ResultT]]&lt;U, E | TypeError&gt; by applying `func` to the value
    * contained in this [[ResultT]].
    *
    * If this [[ResultT]] is an `Ok` value, the returned value will be the return of `func`
