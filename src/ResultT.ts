@@ -61,7 +61,6 @@ export default abstract class ResultT<T, E> {
    */
   abstract toString(): string;
 
-  abstract getOk(): OptionT<T>;
   /**
    * Tries to return the internal `Ok` value of this [[ResultT]].
    * Returns a `Some` containing the value if it is an `Ok`,
@@ -82,6 +81,7 @@ export default abstract class ResultT<T, E> {
    *
    * @returns {OptionT<T>}
    */
+  abstract getOk(): OptionT<T>;
 
   /**
    * Tries to return the internal `Err` value of this [[ResultT]].  Returns a `Some` containing the
@@ -221,16 +221,12 @@ export default abstract class ResultT<T, E> {
   abstract unwrapOrElse(func: (err: E) => T): T;
 
   /**
-   * Maps a [[ResultT]]&lt;T, E&gt; to an [[ResultT]]&lt;U, E | TypeError&gt; by applying `func` to the value
+   * Maps a [[ResultT]]&lt;T, E&gt; to an [[ResultT]]&lt;U, E&gt; by applying `func` to the value
    * contained in this [[ResultT]].
    *
    * If this [[ResultT]] is an `Ok` value, the returned value will be the return of `func`
    * wrapped in a new [[ResultT]] (resulting in an `Ok` value); otherwise the returned value
    * will be a new `Err` value.
-   *
-   * ### Note:
-   * If the return value of `func` is `null` or `undefined`, the [[ResultT]] that is returned
-   * is guaranteed to be an `Err` value containing a `TypeError`.
    *
    * ```
    * const maybeOne = ResultT.ok(1);
@@ -245,9 +241,9 @@ export default abstract class ResultT<T, E> {
    * ```
    *
    * @param {(val: T) => U} func
-   * @returns {ResultT<U, E | TypeError>}
+   * @returns {ResultT<U, E>}
    */
-  abstract map<U>(func: (val: T) => U): ResultT<U, E | TypeError>;
+  abstract map<U>(func: (val: T) => U): ResultT<U, E>;
 
   /**
    * Maps a [[ResultT]]&lt;T, E&gt; to an [[ResultT]]&lt;T, F&gt; by applying `func` to the value
@@ -256,10 +252,6 @@ export default abstract class ResultT<T, E> {
    * If this [[ResultT]] is an `Err` value, the returned value will be the return of `func`
    * wrapped in a new [[ResultT]] (resulting in an `Err` value); otherwise the returned value
    * will be a new `Ok` value.
-   *
-   * ### Note:
-   * If the return value of `func` is `null` or `undefined`, the [[ResultT]] that is returned
-   * is guaranteed to be an `Err` value containing a `TypeError`.
    *
    * ```
    * const maybeOne = ResultT.ok(1);
@@ -274,9 +266,9 @@ export default abstract class ResultT<T, E> {
    * ```
    *
    * @param {(val: E) => F} func
-   * @returns {ResultT<T, F | TypeError>}
+   * @returns {ResultT<T, F>}
    */
-  abstract mapErr<F>(func: (val: E) => F): ResultT<T, F | TypeError>;
+  abstract mapErr<F>(func: (val: E) => F): ResultT<T, F>;
 
   /**
    * Returns the `Err` value if this [[ResultT]] is a `Err`; otherwise returns `other`.
@@ -288,7 +280,6 @@ export default abstract class ResultT<T, E> {
    * const twoAgain = one.and(two);
    * // twoAgain.isOk() === true
    * // twoAgain.unwrap() === 2
-   *
    *
    * const three = ResultT.err('something broke');
    * const four = ResultT.ok(4);
@@ -361,11 +352,11 @@ class Ok<T, E> extends ResultT<T, E> {
     return this.value;
   }
 
-  map<U>(func: (val: T) => U): ResultT<U, E | TypeError> {
+  map<U>(func: (val: T) => U): ResultT<U, E> {
     return ResultT.ok(func(this.value));
   }
 
-  mapErr<F>(func: (val: E) => F): ResultT<T, F | TypeError> {
+  mapErr<F>(func: (val: E) => F): ResultT<T, F> {
     throw 'unimplemented';
   }
 
@@ -446,11 +437,11 @@ class Err<T, E> extends ResultT<T, E> {
     return func(this.error);
   }
 
-  map<U>(func: (val: T) => U): ResultT<U, E | TypeError> {
+  map<U>(func: (val: T) => U): ResultT<U, E> {
     throw 'unimplemented';
   }
 
-  mapErr<F>(func: (val: E) => F): ResultT<T, F | TypeError> {
+  mapErr<F>(func: (val: E) => F): ResultT<T, F> {
     throw 'unimplemented';
   }
 
@@ -477,5 +468,4 @@ class Err<T, E> extends ResultT<T, E> {
   clone(): ResultT<T, E> {
     throw 'unimplemented';
   }
-
 }
