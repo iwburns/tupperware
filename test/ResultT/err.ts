@@ -81,8 +81,7 @@ describe('#ResultT.err', () => {
   it('should have the function unwrapOrElse', () => {
     const r = ResultT.err('parse error');
     expectAnErr(r);
-    // todo: this is failing and im not sure why
-    // expect(r.unwrapOrElse(err => err.length)).to.equal(11);
+    expect(r.unwrapOrElse(err => err.length)).to.equal(11);
   });
 
 

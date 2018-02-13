@@ -293,6 +293,33 @@ export default abstract class ResultT<T, E> {
    * @returns {ResultT<U, E>}
    */
   abstract and<U>(other: ResultT<U, E>): ResultT<U, E>; //todo: does `other` need to be `Result<U, F>` to avoid forcing `E` types to match?  Need a test for this.
+
+  /**
+   * Returns an `Err` value if this [[ResultT]] is an `Err`; otherwise calls `func` and returns
+   * the result.
+   *
+   * ```
+   * const square = x => ResultT.ok(x * x);
+   * const error = () => ResultT.err('it broke!');
+   *
+   * const two = ResultT.ok(2);
+   * const sixteen = two.flatMap(square).flatMap(square);
+   * // sixteen.isOk() === true
+   * // sixteen.unwrap() === 16
+   *
+   * const parseError = ResultT.err('parsing error');
+   * const result = parseError.flatMap(square).flatMap(square);
+   * // result.isOk() === false
+   * // result.unwrap() === 'parsing error'
+   *
+   * const resultAgain = two.flatMap(error).flatMap(square);
+   * // resultAgain.isOk() === false
+   * // resultAgain.unwrap() === 'it broke!'
+   * ```
+   *
+   * @param {(ok: T) => ResultT<U, E>} func
+   * @returns {ResultT<U, E>}
+   */
   abstract flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E>;
   abstract or<F>(other: ResultT<T, F>): ResultT<T, F>;
   abstract orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F>;
