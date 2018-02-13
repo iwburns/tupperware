@@ -271,30 +271,6 @@ export default abstract class ResultT<T, E> {
   abstract mapErr<F>(func: (val: E) => F): ResultT<T, F>;
 
   /**
-   * Returns the `Err` value if this [[ResultT]] is a `Err`; otherwise returns `other`.
-   *
-   * ```
-   * const one = ResultT.ok(1);
-   * const two = ResultT.ok(2);
-   *
-   * const twoAgain = one.and(two);
-   * // twoAgain.isOk() === true
-   * // twoAgain.unwrap() === 2
-   *
-   * const three = ResultT.err('something broke');
-   * const four = ResultT.ok(4);
-   *
-   * const fourAgain = three.and(four);
-   * // fourAgain.isOK() === false
-   * // fourAgain.unwrap() === 'something broke'
-   * ```
-   *
-   * @param {ResultT<U, E>} other
-   * @returns {ResultT<U, E>}
-   */
-  abstract and<U>(other: ResultT<U, E>): ResultT<U, E>; //todo: does `other` need to be `Result<U, F>` to avoid forcing `E` types to match?  Need a test for this.
-
-  /**
    * Returns an `Err` value if this [[ResultT]] is an `Err`; otherwise calls `func` and returns
    * the result.
    *
@@ -321,7 +297,6 @@ export default abstract class ResultT<T, E> {
    * @returns {ResultT<U, E>}
    */
   abstract flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E>;
-  abstract or<F>(other: ResultT<T, F>): ResultT<T, F>;
   abstract orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F>;
   abstract match<U, F>(options: ResultMatch<T, E, U, F>): U | F;
   abstract clone(): ResultT<T, E>;
@@ -387,15 +362,7 @@ class Ok<T, E> extends ResultT<T, E> {
     throw 'unimplemented';
   }
 
-  and<U>(other: ResultT<U, E>): ResultT<U, E> {
-    throw 'unimplemented';
-  }
-
   flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E> {
-    throw 'unimplemented';
-  }
-
-  or<F>(other: ResultT<T, F>): ResultT<T, F> {
     throw 'unimplemented';
   }
 
@@ -472,15 +439,7 @@ class Err<T, E> extends ResultT<T, E> {
     throw 'unimplemented';
   }
 
-  and<U>(other: ResultT<U, E>): ResultT<U, E> {
-    throw 'unimplemented';
-  }
-
   flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E> {
-    throw 'unimplemented';
-  }
-
-  or<F>(other: ResultT<T, F>): ResultT<T, F> {
     throw 'unimplemented';
   }
 

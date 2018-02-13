@@ -88,11 +88,7 @@ export function expectAResult(val) : void {
   expect(val)
     .to.have.property('mapErr').that.is.a('function');
   expect(val)
-    .to.have.property('and').that.is.a('function');
-  expect(val)
     .to.have.property('flatMap').that.is.a('function');
-  expect(val)
-    .to.have.property('or').that.is.a('function');
   expect(val)
     .to.have.property('orElse').that.is.a('function');
   expect(val)
