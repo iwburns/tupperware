@@ -297,8 +297,91 @@ export default abstract class ResultT<T, E> {
    * @returns {ResultT<U, E>}
    */
   abstract flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E>;
+
+  /**
+   * Returns 'this' [[ResultT]] if it is an `Ok` value; otherwise calls `func` and returns the
+   * result.
+   *
+   * ```
+   * const okay = ResultT.ok(1);
+   * const error = ResultT.err('parseError');
+   *
+   * const either = okay.orElse(() => error);
+   * // either.isOk() === true
+   * // either.unwrap() === 1
+   *
+   * const eitherAgain = error.orElse(() => okay);
+   * // eitherAgain.isOk() === true
+   * // eitherAgain.unwrap() === 1
+   * ```
+   *
+   * @param {(err: E) => ResultT<T, F>} func
+   * @returns {ResultT<T, F>}
+   */
   abstract orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F>;
+
+  /**
+   * Calls the appropriate function in `options` and returns the result.
+   *
+   * If 'this' [[ResultT]] is an `Ok` value, `options.ok` is called;
+   * otherwise `options.err` is called.
+   *
+   * See [[ResultMatch]] for more details.
+   *
+   * ```
+   * const maybeOne = ResultT.ok(1);
+   *
+   * const doubled = maybeOne.match({
+   *   ok: (val) => val * 2, // double it
+   *   err: (err) => 0,         // we'll pretend None implies a 0
+   * });
+   *
+   * // doubled === 2
+   *
+   * const maybeTwo = ResultT.err(2);
+   *
+   * const tripled = maybeTwo.match({
+   *   ok: (val) => val * 3,
+   *   err: (err) => 0,
+   * });
+   *
+   * // tripled === 0
+   * ```
+   *
+   * @param {ResultMatch<T, E, U, F>} options
+   * @returns {U | F}
+   */
   abstract match<U, F>(options: ResultMatch<T, E, U, F>): U | F;
+
+  /**
+   * Returns a new [[ResultT]] containing the same data as the current one.
+   *
+   * Note: does not perform any deep copying of the contained data.
+   *
+   * ```
+   * const one = ResultT.ok(1);
+   *
+   * const oneAgain = maybeOne.clone();
+   * // one !== oneAgain
+   * // one.unwrap() === oneAgain.unwrap()
+   *
+   * const foo = ResultT.ok({
+   *   bar: 'baz'
+   * });
+   *
+   * const fooAgain = foo.clone();
+   * // foo !== fooAgain
+   * // foo.unwrap() === fooAgain.unwrap()
+   * // because they're the same object
+   *
+   * const error = ResultT.err(2);
+   * const errorAgain = error.clone();
+   * // error !== errorAgain
+   * // error.unwrap() === errorAgain.unwrap()
+   * ```
+   *
+   * @returns {ResultT<T, E>}
+   */
   abstract clone(): ResultT<T, E>;
 }
 
