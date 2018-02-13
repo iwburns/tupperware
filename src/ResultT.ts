@@ -450,7 +450,7 @@ class Ok<T, E> extends ResultT<T, E> {
   }
 
   orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, E | F> {
-    return this;
+    return new Ok(this.value);
   }
 
   match<U, F>(options: ResultMatch<T, E, U, F>): U | F {
@@ -523,7 +523,7 @@ class Err<T, E> extends ResultT<T, E> {
   }
 
   flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<T | U, E> {
-    return this;
+    return new Err(this.error);
   }
 
   orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, E | F> {
