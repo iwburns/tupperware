@@ -317,7 +317,7 @@ export default abstract class OptionT<T> {
   /**
    * Calls the appropriate function in `options` and returns the result.
    *
-   * If 'this'   [[OptionT]] if it is a `Some` value, `options.some` is called;
+   * If 'this'   [[OptionT]] is a `Some` value, `options.some` is called;
    * otherwise `options.none` is called.
    *
    * See [[OptMatch]] for more details.
