@@ -221,7 +221,7 @@ export default abstract class ResultT<T, E> {
   abstract unwrapOrElse(func: (err: E) => T): T;
 
   /**
-   * Maps a [[ResultT]]&lt;T, E&gt; to an [[ResultT]]&lt;U, E&gt; by applying `func` to the value
+   * Maps a [[ResultT]]<T, E> to an [[ResultT]]<U, E> by applying `func` to the value
    * contained in this [[ResultT]].
    *
    * If this [[ResultT]] is an `Ok` value, the returned value will be the return of `func`
@@ -246,7 +246,7 @@ export default abstract class ResultT<T, E> {
   abstract map<U>(func: (val: T) => U): ResultT<U, E>;
 
   /**
-   * Maps a [[ResultT]]&lt;T, E&gt; to an [[ResultT]]&lt;T, F&gt; by applying `func` to the value
+   * Maps a [[ResultT]]<T, E> to an [[ResultT]]<T, F> by applying `func` to the value
    * contained in this [[ResultT]].
    *
    * If this [[ResultT]] is an `Err` value, the returned value will be the return of `func`
@@ -296,7 +296,7 @@ export default abstract class ResultT<T, E> {
    * @param {(ok: T) => ResultT<U, E>} func
    * @returns {ResultT<U, E>}
    */
-  abstract flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E>;
+  abstract flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<T | U, E>;
 
   /**
    * Returns 'this' [[ResultT]] if it is an `Ok` value; otherwise calls `func` and returns the
@@ -318,7 +318,7 @@ export default abstract class ResultT<T, E> {
    * @param {(err: E) => ResultT<T, F>} func
    * @returns {ResultT<T, F>}
    */
-  abstract orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F>;
+  abstract orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, E | F>;
 
   /**
    * Calls the appropriate function in `options` and returns the result.
@@ -442,23 +442,23 @@ class Ok<T, E> extends ResultT<T, E> {
   }
 
   mapErr<F>(func: (val: E) => F): ResultT<T, F> {
-    throw 'unimplemented';
+    return ResultT.ok(this.value);
   }
 
-  flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E> {
-    throw 'unimplemented';
+  flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<T | U, E> {
+    return func(this.value);
   }
 
-  orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F> {
-    throw 'unimplemented';
+  orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, E | F> {
+    return this;
   }
 
   match<U, F>(options: ResultMatch<T, E, U, F>): U | F {
-    throw 'unimplemented';
+    return options.ok(this.value);
   }
 
   clone(): ResultT<T, E> {
-    throw 'unimplemented';
+    return ResultT.ok(this.value);
   }
 }
 
@@ -515,26 +515,26 @@ class Err<T, E> extends ResultT<T, E> {
   }
 
   map<U>(func: (val: T) => U): ResultT<U, E> {
-    throw 'unimplemented';
+    return ResultT.err(this.error);
   }
 
   mapErr<F>(func: (val: E) => F): ResultT<T, F> {
-    throw 'unimplemented';
+    return ResultT.err(func(this.error));
   }
 
-  flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E> {
-    throw 'unimplemented';
+  flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<T | U, E> {
+    return this;
   }
 
-  orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F> {
-    throw 'unimplemented';
+  orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, E | F> {
+    return func(this.error);
   }
 
   match<U, F>(options: ResultMatch<T, E, U, F>): U | F {
-    throw 'unimplemented';
+    return options.err(this.error);
   }
 
   clone(): ResultT<T, E> {
-    throw 'unimplemented';
+    return ResultT.err(this.error);
   }
 }

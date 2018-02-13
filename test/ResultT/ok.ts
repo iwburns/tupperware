@@ -91,4 +91,50 @@ describe('#ResultT.ok', () => {
     expect(m.unwrap()).to.equal(1);
   });
 
+  it('should have the function mapErr', () => {
+    const r = ResultT.ok(1);
+    expectAnOk(r);
+    const m = r.mapErr(v => 2);
+    expectAnOk(m);
+    expect(m.unwrap()).to.equal(1);
+  });
+
+  it('should have the function flatMap', () => {
+    const r = ResultT.ok(1);
+    expectAnOk(r);
+    const double = x => ResultT.ok(x * 2);
+
+    const m = r.flatMap(double);
+    expectAnOk(m);
+    expect(m.unwrap()).to.equal(2);
+  });
+
+  it('should have the function orElse', () => {
+    const r = ResultT.ok(1);
+    expectAnOk(r);
+    const changeError = e => ResultT.err('new error') as ResultT<number, string>;
+    const m = r.orElse(changeError);
+    expectAnOk(m);
+    expect(m.unwrap()).to.equal(1);
+  });
+
+  it('should have the function match', () => {
+    const r = ResultT.ok(1);
+    expectAnOk(r);
+    const m = r.match({
+      ok: _ => 2,
+      err: _ => 'new error',
+    });
+    expect(m).to.equal(2);
+  });
+
+  it('should have the function clone', () => {
+    const obj = {};
+    const r = ResultT.ok(obj);
+    expectAnOk(r);
+    const m = r.clone();
+    expectAnOk(m);
+    expect(m.unwrap()).to.equal(obj);
+  });
+
 });

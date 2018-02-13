@@ -5,10 +5,12 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "test": "tsc && nyc mocha",
+    "test": "npm run clean && tsc && nyc mocha",
     "doc-build": "typedoc --module commonjs --target ES5 --out doc src/",
     "prepublishOnly": "tsc",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "clean": "find ./src -maxdepth 2 -type f -name \"*.js\" -delete & find ./test -maxdepth 2 -type f -name \"*.js\" -delete"
+
   },
   "repository": {
     "type": "git",
