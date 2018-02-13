@@ -17,23 +17,11 @@ export interface ResultMatch<T, E, U, F> {
 export default abstract class ResultT<T, E> {
   constructor() {}
 
-  static ok<T>(val: T): ResultT<T, TypeError> {
-    if (val === null || typeof val === 'undefined') {
-      const typeError = new TypeError(
-        'The argument "val" cannot be "null" and cannot be "undefined".',
-      );
-      return new Err(typeError);
-    }
+  static ok<T, E>(val: T): ResultT<T, E> {
     return new Ok(val);
   }
 
-  static err<T, E>(error: E): ResultT<T, E> | ResultT<T, TypeError> {
-    if (error === null || typeof error === 'undefined') {
-      const typeError = new TypeError(
-        'The argument "val" cannot be "null" and cannot be "undefined".',
-      );
-      return new Err(typeError);
-    }
+  static err<T, E>(error: E): ResultT<T, E> {
     return new Err(error);
   }
 

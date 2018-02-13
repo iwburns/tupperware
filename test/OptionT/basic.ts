@@ -3,12 +3,13 @@ import { expect } from 'chai';
 import OptionT from '../../src/OptionT';
 import { expectASome, expectANone } from '../util';
 
-describe('basic test', () => {
+describe('OptionT-statics', () => {
   it('should be able to create a some', () => {
     const maybe1 = OptionT.of(1);
     expectASome(maybe1);
     expect(maybe1.unwrapOr(2)).to.equal(1);
   });
+
   it('should be able to create a none', () => {
     const maybeNone = OptionT.of(null) as OptionT<any>;
     expectANone(maybeNone);
@@ -16,7 +17,7 @@ describe('basic test', () => {
   });
 });
 
-describe('type test', () => {
+describe('ResultT-types', () => {
   it('should be able to be used as a type', () => {
 
     const f = function (value : string): OptionT<string> {
@@ -27,12 +28,9 @@ describe('type test', () => {
 
     expectASome(maybeString);
     expect(maybeString.unwrap()).to.equal('test!');
-
   });
-});
 
-describe('#OptionT.some and #OptionT.none', () => {
-  it('should be compatible with one another in terms of types', () => {
+  it('should be compatible with one another', () => {
     const one = OptionT.some(1);
     const nope = OptionT.none();
 
@@ -71,27 +69,10 @@ describe('#OptionT.some and #OptionT.none', () => {
     expectANone(twoAgain);
     expectANone(nopeAgain);
   });
-
-  it('none should throw an error if you provide it with a value', () => {
-    expect(() => {
-      OptionT.none('value');
-    }).to.throw();
-  });
-
-  it('some should throw an error if you do not provide it with a value', () => {
-    expect(() => {
-      OptionT.some(null);
-    }).to.throw();
-
-    expect(() => {
-      OptionT.some(undefined);
-    }).to.throw();
-  });
 });
 
 describe('#OptionT.of', () => {
   it('should choose the appropriate class based on the value', () => {
-
     expect(OptionT.of(null).isNone()).to.be.true;
     expect(OptionT.of(undefined).isNone()).to.be.true;
     expect(OptionT.of().isNone()).to.be.true;
@@ -101,8 +82,5 @@ describe('#OptionT.of', () => {
     expect(OptionT.of(undefined).isSome()).to.be.false;
     expect(OptionT.of().isSome()).to.be.false;
     expect(OptionT.of('foo').isSome()).to.be.true;
-
-
-
   });
 });

@@ -5,10 +5,10 @@ import { expectAnErr, expectASome, expectANone } from '../util';
 
 describe('#ResultT.err', () => {
   it('should return an error when given null or undefined', () => {
-    const r1 = ResultT.ok(null);
+    const r1 = ResultT.err(null);
     expectAnErr(r1);
 
-    const r2 = ResultT.ok(undefined);
+    const r2 = ResultT.err(undefined);
     expectAnErr(r2);
   });
 

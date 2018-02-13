@@ -1,17 +1,16 @@
 import 'mocha';
 import { expect } from 'chai';
 import ResultT from '../../src/ResultT';
-import { expectAnOk, expectAnErr, expectASome, expectANone } from '../util';
+import { expectAnOk, expectASome, expectANone } from '../util';
 
 describe('#ResultT.ok', () => {
-  it('should return an error when given null or undefined', () => {
+  it('should return an ok when given null or undefined', () => {
     const r1 = ResultT.ok(null);
-    expectAnErr(r1);
+    expectAnOk(r1);
 
     const r2 = ResultT.ok(undefined);
-    expectAnErr(r2);
+    expectAnOk(r2);
   });
-
 
   it('should have the function isOk', () => {
     const r = ResultT.ok(1);
