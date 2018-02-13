@@ -296,7 +296,7 @@ export default abstract class ResultT<T, E> {
    * @param {(ok: T) => ResultT<U, E>} func
    * @returns {ResultT<U, E>}
    */
-  abstract flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<T | U, E>;
+  abstract flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E>;
 
   /**
    * Returns 'this' [[ResultT]] if it is an `Ok` value; otherwise calls `func` and returns the
@@ -318,7 +318,7 @@ export default abstract class ResultT<T, E> {
    * @param {(err: E) => ResultT<T, F>} func
    * @returns {ResultT<T, F>}
    */
-  abstract orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, E | F>;
+  abstract orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F>;
 
   /**
    * Calls the appropriate function in `options` and returns the result.
@@ -445,11 +445,11 @@ class Ok<T, E> extends ResultT<T, E> {
     return ResultT.ok(this.value);
   }
 
-  flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<T | U, E> {
+  flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E> {
     return func(this.value);
   }
 
-  orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, E | F> {
+  orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F> {
     return new Ok(this.value);
   }
 
@@ -522,11 +522,11 @@ class Err<T, E> extends ResultT<T, E> {
     return ResultT.err(func(this.error));
   }
 
-  flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<T | U, E> {
+  flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E> {
     return new Err(this.error);
   }
 
-  orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, E | F> {
+  orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F> {
     return func(this.error);
   }
 
