@@ -3,16 +3,7 @@ import { expect } from 'chai';
 import ResultT from '../../src/ResultT';
 import { expectAnErr, expectASome, expectANone } from '../util';
 
-describe('#ResultT.err', () => {
-  it('should return an error when given null or undefined', () => {
-    const r1 = ResultT.err(null);
-    expectAnErr(r1);
-
-    const r2 = ResultT.err(undefined);
-    expectAnErr(r2);
-  });
-
-
+describe('#ResultT - Err', () => {
   it('should have the function isOk', () => {
     const r = ResultT.err(1);
     expectAnErr(r);

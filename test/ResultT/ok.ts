@@ -3,15 +3,7 @@ import { expect } from 'chai';
 import ResultT from '../../src/ResultT';
 import { expectAnOk, expectASome, expectANone } from '../util';
 
-describe('#ResultT.ok', () => {
-  it('should return an ok when given null or undefined', () => {
-    const r1 = ResultT.ok(null);
-    expectAnOk(r1);
-
-    const r2 = ResultT.ok(undefined);
-    expectAnOk(r2);
-  });
-
+describe('#ResultT - Ok', () => {
   it('should have the function isOk', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
