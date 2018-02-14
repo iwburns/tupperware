@@ -3,17 +3,7 @@ import OptionT from '../../src/OptionT';
 import { expect } from 'chai';
 import { expectASome, expectANone } from '../util';
 
-describe('#OptionT.some', () => {
-  it('should throw an error when given null or undefined', () => {
-    expect(() => {
-      OptionT.some(null);
-    }).to.throw();
-
-    expect(() => {
-      OptionT.some(undefined);
-    }).to.throw();
-  });
-
+describe('#OptionT - Some', () => {
   it('should have the function isSome', () => {
     const one = OptionT.some(1);
 

@@ -3,13 +3,7 @@ import OptionT from '../../src/OptionT';
 import { expect } from 'chai';
 import { expectANone, expectASome } from '../util';
 
-describe('#OptionT.none', () => {
-  it('should throw an error if you provide it with a value', () => {
-    expect(() => {
-      OptionT.none('value');
-    }).to.throw();
-  });
-
+describe('#OptionT - None', () => {
   it('should have the function isSome', () => {
     const none = OptionT.none();
 
