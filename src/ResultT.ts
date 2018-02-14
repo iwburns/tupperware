@@ -385,7 +385,7 @@ export default abstract class ResultT<T, E> {
   abstract clone(): ResultT<T, E>;
 }
 
-class Ok<T, E> extends ResultT<T, E> {
+class Ok<T> extends ResultT<T, any> {
   private value: T;
 
   constructor(val: T) {
@@ -409,7 +409,7 @@ class Ok<T, E> extends ResultT<T, E> {
     return OptionT.some(this.value);
   }
 
-  getErr(): OptionT<E> {
+  getErr<E>(): OptionT<E> {
     return OptionT.none();
   }
 
@@ -417,7 +417,7 @@ class Ok<T, E> extends ResultT<T, E> {
     return this.value;
   }
 
-  expectErr(message: string): E {
+  expectErr<E>(message: string): E {
     throw new Error(message);
   }
 
@@ -425,7 +425,7 @@ class Ok<T, E> extends ResultT<T, E> {
     return this.value;
   }
 
-  unwrapErr(): E {
+  unwrapErr<E>(): E {
     throw new Error('Called unwrap on an Ok value.');
   }
 
@@ -433,36 +433,36 @@ class Ok<T, E> extends ResultT<T, E> {
     return this.value;
   }
 
-  unwrapOrElse(func: (err: E) => T): T {
+  unwrapOrElse<E>(func: (err: E) => T): T {
     return this.value;
   }
 
-  map<U>(func: (val: T) => U): ResultT<U, E> {
+  map<E, U>(func: (val: T) => U): ResultT<U, E> {
     return ResultT.ok(func(this.value));
   }
 
-  mapErr<F>(func: (val: E) => F): ResultT<T, F> {
+  mapErr<E, F>(func: (val: E) => F): ResultT<T, F> {
     return ResultT.ok(this.value);
   }
 
-  flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E> {
+  flatMap<E, U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E> {
     return func(this.value);
   }
 
-  orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F> {
-    return new Ok(this.value);
+  orElse<E, F>(func: (err: E) => ResultT<T, F>): ResultT<T, F> {
+    return ResultT.ok(this.value);
   }
 
-  match<U, F>(options: ResultMatch<T, E, U, F>): U | F {
+  match<E, U, F>(options: ResultMatch<T, E, U, F>): U | F {
     return options.ok(this.value);
   }
 
-  clone(): ResultT<T, E> {
+  clone<E>(): ResultT<T, E> {
     return ResultT.ok(this.value);
   }
 }
 
-class Err<T, E> extends ResultT<T, E> {
+class Err<E> extends ResultT<any, E> {
   private error: E;
 
   constructor(err: E) {
@@ -482,7 +482,7 @@ class Err<T, E> extends ResultT<T, E> {
     return `Err( ${this.error} )`;
   }
 
-  getOk(): OptionT<T> {
+  getOk<T>(): OptionT<T> {
     return OptionT.none();
   }
 
@@ -490,7 +490,7 @@ class Err<T, E> extends ResultT<T, E> {
     return OptionT.some(this.error);
   }
 
-  expect(message: string): T {
+  expect<T>(message: string): T {
     throw new Error(message);
   }
 
@@ -498,7 +498,7 @@ class Err<T, E> extends ResultT<T, E> {
     return this.error;
   }
 
-  unwrap(): T {
+  unwrap<T>(): T {
     throw new Error('Called unwrap on a Err value.');
   }
 
@@ -506,35 +506,35 @@ class Err<T, E> extends ResultT<T, E> {
     return this.error;
   }
 
-  unwrapOr(other: T): T {
+  unwrapOr<T>(other: T): T {
     return other;
   }
 
-  unwrapOrElse(func: (err: E) => T): T {
+  unwrapOrElse<T>(func: (err: E) => T): T {
     return func(this.error);
   }
 
-  map<U>(func: (val: T) => U): ResultT<U, E> {
+  map<T, U>(func: (val: T) => U): ResultT<U, E> {
     return ResultT.err(this.error);
   }
 
-  mapErr<F>(func: (val: E) => F): ResultT<T, F> {
+  mapErr<T, F>(func: (val: E) => F): ResultT<T, F> {
     return ResultT.err(func(this.error));
   }
 
-  flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E> {
-    return new Err(this.error);
+  flatMap<T, U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E> {
+    return ResultT.err(this.error);
   }
 
-  orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F> {
+  orElse<T, F>(func: (err: E) => ResultT<T, F>): ResultT<T, F> {
     return func(this.error);
   }
 
-  match<U, F>(options: ResultMatch<T, E, U, F>): U | F {
+  match<T, U, F>(options: ResultMatch<T, E, U, F>): U | F {
     return options.err(this.error);
   }
 
-  clone(): ResultT<T, E> {
+  clone<T>(): ResultT<T, E> {
     return ResultT.err(this.error);
   }
 }
