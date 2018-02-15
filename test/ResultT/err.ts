@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import ResultT from '../../src/ResultT';
-import { expectAnErr, expectASome, expectANone } from '../util';
+import {expectAnErr, expectASome, expectANone, expectAnOk} from '../util';
 
 describe('#ResultT - Err', () => {
   it('should have the function isOk', () => {
@@ -129,8 +129,50 @@ describe('#ResultT - Err', () => {
     expect(m.unwrapErr()).to.equal(obj);
   });
 
+  it('should have the function equals', () => {
+    const r = ResultT.err(1);
+    const r2 = ResultT.err(1);
+    expectAnErr(r);
+    expectAnErr(r2);
+    expect(r.equals(r2)).to.be.true;
 
+    const r3 = ResultT.err(2);
+    expectAnErr(r3);
+    expect(r.equals(r3)).to.be.false;
 
+    const r4 = ResultT.ok(1);
+    expectAnOk(r4);
+    expect(r.equals(r4)).to.be.false;
+  });
 
+  it('should have the function hasValue', () => {
+    const r = ResultT.err(1);
+    expectAnErr(r);
 
+    expect(r.hasValue(1)).to.be.true;
+    expect(r.hasValue('two')).to.be.false;
+
+    const obj = {};
+    const r2 = ResultT.err(obj);
+    expectAnErr(r2);
+
+    expect(r2.hasValue(obj)).to.be.true;
+    expect(r2.hasValue({})).to.be.false;
+  });
+
+  it('should have the function contains', () => {
+    const r = ResultT.err({ a: 'b' });
+    expectAnErr(r);
+
+    const aEqualsB = function(x) {
+      return x.a === 'b'
+    };
+
+    const aEqualsC = function(x) {
+      return x.a === 'c';
+    };
+
+    expect(r.contains(aEqualsB)).to.be.true;
+    expect(r.contains(aEqualsC)).to.be.false;
+  });
 });

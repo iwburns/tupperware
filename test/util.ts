@@ -95,6 +95,12 @@ export function expectAResult(val) : void {
     .to.have.property('match').that.is.a('function');
   expect(val)
     .to.have.property('clone').that.is.a('function');
+  expect(val)
+    .to.have.property('equals').that.is.a('function');
+  expect(val)
+    .to.have.property('hasValue').that.is.a('function');
+  expect(val)
+    .to.have.property('contains').that.is.a('function');
 }
 
 export function expectAnOk(val) : void {

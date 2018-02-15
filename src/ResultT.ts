@@ -383,6 +383,59 @@ export default abstract class ResultT<T, E> {
    * @returns {ResultT<T, E>}
    */
   abstract clone(): ResultT<T, E>;
+
+  /**
+   * Compares two [[ResultT]]s.  Returns true if they are both the same type and contain
+   * the same value.
+   *
+   * ```
+   * const okay = ResultT.ok(1);
+   * const error = ResultT.err(1);
+   * // okay.equals(error) === false
+   *
+   * const one = ResultT.ok('one');
+   * const oneAgain = ResultT.ok('oneAgain');
+   * // one.equals(oneAgain) === false
+   *
+   * const nope = ResultT.err('no');
+   * const nada = ResultT.err('no');
+   * // nope.equals(nada) === true
+   * ```
+   *
+   * @param {ResultT<any, any>} other
+   * @returns {boolean}
+   */
+  abstract equals(other: ResultT<any, any>): boolean;
+
+  /**
+   * Returns true if this [[ResultT]] contains the given value; returns false if it does not.
+   *
+   * ```
+   * const okay = ResultT.ok(1);
+   * // okay.hasValue('one') === false
+   * // okay.hasValue(1) === true
+   * ```
+   *
+   * @param val
+   * @returns {boolean}
+   */
+  abstract hasValue(val: any): boolean;
+
+  /**
+   * Calls `func` with the value in this [[ResultT]] and returns the result.
+   *
+   * ```
+   * const okay = ResultT.ok({
+   *   a: 'b',
+   * });
+   *
+   * // okay.contains(x => x.a === 'b') === true
+   * ```
+   *
+   * @param {(val: (T | E)) => boolean} func
+   * @returns {boolean}
+   */
+  abstract contains(func: (val: T | E) => boolean): boolean;
 }
 
 class Ok<T> extends ResultT<T, any> {
@@ -460,6 +513,21 @@ class Ok<T> extends ResultT<T, any> {
   clone<E>(): ResultT<T, E> {
     return ResultT.ok(this.value);
   }
+
+  equals(other: ResultT<any, any>): boolean {
+    if (other.isErr()) {
+      return false;
+    }
+    return other.hasValue(this.value);
+  }
+
+  hasValue(val: any): boolean {
+    return this.value === val;
+  }
+
+  contains(func: (val: any) => boolean): boolean {
+    return func(this.value);
+  }
 }
 
 class Err<E> extends ResultT<any, E> {
@@ -536,5 +604,20 @@ class Err<E> extends ResultT<any, E> {
 
   clone<T>(): ResultT<T, E> {
     return ResultT.err(this.error);
+  }
+
+  equals(other: ResultT<any, any>): boolean {
+    if (other.isOk()) {
+      return false;
+    }
+    return other.hasValue(this.error);
+  }
+
+  hasValue(val: any): boolean {
+    return this.error === val;
+  }
+
+  contains(func: (val: any) => boolean): boolean {
+    return func(this.error);
   }
 }
