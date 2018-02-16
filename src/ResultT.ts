@@ -405,7 +405,7 @@ export default abstract class ResultT<T, E> {
    * @param {ResultT<any, any>} other
    * @returns {boolean}
    */
-  abstract equals(other: ResultT<any, any>): boolean;
+  abstract equals(other: ResultT<T, E>): boolean;
 
   /**
    * Returns true if this [[ResultT]] contains the given value; returns false if it does not.
@@ -419,7 +419,7 @@ export default abstract class ResultT<T, E> {
    * @param val
    * @returns {boolean}
    */
-  abstract hasValue(val: any): boolean;
+  abstract hasValue(val: T | E): boolean;
 
   /**
    * Calls `func` with the value in this [[ResultT]] and returns the result.
@@ -514,7 +514,7 @@ class Ok<T> extends ResultT<T, any> {
     return ResultT.ok(this.value);
   }
 
-  equals(other: ResultT<any, any>): boolean {
+  equals<E>(other: ResultT<T, E>): boolean {
     if (other.isErr()) {
       return false;
     }
@@ -606,7 +606,7 @@ class Err<E> extends ResultT<any, E> {
     return ResultT.err(this.error);
   }
 
-  equals(other: ResultT<any, any>): boolean {
+  equals<T>(other: ResultT<T, E>): boolean {
     if (other.isOk()) {
       return false;
     }

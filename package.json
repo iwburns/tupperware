@@ -9,8 +9,7 @@
     "doc-build": "typedoc --module commonjs --target ES5 --out doc src/",
     "prepublishOnly": "tsc",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "clean": "find ./src -maxdepth 2 -type f -name \"*.js\" -delete & find ./test -maxdepth 2 -type f -name \"*.js\" -delete"
-
+    "clean": "find ./ -maxdepth 2 -type f -name \"*.js\" -delete & find ./ -maxdepth 2 -type f -name \"*.d.ts\" -delete & find ./ -maxdepth 2 -type f -name \"*.js.map\" -delete"
   },
   "repository": {
     "type": "git",
