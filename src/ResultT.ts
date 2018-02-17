@@ -17,11 +17,11 @@ export interface ResultMatch<T, E, U, F> {
 export default abstract class ResultT<T, E> {
   constructor() {}
 
-  static ok<T, E>(val: T): ResultT<T, E> {
+  static ok<T>(val: T): ResultT<T, any> {
     return new Ok(val);
   }
 
-  static err<T, E>(error: E): ResultT<T, E> {
+  static err<E>(error: E): ResultT<any, E> {
     return new Err(error);
   }
 
@@ -514,7 +514,7 @@ class Ok<T> extends ResultT<T, any> {
     return ResultT.ok(this.value);
   }
 
-  equals<E>(other: ResultT<T, E>): boolean {
+  equals(other: ResultT<T, any>): boolean {
     if (other.isErr()) {
       return false;
     }
@@ -606,7 +606,7 @@ class Err<E> extends ResultT<any, E> {
     return ResultT.err(this.error);
   }
 
-  equals<T>(other: ResultT<T, E>): boolean {
+  equals(other: ResultT<any, E>): boolean {
     if (other.isOk()) {
       return false;
     }
