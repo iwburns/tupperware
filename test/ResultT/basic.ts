@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import ResultT from '../../src/ResultT';
+import { ResultT } from '../../src/index';
 import { expectAnOk, expectAnErr } from '../util';
 
 describe('#ResultT.ok', () => {

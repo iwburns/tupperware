@@ -1,5 +1,5 @@
 import 'mocha';
-import OptionT from '../../src/OptionT';
+import { OptionT } from '../../src/index';
 import { expect } from 'chai';
 import { expectANone, expectASome } from '../util';
 

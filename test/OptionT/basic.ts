@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import OptionT from '../../src/OptionT';
+import { OptionT } from '../../src/index';
 import { expectASome, expectANone } from '../util';
 
 describe('#OptionT.of', () => {

@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
-import ResultT from '../../src/ResultT';
-import {expectAnErr, expectASome, expectANone, expectAnOk} from '../util';
+import { ResultT } from '../../src/index';
+import { expectAnErr, expectASome, expectANone, expectAnOk } from '../util';
 
 describe('#ResultT - Err', () => {
   it('should have the function isOk', () => {
