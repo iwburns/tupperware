@@ -1,16 +1,9 @@
 import 'mocha';
-
-import OptionT from '../../src/OptionT';
+import { OptionT } from '../../src/index';
 import { expect } from 'chai';
-import { expectANone, expectASome } from './util';
+import { expectANone, expectASome } from '../util';
 
-/*
-  expectASome() and expectANone() will check that all expected functions exist on the Option
-  and that the value is a None or a Some.
-*/
-
-
-describe('#OptionT.none', () => {
+describe('#OptionT - None', () => {
   it('should have the function isSome', () => {
     const none = OptionT.none();
 

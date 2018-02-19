@@ -1,14 +1,15 @@
 {
   "name": "nullshield",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "A package containing Option and Result types",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "test": "tsc && nyc mocha",
+    "test": "npm run clean && tsc && nyc mocha",
     "doc-build": "typedoc --module commonjs --target ES5 --out doc src/",
     "prepublishOnly": "tsc",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "clean": "find ./ -maxdepth 2 -type f -name \"*.js\" -delete & find ./ -maxdepth 2 -type f -name \"*.d.ts\" -delete & find ./ -maxdepth 2 -type f -name \"*.js.map\" -delete"
   },
   "repository": {
     "type": "git",
