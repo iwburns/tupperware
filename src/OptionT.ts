@@ -1,14 +1,18 @@
-
+/**
+ * An interface describing the argument passed to   [[OptionT]]'s `match` function.
+ */
 export interface OptMatch<T, U, V> {
   some: (val: T) => U;
   none: () => V;
 }
 
-
 /**
- * An interface describing the argument passed to   [[OptionT]]'s `match` function.
+ * A class representing the concept of an optional value.
+ *
+ * There are only two concrete versions of this class: [[Some]] and [[None]].
+ * [[Some]] contains a value and [[None]] does not, but they both are wrapped
+ * in this same OptionT API.
  */
-
 export default abstract class OptionT<T> {
   // tslint:disable-next-line:no-empty
   constructor() {}
@@ -487,7 +491,6 @@ export default abstract class OptionT<T> {
   abstract contains(condition: (val: T) => boolean): boolean;
 }
 
-
 /**
  * A class representing the `None`-type variant of the `OptionT` type.
  *
@@ -584,7 +587,12 @@ class None<T> extends OptionT<T> {
   }
 }
 
-
+/**
+ * A class representing the `Some`-type variant of the `OptionT` type.
+ *
+ * Instances of this class wrap their contained value inside the
+ * `OptionT` API defined by [[OptionT]].
+ */
 class Some<T> extends OptionT<T> {
   private value: T;
   constructor(value: T) {
