@@ -1,13 +1,11 @@
-import 'mocha';
-import { expect } from 'chai';
-import { ResultT } from '../../src/index';
+import { ResultT } from '../../src/nullshield';
 import { expectAnOk, expectAnErr } from '../util';
 
 describe('#ResultT.ok', () => {
   it('should be able to create an Ok', () => {
     const r1 = ResultT.ok(1);
     expectAnOk(r1);
-    expect(r1.unwrapOr(2)).to.equal(1);
+    expect(r1.unwrapOr(2)).toEqual(1);
   });
 
   it('should return an Ok when given null or undefined', () => {
@@ -23,7 +21,7 @@ describe('#ResultT.err', () => {
   it('should be able to create an Err', () => {
     const r2 = ResultT.err('error');
     expectAnErr(r2);
-    expect(r2.unwrapOr(2)).to.equal(2);
+    expect(r2.unwrapOr(2)).toEqual(2);
   });
 
   it('should return an Err when given null or undefined', () => {
@@ -44,7 +42,7 @@ describe('#ResultT', () => {
     const r1 = f('test!');
 
     expectAnOk(r1);
-    expect(r1.unwrap()).to.equal('test!');
+    expect(r1.unwrap()).toEqual('test!');
   });
 
   it('Ok and Err should be compatible with one another', () => {

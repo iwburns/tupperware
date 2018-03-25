@@ -1,31 +1,29 @@
-import 'mocha';
-import { expect } from 'chai';
-import { OptionT } from '../../src/index';
+import { OptionT } from '../../src/nullshield';
 import { expectASome, expectANone } from '../util';
 
 describe('#OptionT.of', () => {
   it('should choose the appropriate class based on the value', () => {
-    expect(OptionT.of(null).isNone()).to.be.true;
-    expect(OptionT.of(undefined).isNone()).to.be.true;
-    expect(OptionT.of().isNone()).to.be.true;
-    expect(OptionT.of('foo').isNone()).to.be.false;
+    expect(OptionT.of(null).isNone()).toEqual(true);
+    expect(OptionT.of(undefined).isNone()).toEqual(true);
+    expect(OptionT.of().isNone()).toEqual(true);
+    expect(OptionT.of('foo').isNone()).toEqual(false);
 
-    expect(OptionT.of(null).isSome()).to.be.false;
-    expect(OptionT.of(undefined).isSome()).to.be.false;
-    expect(OptionT.of().isSome()).to.be.false;
-    expect(OptionT.of('foo').isSome()).to.be.true;
+    expect(OptionT.of(null).isSome()).toEqual(false);
+    expect(OptionT.of(undefined).isSome()).toEqual(false);
+    expect(OptionT.of().isSome()).toEqual(false);
+    expect(OptionT.of('foo').isSome()).toEqual(true);
   });
 
   it('should be able to create a some', () => {
     const maybe1 = OptionT.of(1);
     expectASome(maybe1);
-    expect(maybe1.unwrapOr(2)).to.equal(1);
+    expect(maybe1.unwrapOr(2)).toEqual(1);
   });
 
   it('should be able to create a none', () => {
     const maybeNone = OptionT.of(null) as OptionT<any>;
     expectANone(maybeNone);
-    expect(maybeNone.unwrapOr(2)).to.equal(2);
+    expect(maybeNone.unwrapOr(2)).toEqual(2);
   });
 });
 
@@ -38,11 +36,11 @@ describe('#OptionT.some', () => {
   it('should throw an error when given null or undefined', () => {
     expect(() => {
       OptionT.some(null);
-    }).to.throw();
+    }).toThrow();
 
     expect(() => {
       OptionT.some(undefined);
-    }).to.throw();
+    }).toThrow();
   });
 });
 
@@ -55,7 +53,7 @@ describe('#OptionT.none', () => {
   it('should throw an error if you provide it with a value', () => {
     expect(() => {
       OptionT.none('value');
-    }).to.throw();
+    }).toThrow();
   });
 });
 
@@ -68,7 +66,7 @@ describe('#OptionT', () => {
     const maybeString = f('test!');
 
     expectASome(maybeString);
-    expect(maybeString.unwrap()).to.equal('test!');
+    expect(maybeString.unwrap()).toEqual('test!');
   });
 
   it('Some and None should be compatible with one another', () => {

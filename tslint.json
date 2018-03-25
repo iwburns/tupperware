@@ -1,10 +1,6 @@
 {
-  "globals": {
-      "mocha": true
-  },
-  "defaultSeverity": "error",
-  "extends": "tslint-config-airbnb",
-  "jsRules": {},
-  "rules": {},
-  "rulesDirectory": []
+  "extends": [
+    "tslint-config-standard",
+    "tslint-config-prettier"
+  ]
 }
