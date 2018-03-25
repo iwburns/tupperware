@@ -10,8 +10,8 @@ export interface OptMatch<T, U, V> {
  */
 
 export default abstract class OptionT<T> {
-  constructor() {
-  }
+  // tslint:disable-next-line:no-empty
+  constructor() {}
 
   static of<T>(value?: T): OptionT<T> {
     if (value === null || typeof value === 'undefined') {
@@ -22,7 +22,7 @@ export default abstract class OptionT<T> {
 
   static some<T>(value: T): OptionT<T> {
     if (value === null || typeof value === 'undefined') {
-      throw('Cannot create a Some of a null or undefined value');
+      throw Error('Cannot create a Some of a null or undefined value');
     }
     return new Some(value);
   }
@@ -31,7 +31,7 @@ export default abstract class OptionT<T> {
     if (value === null || typeof value === 'undefined') {
       return new None();
     }
-    throw('Cannot create a None of a non-null or undefined value');
+    throw Error('Cannot create a None of a non-null or undefined value');
   }
 
   /**
@@ -528,7 +528,7 @@ class None<T> extends OptionT<T> {
   }
 
   map<U>(func: (val: T) => U): OptionT<U> {
-    return <OptionT<U>>new None();
+    return new None() as OptionT<U>;
   }
 
   mapOr<U>(other: U, func: (val: T) => U): U {
@@ -540,11 +540,11 @@ class None<T> extends OptionT<T> {
   }
 
   and<U>(other: OptionT<U>): OptionT<U> {
-    return <OptionT<U>>new None();
+    return new None() as OptionT<U>;
   }
 
   flatMap<U>(func: (val: T) => OptionT<U>): OptionT<U> {
-    return <OptionT<U>>new None();
+    return new None() as OptionT<U>;
   }
 
   or(other: OptionT<T>): OptionT<T> {
