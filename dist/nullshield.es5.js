@@ -379,11 +379,4 @@ var Err = /** @class */ (function (_super) {
     return Err;
 }(ResultT));
 
-var nullshield = {
-    OptionT: OptionT,
-    ResultT: ResultT,
-};
-// export { default as OptionT } from './OptionT';
-// export { default as ResultT } from './ResultT';
-
-export default nullshield;
+export { OptionT, ResultT };

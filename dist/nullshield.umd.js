@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.nullshield = factory());
-}(this, (function () { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+    typeof define === 'function' && define.amd ? define(['exports'], factory) :
+    (factory((global.nullshield = {})));
+}(this, (function (exports) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation. All rights reserved.
@@ -385,13 +385,9 @@
         return Err;
     }(ResultT));
 
-    var nullshield = {
-        OptionT: OptionT,
-        ResultT: ResultT,
-    };
-    // export { default as OptionT } from './OptionT';
-    // export { default as ResultT } from './ResultT';
+    exports.OptionT = OptionT;
+    exports.ResultT = ResultT;
 
-    return nullshield;
+    Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
