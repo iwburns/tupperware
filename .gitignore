@@ -176,7 +176,7 @@ typings/
 # End of https://www.gitignore.io/api/node
 
 .vscode
-dist
+!dist/**
 compiled
 .awcache
 .rpt2_cache

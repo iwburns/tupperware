@@ -3,9 +3,9 @@
   "version": "0.6.1",
   "description": "A package containing Option and Result types",
   "keywords": [],
-  "main": "dist/nullshield.umd.js",
-  "module": "dist/nullshield.es5.js",
-  "typings": "dist/types/nullshield.d.ts",
+  "main": "./dist/nullshield.umd.js",
+  "module": "./dist/nullshield.es5.js",
+  "types": "./dist/types/nullshield.d.ts",
   "files": [
     "dist"
   ],
