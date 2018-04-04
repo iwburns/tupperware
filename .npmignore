@@ -146,7 +146,7 @@ jspm_packages/
 typings/
 
 # compiled Javascript
-dist/
+# dist/
 
 # typescript source
 src/
