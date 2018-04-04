@@ -1,5 +1,5 @@
 /**
- * An interface describing the argument passed to   [[OptionT]]'s `match` function.
+ * An interface describing the argument passed to [[OptionT]]'s `match` function.
  */
 export interface OptMatch<T, U, V> {
   some: (val: T) => U;
@@ -39,7 +39,7 @@ export default abstract class OptionT<T> {
   }
 
   /**
-   * Returns `true` if this   [[OptionT]] is a `Some`, returns false if it is a `None`.
+   * Returns `true` if this [[OptionT]] is a `Some`, returns false if it is a `None`.
    *
    * ```
    * const one = OptionT.some(1);
@@ -53,7 +53,7 @@ export default abstract class OptionT<T> {
   abstract isSome(): boolean;
 
   /**
-   * Returns `true` if this   [[OptionT]] is a `None`, returns false if it is a `Some`.
+   * Returns `true` if this [[OptionT]] is a `None`, returns false if it is a `Some`.
    *
    * ```
    * const nope = OptionT.none();
@@ -67,7 +67,7 @@ export default abstract class OptionT<T> {
   abstract isNone(): boolean;
 
   /**
-   * Returns `None()` if this   [[OptionT]] is a `None`, returns `Some( val )` if it is a `Some`.
+   * Returns `None()` if this [[OptionT]] is a `None`, returns `Some( val )` if it is a `Some`.
    *
    * ```
    * OptionT.some(1).toString() //Some( 1 )
@@ -79,8 +79,8 @@ export default abstract class OptionT<T> {
   abstract toString(): string;
 
   /**
-   * Returns the value contained by this   [[OptionT]] if it is a `Some`.  Throws an error
-   * containing `message` if this   [[OptionT]] is a `None`.
+   * Returns the value contained by this [[OptionT]] if it is a `Some`.  Throws an error
+   * containing `message` if this [[OptionT]] is a `None`.
    *
    * ```
    * const maybeOne = OptionT.some(1);
@@ -99,8 +99,8 @@ export default abstract class OptionT<T> {
   abstract expect(message: string): T;
 
   /**
-   * Returns the value contained by this   [[OptionT]] if it is a `Some`.  Throws a pre-defined
-   * error if this   [[OptionT]] is a `None`.
+   * Returns the value contained by this [[OptionT]] if it is a `Some`.  Throws a pre-defined
+   * error if this [[OptionT]] is a `None`.
    *
    * ```
    * const maybeOne = OptionT.some(1);
@@ -118,8 +118,8 @@ export default abstract class OptionT<T> {
   abstract unwrap(): T;
 
   /**
-   * Returns the value contained by this   [[OptionT]] if it is a `Some`.  Returns `other` if
-   * this   [[OptionT]] is a `None`.
+   * Returns the value contained by this [[OptionT]] if it is a `Some`.  Returns `other` if
+   * this [[OptionT]] is a `None`.
    *
    * ```
    * const maybeOne = OptionT.some(1);
@@ -135,8 +135,8 @@ export default abstract class OptionT<T> {
   abstract unwrapOr(other: T): T;
 
   /**
-   * Returns the value contained by this   [[OptionT]] if it is a `Some`.  Returns the return
-   * value of `func` if this   [[OptionT]] is a `None`.
+   * Returns the value contained by this [[OptionT]] if it is a `Some`.  Returns the return
+   * value of `func` if this [[OptionT]] is a `None`.
    *
    * ```
    * const maybeOne = OptionT.some(1);
@@ -152,15 +152,15 @@ export default abstract class OptionT<T> {
   abstract unwrapOrElse(func: () => T): T;
 
   /**
-   * Maps an   [[OptionT]]&lt;T&gt; to an   [[OptionT]]&lt;U&gt; by applying `func` to the value
-   * contained in this   [[OptionT]].
+   * Maps an [[OptionT]]&lt;T&gt; to an [[OptionT]]&lt;U&gt; by applying `func` to the value
+   * contained in this [[OptionT]].
    *
-   * If this   [[OptionT]] is a `Some` value, the returned value will be the return of `func`
-   * wrapped in a new   [[OptionT]] (resulting in a `Some` value); otherwise the returned value
+   * If this [[OptionT]] is a `Some` value, the returned value will be the return of `func`
+   * wrapped in a new [[OptionT]] (resulting in a `Some` value); otherwise the returned value
    * will be a new `None` value.
    *
    * ### Note:
-   * If the return value of `func` is `null` or `undefined`, the   [[OptionT]] that is returned
+   * If the return value of `func` is `null` or `undefined`, the [[OptionT]] that is returned
    * is guaranteed to be a `None` value.
    *
    * ```
@@ -180,10 +180,10 @@ export default abstract class OptionT<T> {
   abstract map<U>(func: (val: T) => U): OptionT<U>;
 
   /**
-   * Maps an   [[OptionT]]&lt;T&gt; to a U by applying `func` to the value contained in this
-   *   [[OptionT]].
+   * Maps an [[OptionT]]&lt;T&gt; to a U by applying `func` to the value contained in this
+   * [[OptionT]].
    *
-   * If this   [[OptionT]] is a `Some` value, the returned value will be the return of `func`;
+   * If this [[OptionT]] is a `Some` value, the returned value will be the return of `func`;
    * otherwise the returned value will be `other`.
    *
    * ```
@@ -203,10 +203,10 @@ export default abstract class OptionT<T> {
   abstract mapOr<U>(other: U, func: (val: T) => U): U;
 
   /**
-   * Maps an   [[OptionT]]&lt;T&gt; to a U by applying `func` to the value contained in this
-   *   [[OptionT]].
+   * Maps an [[OptionT]]&lt;T&gt; to a U by applying `func` to the value contained in this
+   * [[OptionT]].
    *
-   * If this   [[OptionT]] is a `Some` value, the returned value will be the return of `func`;
+   * If this [[OptionT]] is a `Some` value, the returned value will be the return of `func`;
    * otherwise the returned value will be the value returned from `other`.
    *
    * ```
@@ -226,7 +226,7 @@ export default abstract class OptionT<T> {
   abstract mapOrElse<U>(other: () => U, func: (val: T) => U): U;
 
   /**
-   * Returns a `None` value if this   [[OptionT]] is a `None`; otherwise returns `other`.
+   * Returns a `None` value if this [[OptionT]] is a `None`; otherwise returns `other`.
    *
    * ```
    * const one = OptionT.some(1);
@@ -250,7 +250,7 @@ export default abstract class OptionT<T> {
   abstract and<U>(other: OptionT<U>): OptionT<U>;
 
   /**
-   * Returns a `None` value if this   [[OptionT]] is a `None`; otherwise calls `func` and returns
+   * Returns a `None` value if this [[OptionT]] is a `None`; otherwise calls `func` and returns
    * the result.
    *
    * ```
@@ -276,7 +276,7 @@ export default abstract class OptionT<T> {
   abstract flatMap<U>(func: (val: T) => OptionT<U>): OptionT<U>;
 
   /**
-   * Returns 'this'   [[OptionT]] if it is a `Some` value; otherwise returns `other`.
+   * Returns 'this' [[OptionT]] if it is a `Some` value; otherwise returns `other`.
    *
    * ```
    * const one = OptionT.some(1);
@@ -297,7 +297,7 @@ export default abstract class OptionT<T> {
   abstract or(other: OptionT<any>): OptionT<any>;
 
   /**
-   * Returns 'this'   [[OptionT]] if it is a `Some` value; otherwise calls `func` and returns the
+   * Returns 'this' [[OptionT]] if it is a `Some` value; otherwise calls `func` and returns the
    * result.
    *
    * ```
@@ -321,7 +321,7 @@ export default abstract class OptionT<T> {
   /**
    * Calls the appropriate function in `options` and returns the result.
    *
-   * If 'this'   [[OptionT]] is a `Some` value, `options.some` is called;
+   * If 'this' [[OptionT]] is a `Some` value, `options.some` is called;
    * otherwise `options.none` is called.
    *
    * See [[OptMatch]] for more details.
@@ -352,7 +352,7 @@ export default abstract class OptionT<T> {
   abstract match<U, V>(options: OptMatch<T, U, V>): U | V;
 
   /**
-   * Returns a new   [[OptionT]] containing the same data as the current one.
+   * Returns a new [[OptionT]] containing the same data as the current one.
    *
    * Note: does not perform any deep copying of the contained data.
    *
@@ -382,7 +382,7 @@ export default abstract class OptionT<T> {
   abstract clone(): OptionT<T>;
 
   /**
-   * Returns `this`   [[OptionT]] if it is a `Some` value and if `condition` returns `true`;
+   * Returns `this` [[OptionT]] if it is a `Some` value and if `condition` returns `true`;
    * otherwise returns a `None` value.
    *
    * ```
@@ -401,7 +401,7 @@ export default abstract class OptionT<T> {
   abstract filter(condition: (val: T) => boolean): OptionT<T>;
 
   /**
-   * Calls `func` with the contained value if this   [[OptionT]] is a `Some` value;
+   * Calls `func` with the contained value if this [[OptionT]] is a `Some` value;
    * otherwise does nothing.
    *
    * Note: This is intended for causing side-effects.  If you need a return value, consider
@@ -421,7 +421,7 @@ export default abstract class OptionT<T> {
   abstract forEach(func: (val: any) => void): void;
 
   /**
-   * Returns `true` if both   [[OptionT]]s are `None`s or (if they are both `Some`s) if they both
+   * Returns `true` if both [[OptionT]]s are `None`s or (if they are both `Some`s) if they both
    * contain the same value;  otherwise returns `false`.
    *
    * Note: No deep comparison is done on the contained values.
@@ -447,7 +447,7 @@ export default abstract class OptionT<T> {
   abstract equals(other: OptionT<any>): boolean;
 
   /**
-   * Returns `true` if the   [[OptionT]] is a `Some` and contains the given value `val`, otherwise
+   * Returns `true` if the [[OptionT]] is a `Some` and contains the given value `val`, otherwise
    * returns `false`.
    *
    * Note: No deep comparison is done on the contained values.  If you need to do deep
@@ -471,7 +471,7 @@ export default abstract class OptionT<T> {
   abstract hasValue(val: any): boolean;
 
   /**
-   * Returns `false` if the   [[OptionT]] is a `None`, otherwise calls `condition`
+   * Returns `false` if the [[OptionT]] is a `None`, otherwise calls `condition`
    * with the contained value and returns the result.
    *
    * ```
@@ -495,7 +495,7 @@ export default abstract class OptionT<T> {
  * A class representing the `None`-type variant of the `OptionT` type.
  *
  * Instances of this class contain no internal value.  They simply wrap the concept of 'nothing'
- * inside the same `OptionT` API defined by   [[OptionT]].
+ * inside the same `OptionT` API defined by [[OptionT]].
  */
 class None extends OptionT<any> {
   constructor() {
