@@ -175,5 +175,9 @@ typings/
 
 # End of https://www.gitignore.io/api/node
 
-# docs dir
-doc/
+.vscode
+dist
+compiled
+.awcache
+.rpt2_cache
+docs

@@ -1,39 +1,82 @@
 {
   "name": "nullshield",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "A package containing Option and Result types",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "scripts": {
-    "test": "npm run clean && tsc && nyc mocha",
-    "doc-build": "typedoc --module commonjs --target ES5 --out doc src/",
-    "prepublishOnly": "tsc",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "clean": "find ./ -maxdepth 2 -type f -name \"*.js\" -delete & find ./ -maxdepth 2 -type f -name \"*.d.ts\" -delete & find ./ -maxdepth 2 -type f -name \"*.js.map\" -delete"
-  },
+  "keywords": [],
+  "main": "./dist/nullshield.umd.js",
+  "module": "./dist/nullshield.es5.js",
+  "types": "./dist/types/nullshield.d.ts",
+  "files": [
+    "dist"
+  ],
+  "author": "Ian Burns <iwburns8@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/iwburns/nullshield.git"
   },
-  "author": "Ian Burns <iwburns8@gmail.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/chai": "^4.1.2",
-    "@types/mocha": "^2.2.48",
-    "chai": "^4.1.2",
-    "coveralls": "^3.0.0",
-    "mocha": "^4.1.0",
-    "mocha-lcov-reporter": "^1.3.0",
-    "nyc": "^11.4.1",
-    "source-map-support": "^0.5.3",
-    "ts-node": "^3.3.0",
-    "tslint": "^5.9.1",
-    "tslint-config-airbnb": "^5.6.0",
-    "typedoc": "^0.10.0",
-    "typescript": "^2.7.1"
-  },
   "bugs": {
     "url": "https://github.com/iwburns/nullshield/issues"
   },
-  "homepage": "https://github.com/iwburns/nullshield#readme"
+  "homepage": "https://github.com/iwburns/nullshield#readme",
+  "license": "MIT",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
+    "start": "rollup -c rollup.config.ts -w",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:prod": "npm run test -- --coverage --no-cache",
+    "deploy-docs": "ts-node tools/gh-pages-publish",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 95,
+        "lines": 95,
+        "statements": 95
+      }
+    },
+    "collectCoverage": true
+  },
+  "devDependencies": {
+    "@types/jest": "^22.0.0",
+    "@types/node": "^9.3.0",
+    "coveralls": "^3.0.0",
+    "jest": "^22.0.2",
+    "lodash.camelcase": "^4.3.0",
+    "prettier": "^1.4.4",
+    "rimraf": "^2.6.1",
+    "rollup": "^0.57.0",
+    "rollup-plugin-commonjs": "^9.0.0",
+    "rollup-plugin-json": "^2.3.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-sourcemaps": "^0.4.2",
+    "rollup-plugin-typescript2": "^0.11.1",
+    "ts-jest": "^22.0.0",
+    "ts-node": "^5.0.1",
+    "tslint": "^5.9.1",
+    "tslint-config-prettier": "^1.1.0",
+    "tslint-config-standard": "^7.0.0",
+    "typedoc": "^0.11.0",
+    "typescript": "^2.7.1"
+  },
+  "dependencies": {}
 }

@@ -1,17 +1,21 @@
-
+/**
+ * An interface describing the argument passed to   [[OptionT]]'s `match` function.
+ */
 export interface OptMatch<T, U, V> {
   some: (val: T) => U;
   none: () => V;
 }
 
-
 /**
- * An interface describing the argument passed to   [[OptionT]]'s `match` function.
+ * A class representing the concept of an optional value.
+ *
+ * There are only two concrete versions of this class: [[Some]] and [[None]].
+ * [[Some]] contains a value and [[None]] does not, but they both are wrapped
+ * in this same OptionT API.
  */
-
 export default abstract class OptionT<T> {
-  constructor() {
-  }
+  // tslint:disable-next-line:no-empty
+  constructor() {}
 
   static of<T>(value?: T): OptionT<T> {
     if (value === null || typeof value === 'undefined') {
@@ -22,7 +26,7 @@ export default abstract class OptionT<T> {
 
   static some<T>(value: T): OptionT<T> {
     if (value === null || typeof value === 'undefined') {
-      throw('Cannot create a Some of a null or undefined value');
+      throw Error('Cannot create a Some of a null or undefined value');
     }
     return new Some(value);
   }
@@ -31,7 +35,7 @@ export default abstract class OptionT<T> {
     if (value === null || typeof value === 'undefined') {
       return new None();
     }
-    throw('Cannot create a None of a non-null or undefined value');
+    throw Error('Cannot create a None of a non-null or undefined value');
   }
 
   /**
@@ -487,14 +491,13 @@ export default abstract class OptionT<T> {
   abstract contains(condition: (val: T) => boolean): boolean;
 }
 
-
 /**
  * A class representing the `None`-type variant of the `OptionT` type.
  *
  * Instances of this class contain no internal value.  They simply wrap the concept of 'nothing'
  * inside the same `OptionT` API defined by   [[OptionT]].
  */
-class None<T> extends OptionT<T> {
+class None extends OptionT<any> {
   constructor() {
     super();
   }
@@ -519,51 +522,51 @@ class None<T> extends OptionT<T> {
     throw new Error('Called unwrap on a None value.');
   }
 
-  unwrapOr(other: T): T {
+  unwrapOr<T>(other: T): T {
     return other;
   }
 
-  unwrapOrElse(func: () => T): T {
+  unwrapOrElse<T>(func: () => T): T {
     return func();
   }
 
-  map<U>(func: (val: T) => U): OptionT<U> {
-    return <OptionT<U>>new None();
+  map<T, U>(func: (val: T) => U): OptionT<U> {
+    return new None() as OptionT<U>;
   }
 
-  mapOr<U>(other: U, func: (val: T) => U): U {
+  mapOr<T, U>(other: U, func: (val: T) => U): U {
     return other;
   }
 
-  mapOrElse<U>(other: () => U, func: (val: T) => U): U {
+  mapOrElse<T, U>(other: () => U, func: (val: T) => U): U {
     return other();
   }
 
   and<U>(other: OptionT<U>): OptionT<U> {
-    return <OptionT<U>>new None();
+    return new None() as OptionT<U>;
   }
 
-  flatMap<U>(func: (val: T) => OptionT<U>): OptionT<U> {
-    return <OptionT<U>>new None();
+  flatMap<T, U>(func: (val: T) => OptionT<U>): OptionT<U> {
+    return new None() as OptionT<U>;
   }
 
-  or(other: OptionT<T>): OptionT<T> {
+  or<T>(other: OptionT<T>): OptionT<T> {
     return other;
   }
 
-  orElse(func: () => OptionT<T>): OptionT<T> {
+  orElse<T>(func: () => OptionT<T>): OptionT<T> {
     return func();
   }
 
-  match<U, V>(options: OptMatch<T, U, V>): V | U {
+  match<T, U, V>(options: OptMatch<T, U, V>): V | U {
     return options.none();
   }
 
-  clone(): OptionT<T> {
+  clone<T>(): OptionT<T> {
     return new None();
   }
 
-  filter(condition: (val: T) => boolean): OptionT<T> {
+  filter<T>(condition: (val: T) => boolean): OptionT<T> {
     return new None();
   }
 
@@ -571,7 +574,7 @@ class None<T> extends OptionT<T> {
     return;
   }
 
-  equals(other: OptionT<T>): boolean {
+  equals<T>(other: OptionT<T>): boolean {
     return other.isNone();
   }
 
@@ -579,12 +582,17 @@ class None<T> extends OptionT<T> {
     return false;
   }
 
-  contains(condition: (val: T) => boolean): boolean {
+  contains<T>(condition: (val: T) => boolean): boolean {
     return false;
   }
 }
 
-
+/**
+ * A class representing the `Some`-type variant of the `OptionT` type.
+ *
+ * Instances of this class wrap their contained value inside the
+ * `OptionT` API defined by [[OptionT]].
+ */
 class Some<T> extends OptionT<T> {
   private value: T;
   constructor(value: T) {

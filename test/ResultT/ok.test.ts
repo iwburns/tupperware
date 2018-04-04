@@ -1,32 +1,30 @@
-import 'mocha';
-import { expect } from 'chai';
-import { ResultT } from '../../src/index';
+import { ResultT } from '../../src/nullshield';
 import { expectAnOk, expectASome, expectANone, expectAnErr } from '../util';
 
 describe('#ResultT - Ok', () => {
   it('should have the function isOk', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
-    expect(r.isOk()).to.be.true;
+    expect(r.isOk()).toEqual(true);
   });
 
   it('should have the function isErr', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
-    expect(r.isErr()).to.be.false;
+    expect(r.isErr()).toEqual(false);
   });
 
   it('should have the function toString', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
-    expect(r.toString()).to.equal(`Ok( 1 )`);
+    expect(r.toString()).toEqual(`Ok( 1 )`);
   });
 
   it('should have the function getOk', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
     expectASome(r.getOk());
-    expect(r.getOk().unwrap()).to.equal(1);
+    expect(r.getOk().unwrap()).toEqual(1);
   });
 
   it('should have the function getErr', () => {
@@ -38,7 +36,7 @@ describe('#ResultT - Ok', () => {
   it('should have the function expect', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
-    expect(r.expect('error!')).to.equal(1);
+    expect(r.expect('error!')).toEqual(1);
   });
 
   it('should have the function expectErr', () => {
@@ -46,13 +44,13 @@ describe('#ResultT - Ok', () => {
     expectAnOk(r);
     expect(() => {
       r.expectErr('error!');
-    }).to.throw('error!');
+    }).toThrow('error!');
   });
 
   it('should have the function unwrap', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
-    expect(r.unwrap()).to.equal(1);
+    expect(r.unwrap()).toEqual(1);
   });
 
   it('should have the function unwrapErr', () => {
@@ -60,19 +58,19 @@ describe('#ResultT - Ok', () => {
     expectAnOk(r);
     expect(() => {
       r.unwrapErr();
-    }).to.throw();
+    }).toThrow();
   });
 
   it('should have the function unwrapOr', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
-    expect(r.unwrapOr(2)).to.equal(1);
+    expect(r.unwrapOr(2)).toEqual(1);
   });
 
   it('should have the function unwrapOrElse', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
-    expect(r.unwrapOrElse(e => 2)).to.equal(1);
+    expect(r.unwrapOrElse(e => 2)).toEqual(1);
   });
 
   it('should have the function map', () => {
@@ -80,7 +78,7 @@ describe('#ResultT - Ok', () => {
     expectAnOk(r);
     const m = r.map(v => v);
     expectAnOk(m);
-    expect(m.unwrap()).to.equal(1);
+    expect(m.unwrap()).toEqual(1);
   });
 
   it('should have the function mapErr', () => {
@@ -88,7 +86,7 @@ describe('#ResultT - Ok', () => {
     expectAnOk(r);
     const m = r.mapErr(v => 2);
     expectAnOk(m);
-    expect(m.unwrap()).to.equal(1);
+    expect(m.unwrap()).toEqual(1);
   });
 
   it('should have the function flatMap', () => {
@@ -98,7 +96,7 @@ describe('#ResultT - Ok', () => {
 
     const m = r.flatMap(double);
     expectAnOk(m);
-    expect(m.unwrap()).to.equal(2);
+    expect(m.unwrap()).toEqual(2);
   });
 
   it('should have the function orElse', () => {
@@ -107,7 +105,7 @@ describe('#ResultT - Ok', () => {
     const changeError = e => ResultT.err('new error') as ResultT<number, string>;
     const m = r.orElse(changeError);
     expectAnOk(m);
-    expect(m.unwrap()).to.equal(1);
+    expect(m.unwrap()).toEqual(1);
   });
 
   it('should have the function match', () => {
@@ -117,7 +115,7 @@ describe('#ResultT - Ok', () => {
       ok: _ => 2,
       err: _ => 'new error',
     });
-    expect(m).to.equal(2);
+    expect(m).toEqual(2);
   });
 
   it('should have the function clone', () => {
@@ -126,7 +124,7 @@ describe('#ResultT - Ok', () => {
     expectAnOk(r);
     const m = r.clone();
     expectAnOk(m);
-    expect(m.unwrap()).to.equal(obj);
+    expect(m.unwrap()).toBe(obj);
   });
 
   it('should have the function equals', () => {
@@ -134,30 +132,30 @@ describe('#ResultT - Ok', () => {
     const r2 = ResultT.ok(1);
     expectAnOk(r);
     expectAnOk(r2);
-    expect(r.equals(r2)).to.be.true;
+    expect(r.equals(r2)).toEqual(true);
 
     const r3 = ResultT.ok(2);
     expectAnOk(r3);
-    expect(r.equals(r3)).to.be.false;
+    expect(r.equals(r3)).toEqual(false);
 
     const r4 = ResultT.err(1);
     expectAnErr(r4);
-    expect(r.equals(r4)).to.be.false;
+    expect(r.equals(r4)).toEqual(false);
   });
 
   it('should have the function hasValue', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
 
-    expect(r.hasValue(1)).to.be.true;
-    expect(r.hasValue('two')).to.be.false;
+    expect(r.hasValue(1)).toEqual(true);
+    expect(r.hasValue('two')).toEqual(false);
 
     const obj = {};
     const r2 = ResultT.ok(obj);
     expectAnOk(r2);
 
-    expect(r2.hasValue(obj)).to.be.true;
-    expect(r2.hasValue({})).to.be.false;
+    expect(r2.hasValue(obj)).toEqual(true);
+    expect(r2.hasValue({})).toEqual(false);
   });
 
   it('should have the function contains', () => {
@@ -172,7 +170,7 @@ describe('#ResultT - Ok', () => {
       return x.a === 'c';
     };
 
-    expect(r.contains(aEqualsB)).to.be.true;
-    expect(r.contains(aEqualsC)).to.be.false;
+    expect(r.contains(aEqualsB)).toEqual(true);
+    expect(r.contains(aEqualsC)).toEqual(false);
   });
 });

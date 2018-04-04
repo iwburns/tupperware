@@ -1,6 +1,4 @@
-import 'mocha';
-import { OptionT } from '../../src/index';
-import { expect } from 'chai';
+import { OptionT } from '../../src/nullshield';
 import { expectANone, expectASome } from '../util';
 
 describe('#OptionT - None', () => {
@@ -8,14 +6,14 @@ describe('#OptionT - None', () => {
     const none = OptionT.none();
 
     expectANone(none);
-    expect(none.isSome()).to.be.false;
+    expect(none.isSome()).toEqual(false);
   });
 
   it('should have the function isNone', () => {
     const none = OptionT.none();
 
     expectANone(none);
-    expect(none.isNone()).to.be.true;
+    expect(none.isNone()).toEqual(true);
   });
 
   it('should have the function toString', () => {
@@ -23,35 +21,35 @@ describe('#OptionT - None', () => {
 
     expectANone(none);
 
-    expect(none.toString()).to.equal('None()');
+    expect(none.toString()).toEqual('None()');
   });
 
   it('should have the function expect', () => {
     const none = OptionT.none();
 
     expectANone(none);
-    expect(() => none.expect('failed')).to.throw('failed');
+    expect(() => none.expect('failed')).toThrow('failed');
   });
 
   it('should have the function unwrap', () => {
     const none = OptionT.none();
 
     expectANone(none);
-    expect(() => none.unwrap()).to.throw('Called unwrap on a None value');
+    expect(() => none.unwrap()).toThrow('Called unwrap on a None value');
   });
 
   it('should have the function unwrapOr', () => {
     const none = OptionT.none();
 
     expectANone(none);
-    expect(none.unwrapOr(10)).to.equal(10);
+    expect(none.unwrapOr(10)).toEqual(10);
   });
 
   it('should have the function unwrapOrElse', () => {
     const none = OptionT.none();
 
     expectANone(none);
-    expect(none.unwrapOrElse(() => 1)).to.equal(1);
+    expect(none.unwrapOrElse(() => 1)).toEqual(1);
   });
 
   it('should have the function map', () => {
@@ -60,7 +58,7 @@ describe('#OptionT - None', () => {
     expectANone(none);
 
     const mapResult = none.map((x: number) => x * 2);
-    expect(mapResult.isNone()).to.be.true;
+    expect(mapResult.isNone()).toEqual(true);
   });
 
   it('should have the function mapOr', () => {
@@ -70,7 +68,7 @@ describe('#OptionT - None', () => {
 
     const mapResult = none.mapOr(1, (x: number) => x * 2);
 
-    expect(mapResult).to.equal(1);
+    expect(mapResult).toEqual(1);
   });
 
   it('should have the function mapOrElse', () => {
@@ -80,7 +78,7 @@ describe('#OptionT - None', () => {
 
     const mapResult = none.mapOrElse(() => 1, (x: number) => x * 2);
 
-    expect(mapResult).to.equal(1);
+    expect(mapResult).toEqual(1);
   });
 
   it('should have the function and', () => {
@@ -88,8 +86,8 @@ describe('#OptionT - None', () => {
 
     expectANone(none);
 
-    expect(none.and(OptionT.some(1)).isNone()).to.be.true;
-    expect(none.and(OptionT.none()).isNone()).to.be.true;
+    expect(none.and(OptionT.some(1)).isNone()).toEqual(true);
+    expect(none.and(OptionT.none()).isNone()).toEqual(true);
   });
 
   it('should have the function or', () => {
@@ -98,9 +96,9 @@ describe('#OptionT - None', () => {
     expectANone(none);
 
     const orResult = none.or(OptionT.some(1));
-    expect(orResult.isSome()).to.be.true;
-    expect(orResult.unwrap()).to.equal(1);
-    expect(none.or(OptionT.none()).isNone()).to.be.true;
+    expect(orResult.isSome()).toEqual(true);
+    expect(orResult.unwrap()).toEqual(1);
+    expect(none.or(OptionT.none()).isNone()).toEqual(true);
   });
 
   it('should have the function flatMap', () => {
@@ -110,8 +108,8 @@ describe('#OptionT - None', () => {
 
     expectANone(none);
 
-    expect(none.flatMap(nothing).isNone()).to.be.true;
-    expect(none.flatMap(something).isNone()).to.be.true;
+    expect(none.flatMap(nothing).isNone()).toEqual(true);
+    expect(none.flatMap(something).isNone()).toEqual(true);
   });
 
   it('should have the function orElse', () => {
@@ -121,9 +119,9 @@ describe('#OptionT - None', () => {
 
     expectANone(none);
 
-    expect(none.orElse(nothing).isNone()).to.be.true;
-    expect(none.orElse(something).isSome()).to.be.true;
-    expect(none.orElse(() => OptionT.some('foobar')).unwrap()).to.equal('foobar');
+    expect(none.orElse(nothing).isNone()).toEqual(true);
+    expect(none.orElse(something).isSome()).toEqual(true);
+    expect(none.orElse(() => OptionT.some('foobar')).unwrap()).toEqual('foobar');
   });
 
   it('should have the function match', () => {
@@ -134,7 +132,7 @@ describe('#OptionT - None', () => {
     expect(none.match({
       some: () => 1,
       none: () => 0,
-    })).to.equal(0);
+    })).toEqual(0);
   });
 
   it('should have the function clone', () => {
@@ -144,7 +142,7 @@ describe('#OptionT - None', () => {
     const noneAgain = none.clone();
     expectANone(noneAgain);
 
-    expect(none).to.not.equal(noneAgain);
+    expect(none).not.toBe(noneAgain);
   });
 
   it('should have the function filter', () => {
@@ -162,7 +160,7 @@ describe('#OptionT - None', () => {
     let val = 0;
 
     none.forEach(x => val = x);
-    expect(val).to.equal(0);
+    expect(val).toEqual(0);
   });
 
   it('should have the function equals', () => {
@@ -171,31 +169,31 @@ describe('#OptionT - None', () => {
     expectANone(a);
     expectASome(b);
 
-    expect(a.equals(b)).to.be.false;
+    expect(a.equals(b)).toEqual(false);
 
     const c = OptionT.none();
     const d = OptionT.none();
     expectANone(c);
     expectANone(d);
 
-    expect(c.equals(d)).to.be.true;
+    expect(c.equals(d)).toEqual(true);
   });
 
   it('should have the function hasValue', () => {
     const none = OptionT.none();
     expectANone(none);
 
-    expect(none.hasValue(1)).to.be.false;
+    expect(none.hasValue(1)).toEqual(false);
   });
 
   it('should have the function contains', () => {
     const none = OptionT.none();
     expectANone(none);
 
-    expect(none.contains(x => x > 0)).to.be.false;
-    expect(none.contains(x => x < 0)).to.be.false;
+    expect(none.contains(x => x > 0)).toEqual(false);
+    expect(none.contains(x => x < 0)).toEqual(false);
 
     const noneAgain = OptionT.none();
-    expect(noneAgain.contains(x => x.hasOwnProperty('foo'))).to.be.false;
+    expect(noneAgain.contains(x => x.hasOwnProperty('foo'))).toEqual(false);
   });
 });

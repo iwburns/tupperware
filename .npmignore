@@ -146,7 +146,7 @@ jspm_packages/
 typings/
 
 # compiled Javascript
-dist/
+# dist/
 
 # typescript source
 src/
@@ -176,9 +176,11 @@ test/
 # End of https://www.gitignore.io/api/node
 
 # docs dir
-doc/
+docs
 
 # configuration files
+.editorconfig
 .travis.yml
 tsconfig.json
 tslint.json
+rollup.config.ts

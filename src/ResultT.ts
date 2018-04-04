@@ -15,6 +15,7 @@ export interface ResultMatch<T, E, U, F> {
  * or an `Err` value (implying the presence of an error).
  */
 export default abstract class ResultT<T, E> {
+  // tslint:disable-next-line:no-empty
   constructor() {}
 
   static ok<T>(val: T): ResultT<T, any> {
