@@ -86,12 +86,12 @@ export default abstract class OptionT<T> {
    * ```
    * const maybeOne = OptionT.some(1);
    * // this won't throw, because it's a Some value.
-   * const one = maybeOne.expect('could not unwrap a Some');
+   * const one = maybeOne.unwrap('could not unwrap a Some');
    *
    * // but:
    * const maybeTwo = OptionT.none();
    * // this will throw, because it's a None value.
-   * const two = maybeTwo.expect('could not unwrap a Some');
+   * const two = maybeTwo.unwrap('could not unwrap a Some');
    * ```
    *
    * @param {string} message
