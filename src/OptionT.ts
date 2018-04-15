@@ -17,21 +17,21 @@ export default abstract class OptionT<T> {
   // tslint:disable-next-line:no-empty
   constructor() {}
 
-  static of<T>(value?: T): OptionT<T> {
+  static of<A>(value?: A): OptionT<A> {
     if (value === null || typeof value === 'undefined') {
       return new None();
     }
     return new Some(value);
   }
 
-  static some<T>(value: T): OptionT<T> {
+  static some<A>(value: A): OptionT<A> {
     if (value === null || typeof value === 'undefined') {
       throw Error('Cannot create a Some of a null or undefined value');
     }
     return new Some(value);
   }
 
-  static none<T>(value?: T): OptionT<T> {
+  static none<A>(value?: A): OptionT<A> {
     if (value === null || typeof value === 'undefined') {
       return new None();
     }
@@ -80,42 +80,24 @@ export default abstract class OptionT<T> {
 
   /**
    * Returns the value contained by this [[OptionT]] if it is a `Some`.  Throws an error
-   * containing `message` if this [[OptionT]] is a `None`.
+   * containing `message` if this [[OptionT]] is a `None` or a default `message` if one is
+   * not provided.
    *
    * ```
    * const maybeOne = OptionT.some(1);
    * // this won't throw, because it's a Some value.
-   * const one = maybeOne.expect('couldn't unwrap a Some');
+   * const one = maybeOne.expect('could not unwrap a Some');
    *
    * // but:
    * const maybeTwo = OptionT.none();
    * // this will throw, because it's a None value.
-   * const two = maybeTwo.expect('can not unwrap a Some');
+   * const two = maybeTwo.expect('could not unwrap a Some');
    * ```
    *
    * @param {string} message
    * @returns {T}
    */
-  abstract expect(message: string): T;
-
-  /**
-   * Returns the value contained by this [[OptionT]] if it is a `Some`.  Throws a pre-defined
-   * error if this [[OptionT]] is a `None`.
-   *
-   * ```
-   * const maybeOne = OptionT.some(1);
-   * // this won't throw, because it's a Some value.
-   * const one = maybeOne.unwrap();
-   *
-   * // but:
-   * const maybeTwo = OptionT.none();
-   * // this will throw, because it's a None value.
-   * const two = maybeTwo.unwrap();
-   * ```
-   *
-   * @returns {T}
-   */
-  abstract unwrap(): T;
+  abstract unwrap(message?: string): T;
 
   /**
    * Returns the value contained by this [[OptionT]] if it is a `Some`.  Returns `other` if
@@ -178,52 +160,6 @@ export default abstract class OptionT<T> {
    * @returns {OptionT<U>}
    */
   abstract map<U>(func: (val: T) => U): OptionT<U>;
-
-  /**
-   * Maps an [[OptionT]]&lt;T&gt; to a U by applying `func` to the value contained in this
-   * [[OptionT]].
-   *
-   * If this [[OptionT]] is a `Some` value, the returned value will be the return of `func`;
-   * otherwise the returned value will be `other`.
-   *
-   * ```
-   * const maybeOne = OptionT.some(1);
-   * const maybeTwo = maybeOne.mapOr(3, x => x * 2);
-   * // maybeTwo === 2
-   *
-   * const maybeThree = OptionT.none();
-   * const maybeSix = maybeThree.mapOr(7, x => x * 2);
-   * // maybeSix === 7
-   * ```
-   *
-   * @param {U} other
-   * @param {(val: T) => U} func
-   * @returns {OptionT<U>}
-   */
-  abstract mapOr<U>(other: U, func: (val: T) => U): U;
-
-  /**
-   * Maps an [[OptionT]]&lt;T&gt; to a U by applying `func` to the value contained in this
-   * [[OptionT]].
-   *
-   * If this [[OptionT]] is a `Some` value, the returned value will be the return of `func`;
-   * otherwise the returned value will be the value returned from `other`.
-   *
-   * ```
-   * const maybeOne = OptionT.some(1);
-   * const maybeTwo = maybeOne.mapOrElse(() => 3, x => x * 2);
-   * // maybeTwo === 2
-   *
-   * const maybeThree = OptionT.none();
-   * const maybeSix = maybeThree.mapOr(() => 7, x => x * 2);
-   * // maybeSix === 7
-   * ```
-   *
-   * @param {() => U} other
-   * @param {(val: T) => U} func
-   * @returns {U}
-   */
-  abstract mapOrElse<U>(other: () => U, func: (val: T) => U): U;
 
   /**
    * Returns a `None` value if this [[OptionT]] is a `None`; otherwise returns `other`.
@@ -352,36 +288,6 @@ export default abstract class OptionT<T> {
   abstract match<U, V>(options: OptMatch<T, U, V>): U | V;
 
   /**
-   * Returns a new [[OptionT]] containing the same data as the current one.
-   *
-   * Note: does not perform any deep copying of the contained data.
-   *
-   * ```
-   * const one = OptionT.some(1);
-   *
-   * const oneAgain = maybeOne.clone();
-   * // one !== oneAgain
-   * // one.unwrap() === oneAgain.unwrap()
-   *
-   * const foo = OptionT.some({
-   *   bar: 'baz'
-   * });
-   *
-   * const fooAgain = foo.clone();
-   * // foo !== fooAgain
-   * // foo.unwrap() === fooAgain.unwrap()
-   * // because they're the same object
-   *
-   * const nope = OptionT.none();
-   * const nada = nope.clone();
-   * // nope !== nada
-   * ```
-   *
-   * @returns {OptionT<T>}
-   */
-  abstract clone(): OptionT<T>;
-
-  /**
    * Returns `this` [[OptionT]] if it is a `Some` value and if `condition` returns `true`;
    * otherwise returns a `None` value.
    *
@@ -419,172 +325,6 @@ export default abstract class OptionT<T> {
    * @param {(val: any) => void} func
    */
   abstract forEach(func: (val: any) => void): void;
-
-  /**
-   * Returns `true` if both [[OptionT]]s are `None`s or (if they are both `Some`s) if they both
-   * contain the same value;  otherwise returns `false`.
-   *
-   * Note: No deep comparison is done on the contained values.
-   *
-   * ```
-   * const a = OptionT.some(1);
-   * const b = OptionT.some(1);
-   * // a.equals(b) === true
-   *
-   * const c = OptionT.none();
-   * const d = OptionT.none();
-   * // c.equals(d) === true
-   *
-   * const e = OptionT.some({ foo: 'bar' });
-   * const f = OptionT.some({ foo: 'bar' });
-   * // e.equals(f) === false
-   * // because they're different objects
-   * ```
-   *
-   * @param {OptionT<any>} other
-   * @returns {boolean}
-   */
-  abstract equals(other: OptionT<any>): boolean;
-
-  /**
-   * Returns `true` if the [[OptionT]] is a `Some` and contains the given value `val`, otherwise
-   * returns `false`.
-   *
-   * Note: No deep comparison is done on the contained values.  If you need to do deep
-   * comparisons against the contained value, consider using [[contains]] instead.
-   *
-   * ```
-   * const one = OptionT.some(1);
-   * // one.hasValue(1) === true
-   *
-   * const none = OptionT.none();
-   * // none.hasValue(1) === false
-   *
-   * const obj = OptionT.some({ foo: 'bar' });
-   * // obj.hasValue({ foo: 'bar' }) === false
-   * // because they're different objects
-   * ```
-   *
-   * @param {T} val
-   * @returns {boolean}
-   */
-  abstract hasValue(val: any): boolean;
-
-  /**
-   * Returns `false` if the [[OptionT]] is a `None`, otherwise calls `condition`
-   * with the contained value and returns the result.
-   *
-   * ```
-   * const one = OptionT.some(1);
-   * // one.contains(x => x > 0) === true
-   *
-   * const obj = OptionT.some({ foo: 'bar' });
-   * // obj.contains(x => x.foo === 'bar') === true
-   *
-   * const none = OptionT.none();
-   * // none.contains(x => x.a === 'b') === false
-   * ```
-   *
-   * @param {(val: T) => boolean} condition
-   * @returns {boolean}
-   */
-  abstract contains(condition: (val: T) => boolean): boolean;
-}
-
-/**
- * A class representing the `None`-type variant of the `OptionT` type.
- *
- * Instances of this class contain no internal value.  They simply wrap the concept of 'nothing'
- * inside the same `OptionT` API defined by [[OptionT]].
- */
-class None extends OptionT<any> {
-  constructor() {
-    super();
-  }
-
-  isSome(): boolean {
-    return false;
-  }
-
-  isNone(): boolean {
-    return true;
-  }
-
-  toString(): string {
-    return 'None()';
-  }
-
-  expect(message: string): never {
-    throw new Error(message);
-  }
-
-  unwrap(): never {
-    throw new Error('Called unwrap on a None value.');
-  }
-
-  unwrapOr<T>(other: T): T {
-    return other;
-  }
-
-  unwrapOrElse<T>(func: () => T): T {
-    return func();
-  }
-
-  map<T, U>(func: (val: T) => U): OptionT<U> {
-    return new None() as OptionT<U>;
-  }
-
-  mapOr<T, U>(other: U, func: (val: T) => U): U {
-    return other;
-  }
-
-  mapOrElse<T, U>(other: () => U, func: (val: T) => U): U {
-    return other();
-  }
-
-  and<U>(other: OptionT<U>): OptionT<U> {
-    return new None() as OptionT<U>;
-  }
-
-  flatMap<T, U>(func: (val: T) => OptionT<U>): OptionT<U> {
-    return new None() as OptionT<U>;
-  }
-
-  or<T>(other: OptionT<T>): OptionT<T> {
-    return other;
-  }
-
-  orElse<T>(func: () => OptionT<T>): OptionT<T> {
-    return func();
-  }
-
-  match<T, U, V>(options: OptMatch<T, U, V>): V | U {
-    return options.none();
-  }
-
-  clone<T>(): OptionT<T> {
-    return new None();
-  }
-
-  filter<T>(condition: (val: T) => boolean): OptionT<T> {
-    return new None();
-  }
-
-  forEach(func: (val: any) => void): void {
-    return;
-  }
-
-  equals<T>(other: OptionT<T>): boolean {
-    return other.isNone();
-  }
-
-  hasValue(val: any): boolean {
-    return false;
-  }
-
-  contains<T>(condition: (val: T) => boolean): boolean {
-    return false;
-  }
 }
 
 /**
@@ -612,11 +352,7 @@ class Some<T> extends OptionT<T> {
     return `Some( ${this.value} )`;
   }
 
-  expect(message: string): T {
-    return this.value;
-  }
-
-  unwrap(): T {
+  unwrap(message?: string): T {
     return this.value;
   }
 
@@ -630,14 +366,6 @@ class Some<T> extends OptionT<T> {
 
   map<U>(func: (val: T) => U): OptionT<U> {
     return OptionT.of(func(this.value));
-  }
-
-  mapOr<U>(other: U, func: (val: T) => U): U {
-    return func(this.value);
-  }
-
-  mapOrElse<U>(other: () => U, func: (val: T) => U): U {
-    return func(this.value);
   }
 
   and<U>(other: OptionT<U>): OptionT<U> {
@@ -660,10 +388,6 @@ class Some<T> extends OptionT<T> {
     return options.some(this.value);
   }
 
-  clone(): OptionT<T> {
-    return OptionT.of(this.value);
-  }
-
   filter(condition: (val: T) => boolean): OptionT<T> {
     if (condition(this.value)) {
       return this;
@@ -674,19 +398,75 @@ class Some<T> extends OptionT<T> {
   forEach(func: (val: any) => void): void {
     func(this.value);
   }
+}
 
-  equals(other: OptionT<T>): boolean {
-    if (other.isNone()) {
-      return false;
+/**
+ * A class representing the `None`-type variant of the `OptionT` type.
+ *
+ * Instances of this class contain no internal value.  They simply wrap the concept of 'nothing'
+ * inside the same `OptionT` API defined by [[OptionT]].
+ */
+class None extends OptionT<any> {
+  constructor() {
+    super();
+  }
+
+  isSome(): boolean {
+    return false;
+  }
+
+  isNone(): boolean {
+    return true;
+  }
+
+  toString(): string {
+    return 'None()';
+  }
+
+  unwrap(message?: string): never {
+    if (typeof message !== 'undefined' && message !== null) {
+      throw new Error(message);
     }
-    return this.value === other.unwrap();
+    throw new Error('Called unwrap on a None value.');
   }
 
-  hasValue(val: any): boolean {
-    return this.value === val;
+  unwrapOr<T>(other: T): T {
+    return other;
   }
 
-  contains(condition: (val: T) => boolean): boolean {
-    return condition(this.value);
+  unwrapOrElse<T>(func: () => T): T {
+    return func();
+  }
+
+  map<T, U>(func: (val: T) => U): OptionT<U> {
+    return new None() as OptionT<U>;
+  }
+
+  and<U>(other: OptionT<U>): OptionT<U> {
+    return new None() as OptionT<U>;
+  }
+
+  flatMap<T, U>(func: (val: T) => OptionT<U>): OptionT<U> {
+    return new None() as OptionT<U>;
+  }
+
+  or<T>(other: OptionT<T>): OptionT<T> {
+    return other;
+  }
+
+  orElse<T>(func: () => OptionT<T>): OptionT<T> {
+    return func();
+  }
+
+  match<T, U, V>(options: OptMatch<T, U, V>): V | U {
+    return options.none();
+  }
+
+  filter<T>(condition: (val: T) => boolean): OptionT<T> {
+    return new None();
+  }
+
+  forEach(func: (val: any) => void): void {
+    return;
   }
 }

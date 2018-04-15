@@ -28,7 +28,7 @@ describe('#OptionT - None', () => {
     const none = OptionT.none();
 
     expectANone(none);
-    expect(() => none.expect('failed')).toThrow('failed');
+    expect(() => none.unwrap('failed')).toThrow('failed');
   });
 
   it('should have the function unwrap', () => {
@@ -59,26 +59,6 @@ describe('#OptionT - None', () => {
 
     const mapResult = none.map((x: number) => x * 2);
     expect(mapResult.isNone()).toEqual(true);
-  });
-
-  it('should have the function mapOr', () => {
-    const none = OptionT.none();
-
-    expectANone(none);
-
-    const mapResult = none.mapOr(1, (x: number) => x * 2);
-
-    expect(mapResult).toEqual(1);
-  });
-
-  it('should have the function mapOrElse', () => {
-    const none = OptionT.none();
-
-    expectANone(none);
-
-    const mapResult = none.mapOrElse(() => 1, (x: number) => x * 2);
-
-    expect(mapResult).toEqual(1);
   });
 
   it('should have the function and', () => {
@@ -135,16 +115,6 @@ describe('#OptionT - None', () => {
     })).toEqual(0);
   });
 
-  it('should have the function clone', () => {
-    const none = OptionT.none();
-    expectANone(none);
-
-    const noneAgain = none.clone();
-    expectANone(noneAgain);
-
-    expect(none).not.toBe(noneAgain);
-  });
-
   it('should have the function filter', () => {
     const none = OptionT.none();
     expectANone(none);
@@ -161,39 +131,5 @@ describe('#OptionT - None', () => {
 
     none.forEach(x => val = x);
     expect(val).toEqual(0);
-  });
-
-  it('should have the function equals', () => {
-    const a = OptionT.none();
-    const b = OptionT.some(1);
-    expectANone(a);
-    expectASome(b);
-
-    expect(a.equals(b)).toEqual(false);
-
-    const c = OptionT.none();
-    const d = OptionT.none();
-    expectANone(c);
-    expectANone(d);
-
-    expect(c.equals(d)).toEqual(true);
-  });
-
-  it('should have the function hasValue', () => {
-    const none = OptionT.none();
-    expectANone(none);
-
-    expect(none.hasValue(1)).toEqual(false);
-  });
-
-  it('should have the function contains', () => {
-    const none = OptionT.none();
-    expectANone(none);
-
-    expect(none.contains(x => x > 0)).toEqual(false);
-    expect(none.contains(x => x < 0)).toEqual(false);
-
-    const noneAgain = OptionT.none();
-    expect(noneAgain.contains(x => x.hasOwnProperty('foo'))).toEqual(false);
   });
 });

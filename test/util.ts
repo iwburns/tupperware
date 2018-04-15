@@ -2,24 +2,17 @@ export function expectAnOption(val) : void {
   expect(val).toHaveProperty('isSome'); expect(val.isSome).toBeInstanceOf(Function);
   expect(val).toHaveProperty('isNone'); expect(val.isNone).toBeInstanceOf(Function);
   expect(val).toHaveProperty('toString'); expect(val.toString).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('expect'); expect(val.expect).toBeInstanceOf(Function);
   expect(val).toHaveProperty('unwrap'); expect(val.unwrap).toBeInstanceOf(Function);
   expect(val).toHaveProperty('unwrapOr'); expect(val.unwrapOr).toBeInstanceOf(Function);
   expect(val).toHaveProperty('unwrapOrElse'); expect(val.unwrapOrElse).toBeInstanceOf(Function);
   expect(val).toHaveProperty('map'); expect(val.map).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('mapOr'); expect(val.mapOr).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('mapOrElse'); expect(val.mapOrElse).toBeInstanceOf(Function);
   expect(val).toHaveProperty('and'); expect(val.and).toBeInstanceOf(Function);
   expect(val).toHaveProperty('flatMap'); expect(val.flatMap).toBeInstanceOf(Function);
   expect(val).toHaveProperty('or'); expect(val.or).toBeInstanceOf(Function);
   expect(val).toHaveProperty('orElse'); expect(val.orElse).toBeInstanceOf(Function);
   expect(val).toHaveProperty('match'); expect(val.match).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('clone'); expect(val.clone).toBeInstanceOf(Function);
   expect(val).toHaveProperty('filter'); expect(val.filter).toBeInstanceOf(Function);
   expect(val).toHaveProperty('forEach'); expect(val.forEach).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('equals'); expect(val.equals).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('hasValue'); expect(val.hasValue).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('contains'); expect(val.contains).toBeInstanceOf(Function);
 }
 
 export function expectASome(val) : void {

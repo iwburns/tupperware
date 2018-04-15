@@ -28,7 +28,7 @@ describe('#OptionT - Some', () => {
     const one = OptionT.some(1);
 
     expectASome(one);
-    expect(one.expect('it failed')).toEqual(1);
+    expect(one.unwrap('it failed')).toEqual(1);
   });
 
   it('should have the function unwrap', () => {
@@ -72,24 +72,6 @@ describe('#OptionT - Some', () => {
 
     expectANone(four);
     expect(four.isSome()).toEqual(false);
-  });
-
-  it('should have the function mapOr', () => {
-    const one = OptionT.some(1);
-    expectASome(one);
-
-    const mapResult = one.mapOr(3, (x: number) => x * 2);
-
-    expect(mapResult).toEqual(2);
-  });
-
-  it('should have the function mapOrElse', () => {
-    const one = OptionT.some(1);
-    expectASome(one);
-
-    const mapResult = one.mapOrElse(() => 3, (x: number) => x * 2);
-
-    expect(mapResult).toEqual(2);
   });
 
   it('should have the function and', () => {
@@ -192,17 +174,6 @@ describe('#OptionT - Some', () => {
     expect(three).toEqual(3);
   });
 
-  it('should have the function clone', () => {
-    const one = OptionT.some(1);
-    expectASome(one);
-
-    const oneAgain = one.clone();
-    expectASome(oneAgain);
-
-    expect(one.unwrap()).toBe(oneAgain.unwrap());
-    expect(one).not.toBe(oneAgain);
-  });
-
   it('should have the function filter', () => {
     const one = OptionT.some(1);
     expectASome(one);
@@ -225,74 +196,5 @@ describe('#OptionT - Some', () => {
 
     one.forEach(x => val = x);
     expect(val).toEqual(1);
-  });
-
-  it('should have the function equals', () => {
-    const a = OptionT.some(1);
-    const b = OptionT.some(1);
-    expectASome(a);
-    expectASome(b);
-
-    expect(a.equals(b)).toEqual(true);
-
-    const c = OptionT.some({ foo: 'bar' });
-    const d = OptionT.some({ foo: 'bar' });
-    expectASome(c);
-    expectASome(d);
-
-    expect(c.equals(d)).toEqual(false);
-
-    const obj = {
-      foo: 'bar',
-    };
-
-    const e = OptionT.some(obj);
-    const f = OptionT.some(obj);
-    expectASome(e);
-    expectASome(f);
-
-    expect(e.equals(f)).toEqual(true);
-
-    const g = OptionT.some(1);
-    const h = OptionT.none();
-    expectASome(e);
-    expectANone(h);
-
-    expect(g.equals(h)).toEqual(false);
-  });
-
-  it('should have the function hasValue', () => {
-    const one = OptionT.some(1);
-    expectASome(one);
-
-    expect(one.hasValue(1)).toEqual(true);
-    expect(one.hasValue(2)).toEqual(false);
-
-    const another = OptionT.some({ foo: 'bar' });
-    expectASome(another);
-
-    expect(another.hasValue({ foo: 'bar' })).toEqual(false);
-
-    const obj = {
-      foo: 'bar',
-    };
-    const maybeObj = OptionT.some(obj);
-    expectASome(maybeObj);
-
-    expect(maybeObj.hasValue(obj)).toEqual(true);
-  });
-
-  it('should have the function contains', () => {
-    const one = OptionT.some(1);
-    expectASome(one);
-
-    expect(one.contains(x => x > 0)).toEqual(true);
-    expect(one.contains(x => x < 0)).toEqual(false);
-
-    const obj = OptionT.some({ foo: 'bar' });
-    expectASome(obj);
-
-    expect(obj.contains(x => x.foo === 'bar')).toEqual(true);
-    expect(obj.contains(x => x.foo === 'baz')).toEqual(false);
   });
 });
