@@ -33,20 +33,6 @@ describe('#ResultT - Ok', () => {
     expectANone(r.getErr());
   });
 
-  it('should have the function expect', () => {
-    const r = ResultT.ok(1);
-    expectAnOk(r);
-    expect(r.expect('error!')).toEqual(1);
-  });
-
-  it('should have the function expectErr', () => {
-    const r = ResultT.ok(1);
-    expectAnOk(r);
-    expect(() => {
-      r.expectErr('error!');
-    }).toThrow('error!');
-  });
-
   it('should have the function unwrap', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
@@ -57,8 +43,11 @@ describe('#ResultT - Ok', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
     expect(() => {
+      r.unwrapErr('failed');
+    }).toThrow('failed');
+    expect(() => {
       r.unwrapErr();
-    }).toThrow();
+    }).toThrow('Called unwrapErr on an Ok value.');
   });
 
   it('should have the function unwrapOr', () => {
@@ -116,61 +105,5 @@ describe('#ResultT - Ok', () => {
       err: _ => 'new error',
     });
     expect(m).toEqual(2);
-  });
-
-  it('should have the function clone', () => {
-    const obj = {};
-    const r = ResultT.ok(obj);
-    expectAnOk(r);
-    const m = r.clone();
-    expectAnOk(m);
-    expect(m.unwrap()).toBe(obj);
-  });
-
-  it('should have the function equals', () => {
-    const r = ResultT.ok(1);
-    const r2 = ResultT.ok(1);
-    expectAnOk(r);
-    expectAnOk(r2);
-    expect(r.equals(r2)).toEqual(true);
-
-    const r3 = ResultT.ok(2);
-    expectAnOk(r3);
-    expect(r.equals(r3)).toEqual(false);
-
-    const r4 = ResultT.err(1);
-    expectAnErr(r4);
-    expect(r.equals(r4)).toEqual(false);
-  });
-
-  it('should have the function hasValue', () => {
-    const r = ResultT.ok(1);
-    expectAnOk(r);
-
-    expect(r.hasValue(1)).toEqual(true);
-    expect(r.hasValue('two')).toEqual(false);
-
-    const obj = {};
-    const r2 = ResultT.ok(obj);
-    expectAnOk(r2);
-
-    expect(r2.hasValue(obj)).toEqual(true);
-    expect(r2.hasValue({})).toEqual(false);
-  });
-
-  it('should have the function contains', () => {
-    const r = ResultT.ok({ a: 'b' });
-    expectAnOk(r);
-
-    const aEqualsB = function(x) {
-      return x.a === 'b'
-    };
-
-    const aEqualsC = function(x) {
-      return x.a === 'c';
-    };
-
-    expect(r.contains(aEqualsB)).toEqual(true);
-    expect(r.contains(aEqualsC)).toEqual(false);
   });
 });

@@ -107,81 +107,43 @@ export default abstract class ResultT<T, E> {
 
   /**
    * Returns the value contained by this [[ResultT]] if it is an `Ok`.  Throws an error
-   * containing `message` if it is an `Err`.
+   * containing `message` if it is an `Err` or a default message if none is provided.
    *
    * ```
    * const maybeOne = ResultT.ok(1);
    * // this won't throw because it's an `Ok` value.
-   * const one = maybeOne.expect("couldn't unwrap an Ok");
+   * const one = maybeOne.unwrap("couldn't unwrap an Ok");
    *
    * // but:
    * const maybeOne = ResultT.err('parsing error');
    * // this will throw because it's an `Err` value.
-   * const one = maybeOne.expect("couldn't unwrap an Ok");
+   * const one = maybeOne.unwrap("couldn't unwrap an Ok");
    * ```
    *
    * @param {string} message
    * @returns {T}
    */
-  abstract expect(message: string): T;
+  abstract unwrap(message?: string): T;
 
   /**
    * Returns the value contained by this [[ResultT]] if it is an `Err`.  Throws an error
-   * containing `message` if it is an `Ok`.
+   * containing `message` if it is an `Ok` or a default message if none is provided.
    *
    * ```
    * const maybeError = ResultT.ok(1);
    * // this will throw because it's an `Ok` value.
-   * const error = maybeError.expectErr("couldn't unwrap an Err");
+   * const error = maybeError.unwrapErr("couldn't unwrap an Err");
    *
    * // but:
    * const maybeError = ResultT.err('parsing error');
    * // this won't throw because it's an `Err` value.
-   * const error = maybeError.expectErr("couldn't unwrap an Err");
+   * const error = maybeError.unwrapErr("couldn't unwrap an Err");
    * ```
    *
    * @param {string} message
    * @returns {T}
    */
-  abstract expectErr(message: string): E;
-
-  /**
-   * Returns the value contained by this [[ResultT]] if it is an `Ok`.  Throws a
-   * pre-defined error if it is an `Err`.
-   *
-   * ```
-   * const maybeOne = ResultT.ok(1);
-   * // this won't throw, because it's an Ok value.
-   * const one = maybeOne.unwrap();
-   *
-   * // but:
-   * const maybeOne = ResultT.err('parsing error');
-   * // this will throw, because it's a Err value.
-   * const one = maybeOne.unwrap();
-   * ```
-   *
-   * @returns {T}
-   */
-  abstract unwrap(): T;
-
-  /**
-   * Returns the value contained by this [[ResultT]] if it is an `Err`.  Throws a
-   * pre-defined error if it is an `Ok`.
-   *
-   * ```
-   * const maybeOne = ResultT.ok(1);
-   * // this will throw, because it's an Ok value.
-   * const error = maybeOne.unwrapErr();
-   *
-   * // but:
-   * const maybeOne = ResultT.err('parsing error');
-   * // this won't throw, because it's a Err value.
-   * const error = maybeOne.unwrapErr();
-   * ```
-   *
-   * @returns {T}
-   */
-  abstract unwrapErr(): E;
+  abstract unwrapErr(message?: string): E;
 
   /**
    * Returns the value contained by this [[ResultT]] if it is an `Ok`, otherwise
@@ -353,90 +315,6 @@ export default abstract class ResultT<T, E> {
    * @returns {U | F}
    */
   abstract match<U, F>(options: ResultMatch<T, E, U, F>): U | F;
-
-  /**
-   * Returns a new [[ResultT]] containing the same data as the current one.
-   *
-   * Note: does not perform any deep copying of the contained data.
-   *
-   * ```
-   * const one = ResultT.ok(1);
-   *
-   * const oneAgain = maybeOne.clone();
-   * // one !== oneAgain
-   * // one.unwrap() === oneAgain.unwrap()
-   *
-   * const foo = ResultT.ok({
-   *   bar: 'baz'
-   * });
-   *
-   * const fooAgain = foo.clone();
-   * // foo !== fooAgain
-   * // foo.unwrap() === fooAgain.unwrap()
-   * // because they're the same object
-   *
-   * const error = ResultT.err(2);
-   * const errorAgain = error.clone();
-   * // error !== errorAgain
-   * // error.unwrap() === errorAgain.unwrap()
-   * ```
-   *
-   * @returns {ResultT<T, E>}
-   */
-  abstract clone(): ResultT<T, E>;
-
-  /**
-   * Compares two [[ResultT]]s.  Returns true if they are both the same type and contain
-   * the same value.
-   *
-   * ```
-   * const okay = ResultT.ok(1);
-   * const error = ResultT.err(1);
-   * // okay.equals(error) === false
-   *
-   * const one = ResultT.ok('one');
-   * const oneAgain = ResultT.ok('oneAgain');
-   * // one.equals(oneAgain) === false
-   *
-   * const nope = ResultT.err('no');
-   * const nada = ResultT.err('no');
-   * // nope.equals(nada) === true
-   * ```
-   *
-   * @param {ResultT<any, any>} other
-   * @returns {boolean}
-   */
-  abstract equals(other: ResultT<T, E>): boolean;
-
-  /**
-   * Returns true if this [[ResultT]] contains the given value; returns false if it does not.
-   *
-   * ```
-   * const okay = ResultT.ok(1);
-   * // okay.hasValue('one') === false
-   * // okay.hasValue(1) === true
-   * ```
-   *
-   * @param val
-   * @returns {boolean}
-   */
-  abstract hasValue(val: T | E): boolean;
-
-  /**
-   * Calls `func` with the value in this [[ResultT]] and returns the result.
-   *
-   * ```
-   * const okay = ResultT.ok({
-   *   a: 'b',
-   * });
-   *
-   * // okay.contains(x => x.a === 'b') === true
-   * ```
-   *
-   * @param {(val: (T | E)) => boolean} func
-   * @returns {boolean}
-   */
-  abstract contains(func: (val: T | E) => boolean): boolean;
 }
 
 class Ok<T> extends ResultT<T, any> {
@@ -467,20 +345,15 @@ class Ok<T> extends ResultT<T, any> {
     return OptionT.none();
   }
 
-  expect(message: string): T {
+  unwrap(message?: string): T {
     return this.value;
   }
 
-  expectErr<E>(message: string): E {
-    throw new Error(message);
-  }
-
-  unwrap(): T {
-    return this.value;
-  }
-
-  unwrapErr<E>(): E {
-    throw new Error('Called unwrap on an Ok value.');
+  unwrapErr<E>(message?: string): never {
+    if (typeof message !== 'undefined' && message !== null) {
+      throw new Error(message);
+    }
+    throw new Error('Called unwrapErr on an Ok value.');
   }
 
   unwrapOr(other: T): T {
@@ -509,25 +382,6 @@ class Ok<T> extends ResultT<T, any> {
 
   match<E, U, F>(options: ResultMatch<T, E, U, F>): U | F {
     return options.ok(this.value);
-  }
-
-  clone<E>(): ResultT<T, E> {
-    return ResultT.ok(this.value);
-  }
-
-  equals(other: ResultT<T, any>): boolean {
-    if (other.isErr()) {
-      return false;
-    }
-    return other.hasValue(this.value);
-  }
-
-  hasValue(val: any): boolean {
-    return this.value === val;
-  }
-
-  contains(func: (val: any) => boolean): boolean {
-    return func(this.value);
   }
 }
 
@@ -559,19 +413,14 @@ class Err<E> extends ResultT<any, E> {
     return OptionT.some(this.error);
   }
 
-  expect<T>(message: string): T {
-    throw new Error(message);
+  unwrap<T>(message?: string): never {
+    if (typeof message !== 'undefined' && message !== null) {
+      throw new Error(message);
+    }
+    throw new Error('Called unwrap on an Err value.');
   }
 
-  expectErr(message: string): E {
-    return this.error;
-  }
-
-  unwrap<T>(): T {
-    throw new Error('Called unwrap on a Err value.');
-  }
-
-  unwrapErr(): E {
+  unwrapErr(message: string): E {
     return this.error;
   }
 
@@ -601,24 +450,5 @@ class Err<E> extends ResultT<any, E> {
 
   match<T, U, F>(options: ResultMatch<T, E, U, F>): U | F {
     return options.err(this.error);
-  }
-
-  clone<T>(): ResultT<T, E> {
-    return ResultT.err(this.error);
-  }
-
-  equals(other: ResultT<any, E>): boolean {
-    if (other.isOk()) {
-      return false;
-    }
-    return other.hasValue(this.error);
-  }
-
-  hasValue(val: any): boolean {
-    return this.error === val;
-  }
-
-  contains(func: (val: any) => boolean): boolean {
-    return func(this.error);
   }
 }

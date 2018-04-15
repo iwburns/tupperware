@@ -33,8 +33,6 @@ export function expectAResult(val) : void {
   expect(val).toHaveProperty('toString'); expect(val.toString).toBeInstanceOf(Function);
   expect(val).toHaveProperty('getOk'); expect(val.getOk).toBeInstanceOf(Function);
   expect(val).toHaveProperty('getErr'); expect(val.getErr).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('expect'); expect(val.expect).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('expectErr'); expect(val.expectErr).toBeInstanceOf(Function);
   expect(val).toHaveProperty('unwrap'); expect(val.unwrap).toBeInstanceOf(Function);
   expect(val).toHaveProperty('unwrapErr'); expect(val.unwrapErr).toBeInstanceOf(Function);
   expect(val).toHaveProperty('unwrapOr'); expect(val.unwrapOr).toBeInstanceOf(Function);
@@ -44,10 +42,6 @@ export function expectAResult(val) : void {
   expect(val).toHaveProperty('flatMap'); expect(val.flatMap).toBeInstanceOf(Function);
   expect(val).toHaveProperty('orElse'); expect(val.orElse).toBeInstanceOf(Function);
   expect(val).toHaveProperty('match'); expect(val.match).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('clone'); expect(val.clone).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('equals'); expect(val.equals).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('hasValue'); expect(val.hasValue).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('contains'); expect(val.contains).toBeInstanceOf(Function);
 }
 
 export function expectAnOk(val) : void {
