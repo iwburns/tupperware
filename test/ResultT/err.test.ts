@@ -32,26 +32,15 @@ describe('#ResultT - Err', () => {
     expect(r.getErr().unwrap()).toEqual(1);
   });
 
-  it('should have the function expect', () => {
-    const r = ResultT.err(1);
-    expectAnErr(r);
-    expect(() => {
-      r.expect('error!');
-    }).toThrow('error!');
-  });
-
-  it('should have the function expectErr', () => {
-    const r = ResultT.err(1);
-    expectAnErr(r);
-    expect(r.expectErr('error!')).toEqual(1);
-  });
-
   it('should have the function unwrap', () => {
     const r = ResultT.err(1);
     expectAnErr(r);
     expect(() => {
+      r.unwrap('failed');
+    }).toThrow('failed');
+    expect(() => {
       r.unwrap();
-    }).toThrow();
+    }).toThrow('Called unwrap on an Err value.');
   });
 
   it('should have the function unwrapErr', () => {
@@ -116,61 +105,5 @@ describe('#ResultT - Err', () => {
       err: _ => 'new error',
     });
     expect(m).toEqual('new error');
-  });
-
-  it('should have the function clone', () => {
-    const obj = {};
-    const r = ResultT.err(obj);
-    expectAnErr(r);
-    const m = r.clone();
-    expectAnErr(m);
-    expect(m.unwrapErr()).toBe(obj);
-  });
-
-  it('should have the function equals', () => {
-    const r = ResultT.err(1);
-    const r2 = ResultT.err(1);
-    expectAnErr(r);
-    expectAnErr(r2);
-    expect(r.equals(r2)).toEqual(true);
-
-    const r3 = ResultT.err(2);
-    expectAnErr(r3);
-    expect(r.equals(r3)).toEqual(false);
-
-    const r4 = ResultT.ok(1);
-    expectAnOk(r4);
-    expect(r.equals(r4)).toEqual(false);
-  });
-
-  it('should have the function hasValue', () => {
-    const r = ResultT.err(1);
-    expectAnErr(r);
-
-    expect(r.hasValue(1)).toEqual(true);
-    expect(r.hasValue('two')).toEqual(false);
-
-    const obj = {};
-    const r2 = ResultT.err(obj);
-    expectAnErr(r2);
-
-    expect(r2.hasValue(obj)).toEqual(true);
-    expect(r2.hasValue({})).toEqual(false);
-  });
-
-  it('should have the function contains', () => {
-    const r = ResultT.err({ a: 'b' });
-    expectAnErr(r);
-
-    const aEqualsB = function(x) {
-      return x.a === 'b'
-    };
-
-    const aEqualsC = function(x) {
-      return x.a === 'c';
-    };
-
-    expect(r.contains(aEqualsB)).toEqual(true);
-    expect(r.contains(aEqualsC)).toEqual(false);
   });
 });
