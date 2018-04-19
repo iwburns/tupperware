@@ -54,8 +54,6 @@ The key to this being useful is that both `Some` and `None` are wrapped in the s
 Note: This library doesn't provide a `getProperty()` function but one could imagine it looking something like:
 ```javascript
 function getProperty(obj, propName) {
-  // if you want to you could even allow propNames with dots in them
-  // to do deep object searches
   if (typeof obj[propName] !== 'undefined' && obj[propName] !== null) {
     return OptionT.some(obj[propName]);
   }
@@ -76,7 +74,7 @@ const result = parseInt(aNumber, 10); //do our parsing
 
 const parsed = 0; // default it
 
-if (!Number.isNaN(result)) { // make sure it didn't fail
+if (!Number.isNaN(result)) { // if it didn't fail, hold on to the parsed value
   parsed = result;
 }
 
@@ -86,8 +84,8 @@ Instead you could do this:
 ```javascript
 const aNumber = 'foobar';
 
-const parsed = safeParse(aNumber, 10).unwrapOr(0); // assume safeParse returns a ResultT
-// again, we're pulling the value out of the `OptionT` (assuming it's an `Ok` this time)
+const parsed = safeParseInt(aNumber, 10).unwrapOr(0); // assume safeParseInt returns a `ResultT`
+// again, we're pulling the value out of the `ResultT` (assuming it's an `Ok` this time)
 // or defaulting to 0 if turned out to be a `Err`
 
 doSomething(parsed); // now we can use it
@@ -96,7 +94,7 @@ Or if you want to handle both cases:
 ```javascript
 const aNumber = 'foobar';
 
-const result = safeParse(aNumber, 10); // assume safeParse returns a ResultT
+const result = safeParseInt(aNumber, 10); // assume safeParse returns a `ResultT`
 
 result.match({
   ok: value => { doSomething(value) },     // pass the parsed value to `doSomething`
@@ -104,6 +102,17 @@ result.match({
 });
 ```
 Again, the key here is that both `Ok` and `Err` values are wrapped in the same API. This means you can treat them both the same and just describe how you want them to behave instead of writing all of the boiler-plate logic every time you deal with them.
+
+Note: This library doesn't provide a `safeParseInt()` function but it might look something like this if it were provided:
+```javascript
+function safeParseInt(num, radix) {
+  let parsed = parseInt(num, radix);
+  if (Number.isNaN(parsed)) {
+    return ResultT.Err(`Could not parse the value: ${num} as an integer with radix: ${radix}`);
+  }
+  return ResultT.Ok(parsed);
+}
+```
 
 ## Contributors
 * [ryanguill](https://github.com/ryanguill)
