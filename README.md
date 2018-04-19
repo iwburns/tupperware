@@ -53,7 +53,8 @@ The key to this being useful is that both `Some` and `None` are wrapped in the s
 Note: This library doesn't provide a `getProperty()` function but one could imagine it looking something like:
 ```javascript
 function getProperty(obj, propName) {
-  // if you want to you could even allow propNames with dots in them to do deep object searches
+  // if you want to you could even allow propNames with dots in them
+  // to do deep object searches
   if (typeof obj[propName] !== 'undefined' && obj[propName] !== null) {
     return OptionT.some(obj[propName]);
   }
@@ -62,5 +63,47 @@ function getProperty(obj, propName) {
 ```
 
 ### ResultT
-A value of this type is either an `Ok` or an `Err`.
+A value of this type is either an `Ok` or an `Err`.  Both of these contain an internal value, but they each convey a different meaning.  `Ok` is used to represent an operation that succeeded and returned some kind of successful result.  `Err` is used to represent an operation that failed and returned some kind of error.
 
+Consider parsing a number out of a string:
+
+Normally you might do this:
+```javascript
+const aNumber = getANumber(); //we may not know if this is a valid number
+
+const result = parseInt(aNumber, 10); //do our parsing
+
+const parsed = 0; // default it
+
+if (!Number.isNaN(result)) { // make sure it didn't fail
+  parsed = result;
+}
+
+doSomething(parsed); // now we can use it
+```
+Instead you could do this:
+```javascript
+const aNumber = 'foobar';
+
+const parsed = safeParse(aNumber, 10).unwrapOr(0); // assume safeParse returns a ResultT
+// again, we're pulling the value out of the `OptionT` (assuming it's an `Ok` this time)
+// or defaulting to 0 if turned out to be a `Err`
+
+doSomething(parsed); // now we can use it
+```
+Or if you want to handle both cases:
+```javascript
+const aNumber = 'foobar';
+
+const result = safeParse(aNumber, 10); // assume safeParse returns a ResultT
+
+result.match({
+  ok: value => { doSomething(value) },     // pass the parsed value to `doSomething`
+  err: error => { console.error(error); }, // or do whatever you need to do with the error
+});
+```
+Again, the key here is that both `Ok` and `Err` values are wrapped in the same API. This means you can treat them both the same and just describe how you want them to behave instead of writing all of the boiler-plate logic every time you deal with them.
+
+## Contributors
+* [ryanguill](https://github.com/ryanguill)
+* [brycehipp](https://github.com/brycehipp)
