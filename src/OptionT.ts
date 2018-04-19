@@ -7,16 +7,51 @@ export interface OptMatch<T, U, V> {
 }
 
 /**
- * A class representing the concept of an optional value.
+ * ## OptionT
+ * A class representing the an optional value. There are only two concrete versions of this
+ * class: [[Some]] and [[None]].
  *
- * There are only two concrete versions of this class: [[Some]] and [[None]].
- * [[Some]] contains a value and [[None]] does not, but they both are wrapped
- * in this same OptionT API.
+ * [[Some]]-values contain an internal value while [[None]]-values represent the absense of
+ * a given value.  What makes these two types useful is that they both offer the
+ * same API to the consumer.
+ *
+ * This means that you can have a function that returns an `OptionT` and you can
+ * use the returned values right away without having to check what type the are or
+ * if they're valid in one way or another.
+ *
+ * For example:
+ * ```
+ * // with a function like this we can pull values out of objects without knowing if they exist or not
+ * function getProperty(obj, propName) {
+ *   if (typeof obj[propName] !== 'undefined' && obj[propName] !== null) {
+ *     return OptionT.some(obj[propName]);
+ *   }
+ *   return OptionT.none();
+ * }
+ *
+ * const data = getSomeData();                  // maybe we don't know what this looks like
+ * getProperty(data, 'c').forEach(console.log); // if c is there console.log it, otherwise don't do anything
+ *
+ * getProperty(data, 'username')
+ *   .map(x => `Hello, ${x}`) // if we have a `Some` transform it into a new OptionT with this function
+ *   .forEach(console.log);   // if we have a `Some` pass its value into console.log, otherwise do nothing
+ * ```
+ *
  */
 export default abstract class OptionT<T> {
-  // tslint:disable-next-line:no-empty
-  constructor() {}
-
+  /**
+   * Creates an [[OptionT]] with the given value.  If `null` or `undefined` is provided
+   * a [[None]] will be returned, otherwise a [[Some]] containing the given value will
+   * be returned.
+   *
+   * ```
+   * const one = OptionT.of(1);     // one.unwrapOr(0) === 1
+   * const none = OptionT.of(null); // none.unwrapOr(0) === 0
+   * const nope = OptionT.of();     // nope.unwrapOr(0) === 0
+   * ```
+   *
+   * @param value an optional value to create an [[OptionT]] with.
+   */
   static of<A>(value?: A): OptionT<A> {
     if (value === null || typeof value === 'undefined') {
       return new None();
@@ -24,6 +59,18 @@ export default abstract class OptionT<T> {
     return new Some(value);
   }
 
+  /**
+   * Creates a [[Some]] with the given value.  If `null` or `undefined` is provided
+   * this method with throw an error.
+   *
+   * ```
+   * const one = OptionT.some(1);      // one.unwrapOr(0) === 1
+   * const none = OptionT.some(null);  // throws an error
+   * const nope = OptionT.some();      // throws an error
+   * ```
+   *
+   * @param value a value to create a [[Some]] with
+   */
   static some<A>(value: A): OptionT<A> {
     if (value === null || typeof value === 'undefined') {
       throw Error('Cannot create a Some of a null or undefined value');
@@ -31,6 +78,18 @@ export default abstract class OptionT<T> {
     return new Some(value);
   }
 
+  /**
+   * Creates a [[None]] with the given value.  If something other than `null` or
+   * `undefined` is provided this method with throw an error.
+   *
+   * ```
+   * const one = OptionT.none(1);      // throws an error
+   * const none = OptionT.none(null);  // none.unwrapOr(0) === 0
+   * const nope = OptionT.none();      // nope.unwrapOr(0) === 0
+   * ```
+   *
+   * @param value? a value to create a [[None]] with
+   */
   static none<A>(value?: A): OptionT<A> {
     if (value === null || typeof value === 'undefined') {
       return new None();
@@ -172,7 +231,6 @@ export default abstract class OptionT<T> {
    * // twoAgain.isSome() === true
    * // twoAgain.unwrap() === 2
    *
-   *
    * const three = OptionT.none();
    * const four = OptionT.some(4);
    *
@@ -216,7 +274,7 @@ export default abstract class OptionT<T> {
    *
    * ```
    * const one = OptionT.some(1);
-   * const none = OptionT.some(1);
+   * const none = OptionT.none();
    *
    * const either = one.or(none);
    * // either.isSome() === true

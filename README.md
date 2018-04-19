@@ -97,7 +97,7 @@ const aNumber = getANumber(); //we may not know if this is a valid number
 const result = safeParseInt(aNumber, 10); // assume safeParse returns a `ResultT`
 
 result.match({
-  ok: value => { doSomething(value); },     // pass the parsed value to `doSomething`
+  ok: value => { doSomething(value); },    // pass the parsed value to `doSomething`
   err: error => { console.error(error); }, // or do whatever you need to do with the error
 });
 ```
