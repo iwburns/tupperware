@@ -82,7 +82,7 @@ doSomething(parsed); // now we can use it
 ```
 Instead you could do this:
 ```javascript
-const aNumber = 'foobar';
+const aNumber = getANumber(); //we may not know if this is a valid number
 
 const parsed = safeParseInt(aNumber, 10).unwrapOr(0); // assume safeParseInt returns a `ResultT`
 // again, we're pulling the value out of the `ResultT` (assuming it's an `Ok` this time)
@@ -92,12 +92,12 @@ doSomething(parsed); // now we can use it
 ```
 Or if you want to handle both cases:
 ```javascript
-const aNumber = 'foobar';
+const aNumber = getANumber(); //we may not know if this is a valid number
 
 const result = safeParseInt(aNumber, 10); // assume safeParse returns a `ResultT`
 
 result.match({
-  ok: value => { doSomething(value) },     // pass the parsed value to `doSomething`
+  ok: value => { doSomething(value); },     // pass the parsed value to `doSomething`
   err: error => { console.error(error); }, // or do whatever you need to do with the error
 });
 ```
