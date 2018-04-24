@@ -35,9 +35,9 @@ Instead you could do this:
 ```javascript
 const data = getSomeData();
 
-let c = getProperty(data, 'c').unwrapOr(0); // assume getProperty() returns an `OptionT`
-// here, we're pulling the value out of the `OptionT` (assuming it's a `Some`)
-// or defaulting to 0 if turned out to be a `None`
+let optC = getProperty(data, 'c');  // assume getProperty() returns an OptionT
+let c = optC.unwrapOr(0);           // we can use unwrapOr to safely get the value or
+                                    // a default value if c wasn't present on data
 
 doSomething(c);
 ```
@@ -45,9 +45,10 @@ Or if we want to avoid doing anything when `c` doesn't exist:
 ```javascript
 const data = getSomeData();
 
-getProperty(data, 'c').forEach(doSomething); // again, getProperty() returns an `OptionT`
-// here, the function passed to `forEach` will be called if we got a `Some` (passing the internal
-// value to that function), otherwise, the function passed to `forEach` will be ignored
+let optC = getProperty(data, 'c');  // again, getProperty() returns an OptionT
+
+optC.forEach(doSomething);          // forEach will call doSomething with optC's internal
+                                    // value if it exists, otherwise nothing happens
 ```
 The key to this being useful is that both `Some` and `None` are wrapped in the same API. This means you can call `forEach` and `unwrapOr` (and a bunch of other methods) on the return value regardless of whether it's a `Some` or a `None`.
 
@@ -55,9 +56,9 @@ Note: This library doesn't provide a `getProperty()` function but one could imag
 ```javascript
 function getProperty(obj, propName) {
   if (typeof obj[propName] !== 'undefined' && obj[propName] !== null) {
-    return OptionT.some(obj[propName]);
+    return OptionT.some(obj[propName]); // return a `Some`-value containing the value internally
   }
-  return OptionT.none();
+  return OptionT.none(); // otherwise return a `None`-value
 }
 ```
 
@@ -68,9 +69,9 @@ Consider parsing a number out of a string:
 
 Normally you might do this:
 ```javascript
-const aNumber = getANumber(); //we may not know if this is a valid number
+const aNumber = getANumber(); // we may not know if this is a valid number
 
-const result = parseInt(aNumber, 10); //do our parsing
+const result = parseInt(aNumber, 10); // do our parsing
 
 const parsed = 0; // default it
 
@@ -82,20 +83,23 @@ doSomething(parsed); // now we can use it
 ```
 Instead you could do this:
 ```javascript
-const aNumber = getANumber(); //we may not know if this is a valid number
+const aNumber = getANumber(); // we may not know if this is a valid number
 
-const parsed = safeParseInt(aNumber, 10).unwrapOr(0); // assume safeParseInt returns a `ResultT`
-// again, we're pulling the value out of the `ResultT` (assuming it's an `Ok` this time)
-// or defaulting to 0 if turned out to be a `Err`
+const result = safeParseInt(aNumber, 10); // assume safeParseInt returns a ResultT
+
+const parsed = result.unwrapOr(0);  // we can use unwrapOr to safely get the value or
+                                    // a default value if the result was an Err-value
 
 doSomething(parsed); // now we can use it
 ```
-Or if you want to handle both cases:
+Or if you want to handle both cases explicitly:
 ```javascript
-const aNumber = getANumber(); //we may not know if this is a valid number
+const aNumber = getANumber(); // we may not know if this is a valid number
 
-const result = safeParseInt(aNumber, 10); // assume safeParse returns a `ResultT`
+const result = safeParseInt(aNumber, 10); // again, safeParseInt returns a `ResultT`
 
+// result.match will call the given ok function if the result is an Ok-value
+// and it will call the given err function if it is an Err-value
 result.match({
   ok: value => { doSomething(value); },    // pass the parsed value to `doSomething`
   err: error => { console.error(error); }, // or do whatever you need to do with the error
@@ -108,8 +112,10 @@ Note: This library doesn't provide a `safeParseInt()` function but it might look
 function safeParseInt(num, radix) {
   let parsed = parseInt(num, radix);
   if (Number.isNaN(parsed)) {
+    // return an Err-value with a meaningful error message
     return ResultT.Err(`Could not parse the value: ${num} as an integer with radix: ${radix}`);
   }
+  // otherwise return an Ok-value with the parsed value inside
   return ResultT.Ok(parsed);
 }
 ```
