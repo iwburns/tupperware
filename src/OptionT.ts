@@ -103,7 +103,7 @@ export default abstract class OptionT<T> {
    * const two = maybeTwo.unwrap('could not unwrap a Some');
    *
    * if (maybeTwo.isSome()) {
-   *   // safe to unwrap, won't throw an error
+   *   // safe to unwrap, won't throw an error; also won't run because maybeTwo is a `None`
    *   const twoAgain = maybeTwo.unwrap('could not unwrap a Some');
    * } else {
    *   // this will throw, because `None` values cannot be unwrapped
