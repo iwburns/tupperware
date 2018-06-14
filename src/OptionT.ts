@@ -83,21 +83,68 @@ export default abstract class OptionT<T> {
    * containing `message` if this [[OptionT]] is a `None` or a default `message` if one is
    * not provided.
    *
+   * #### Note ####
+   * This function will throw an error if you attempt to call it before first checking
+   * if the [[OptionT]] is a `Some` value.
+   *
    * ```
    * const maybeOne = OptionT.some(1);
-   * // this won't throw, because it's a Some value.
+   * // this will throw, because we haven't yet checked if `maybeOne` is a `Some` value
    * const one = maybeOne.unwrap('could not unwrap a Some');
+   *
+   * if (maybeOne.isSome()) {
+   *   // this will not throw, because we just confirmed it's a `Some`
+   *   const oneAgain = maybeOne.unwrap('could not unwrap a Some');
+   * }
    *
    * // but:
    * const maybeTwo = OptionT.none();
-   * // this will throw, because it's a None value.
+   * // this will still throw, because we haven't checked what it is.
    * const two = maybeTwo.unwrap('could not unwrap a Some');
+   *
+   * if (maybeTwo.isSome()) {
+   *   // safe to unwrap, won't throw an error
+   *   const twoAgain = maybeTwo.unwrap('could not unwrap a Some');
+   * } else {
+   *   // this will throw, because `None` values cannot be unwrapped
+   *   const twoAgain = maybeTwo.unwrap('could not unwrap a Some');
+   * }
    * ```
    *
    * @param {string} message
    * @returns {T}
    */
   abstract unwrap(message?: string): T;
+
+  /**
+   * Returns the value contained by this [[OptionT]] if it is a `Some`.  Throws an error
+   * containing `message` if this [[OptionT]] is a `None` or a default `message` if one is
+   * not provided.
+   *
+   * #### Note ####
+   * This function is not recommended for normal/production use.  It is almost always
+   * preferable to use [[OptionT.unwrap]] after first having confirmed that your [[OptionT]]
+   * is a `Some` value.
+   *
+   * This function is provided for the sole purpose of quick prototyping.  As such, this function
+   * will always print a console warning regardless of whether or not it was technically safe to
+   * call this function on the given [[OptionT]].
+   *
+   * ```
+   * const maybeOne = OptionT.some(1);
+   * // this won't throw, because it's a Some value.
+   * const one = maybeOne.forceUnwrap('could not unwrap a Some');
+   *
+   * // but:
+   * const maybeTwo = OptionT.none();
+   * // this will throw, because it's a None value.
+   * const two = maybeTwo.forceUnwrap('could not unwrap a Some');
+   * ```
+   *
+   * @param {string} message
+   * @returns {T}
+   */
+  abstract forceUnwrap(message?: string): T;
 
   /**
    * Returns the value contained by this [[OptionT]] if it is a `Some`.  Returns `other` if
@@ -335,16 +382,21 @@ export default abstract class OptionT<T> {
  */
 class Some<T> extends OptionT<T> {
   private value: T;
+  private hasBeenInspected: boolean;
+
   constructor(value: T) {
     super();
     this.value = value;
+    this.hasBeenInspected = false;
   }
 
   isSome(): boolean {
+    this.hasBeenInspected = true;
     return true;
   }
 
   isNone(): boolean {
+    this.hasBeenInspected = true;
     return false;
   }
 
@@ -353,6 +405,17 @@ class Some<T> extends OptionT<T> {
   }
 
   unwrap(message?: string): T {
+    if (!this.hasBeenInspected) {
+      throw new Error(
+        'Called unwrap without first checking if it was safe to do so. Please verify' +
+        ' that the OptionT in question is a `Some` value before calling this function.'
+      );
+    }
+    return this.value;
+  }
+
+  forceUnwrap(message?: string): T {
+    console.warn('Warning: called forceUnwrap on a `Some` value.  This is not recommended usage.');
     return this.value;
   }
 
@@ -369,6 +432,7 @@ class Some<T> extends OptionT<T> {
   }
 
   and<U>(other: OptionT<U>): OptionT<U> {
+    this.hasBeenInspected = true;
     return other;
   }
 
@@ -407,15 +471,20 @@ class Some<T> extends OptionT<T> {
  * inside the same `OptionT` API defined by [[OptionT]].
  */
 class None extends OptionT<any> {
+  private hasBeenInspected: boolean;
+
   constructor() {
     super();
+    this.hasBeenInspected = false;
   }
 
   isSome(): boolean {
+    this.hasBeenInspected = true;
     return false;
   }
 
   isNone(): boolean {
+    this.hasBeenInspected = true;
     return true;
   }
 
@@ -424,6 +493,20 @@ class None extends OptionT<any> {
   }
 
   unwrap(message?: string): never {
+    if (!this.hasBeenInspected) {
+      throw new Error(
+        'Called unwrap without first checking if it was safe to do so. Please verify' +
+        ' that the OptionT in question is a `Some` value before calling this function.'
+      );
+    }
+    if (typeof message !== 'undefined' && message !== null) {
+      throw new Error(message);
+    }
+    throw new Error('Called unwrap on a None value.');
+  }
+
+  forceUnwrap(message?: string): never {
+    console.warn('Warning: called forceUnwrap on a `None` value.  This is not recommended usage.');
     if (typeof message !== 'undefined' && message !== null) {
       throw new Error(message);
     }
@@ -443,6 +526,7 @@ class None extends OptionT<any> {
   }
 
   and<U>(other: OptionT<U>): OptionT<U> {
+    this.hasBeenInspected = true;
     return new None() as OptionT<U>;
   }
 
