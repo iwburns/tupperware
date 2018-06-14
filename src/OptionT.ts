@@ -408,7 +408,7 @@ class Some<T> extends OptionT<T> {
     if (!this.hasBeenInspected) {
       throw new Error(
         'Called unwrap without first checking if it was safe to do so. Please verify' +
-        ' that the OptionT in question is a `Some` value before calling this function.'
+          ' that the OptionT in question is a `Some` value before calling this function.'
       );
     }
     return this.value;
@@ -496,7 +496,7 @@ class None extends OptionT<any> {
     if (!this.hasBeenInspected) {
       throw new Error(
         'Called unwrap without first checking if it was safe to do so. Please verify' +
-        ' that the OptionT in question is a `Some` value before calling this function.'
+          ' that the OptionT in question is a `Some` value before calling this function.'
       );
     }
     if (typeof message !== 'undefined' && message !== null) {
