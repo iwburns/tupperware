@@ -28,8 +28,9 @@ describe('#ResultT - Err', () => {
 
   it('should have the function getErr', () => {
     const r = ResultT.err(1);
-    expectASome(r.getErr());
-    expect(r.getErr().unwrap()).toEqual(1);
+    const err = r.getErr();
+    expect(err.isSome()).toEqual(true);
+    expect(err.unwrap()).toEqual(1);
   });
 
   it('should have the function unwrap', () => {

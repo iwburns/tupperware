@@ -23,8 +23,9 @@ describe('#ResultT - Ok', () => {
   it('should have the function getOk', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
-    expectASome(r.getOk());
-    expect(r.getOk().unwrap()).toEqual(1);
+    const ok = r.getOk();
+    expect(ok.isSome()).toEqual(true);
+    expect(ok.unwrap()).toEqual(1);
   });
 
   it('should have the function getErr', () => {
