@@ -4,38 +4,49 @@ import { expectANone, expectASome } from '../util';
 describe('#OptionT - None', () => {
   it('should have the function isSome', () => {
     const none = OptionT.none();
-
     expectANone(none);
+
     expect(none.isSome()).toEqual(false);
   });
 
   it('should have the function isNone', () => {
     const none = OptionT.none();
-
     expectANone(none);
+
     expect(none.isNone()).toEqual(true);
   });
 
   it('should have the function toString', () => {
     const none = OptionT.none();
-
     expectANone(none);
 
     expect(none.toString()).toEqual('None()');
   });
 
-  it('should have the function expect', () => {
-    const none = OptionT.none();
-
-    expectANone(none);
-    expect(() => none.unwrap('failed')).toThrow('failed');
-  });
-
   it('should have the function unwrap', () => {
     const none = OptionT.none();
 
+    expect(() => none.unwrap()).toThrow(
+      'Called unwrap without first checking if it was safe to do so. Please verify that the' +
+      ' OptionT in question is a `Some` value before calling this function.'
+    );
+    expect(() => none.unwrap('failed')).toThrow(
+      'Called unwrap without first checking if it was safe to do so. Please verify that the' +
+      ' OptionT in question is a `Some` value before calling this function.'
+    );
+
+    none.isSome(); // trigger internal inspection flag
+
+    expect(() => none.unwrap()).toThrow('Called unwrap on a None value.');
+    expect(() => none.unwrap('failed')).toThrow('failed');
+  });
+
+  it('should have the function forceUnwrap', () => {
+    const none = OptionT.none();
     expectANone(none);
-    expect(() => none.unwrap()).toThrow('Called unwrap on a None value');
+
+    expect(() => none.forceUnwrap()).toThrow('Called unwrap on a None value.');
+    expect(() => none.forceUnwrap('failed')).toThrow('failed');
   });
 
   it('should have the function unwrapOr', () => {
@@ -101,7 +112,9 @@ describe('#OptionT - None', () => {
 
     expect(none.orElse(nothing).isNone()).toEqual(true);
     expect(none.orElse(something).isSome()).toEqual(true);
-    expect(none.orElse(() => OptionT.some('foobar')).unwrap()).toEqual('foobar');
+    const result = none.orElse(() => OptionT.some('foobar'));
+    expect(result.isSome()).toEqual(true);
+    expect(result.unwrap()).toEqual('foobar');
   });
 
   it('should have the function match', () => {
