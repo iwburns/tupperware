@@ -27,26 +27,28 @@ describe('#OptionT - None', () => {
     const none = OptionT.none();
 
     expect(() => none.unwrap()).toThrow(
-      'Called unwrap without first checking if it was safe to do so. Please verify that the' +
-      ' OptionT in question is a `Some` value before calling this function.'
+      'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
+      ' the `OptionT` in question is a `Some` value before calling this function or use a safer function like' +
+      ' `unwrapOr` which provides a default value in case this `OptionT` is a `None`.'
     );
     expect(() => none.unwrap('failed')).toThrow(
-      'Called unwrap without first checking if it was safe to do so. Please verify that the' +
-      ' OptionT in question is a `Some` value before calling this function.'
+      'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
+      ' the `OptionT` in question is a `Some` value before calling this function or use a safer function like' +
+      ' `unwrapOr` which provides a default value in case this `OptionT` is a `None`.'
     );
 
     none.isSome(); // trigger internal inspection flag
 
-    expect(() => none.unwrap()).toThrow('Called unwrap on a None value.');
-    expect(() => none.unwrap('failed')).toThrow('failed');
+    expect(() => none.unwrap()).toThrow('nullshield:unwrap_on_none: Called unwrap on a None value.');
+    expect(() => none.unwrap('failed')).toThrow('nullshield:unwrap_on_none: failed');
   });
 
   it('should have the function forceUnwrap', () => {
     const none = OptionT.none();
     expectANone(none);
 
-    expect(() => none.forceUnwrap()).toThrow('Called unwrap on a None value.');
-    expect(() => none.forceUnwrap('failed')).toThrow('failed');
+    expect(() => none.forceUnwrap()).toThrow('nullshield:force_unwrap_on_none: Called forceUnwrap on a None value.');
+    expect(() => none.forceUnwrap('failed')).toThrow('nullshield:force_unwrap_on_none: failed');
   });
 
   it('should have the function unwrapOr', () => {

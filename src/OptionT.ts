@@ -528,7 +528,9 @@ class None extends OptionT<any> {
   }
 
   forceUnwrap(message?: string): never {
-    console.warn('nullshield:force_unwrap_warning: Called forceUnwrap on a `None` value.  This is not recommended usage.');
+    console.warn(
+      'nullshield:force_unwrap_warning: Called forceUnwrap on a `None` value.  This is not recommended usage.'
+    );
     if (typeof message !== 'undefined' && message !== null) {
       throw new Error(`nullshield:force_unwrap_on_none: ${message}`);
     }

@@ -28,12 +28,14 @@ describe('#OptionT - Some', () => {
     const one = OptionT.some(1);
 
     expect(() => one.unwrap()).toThrow(
-      'Called unwrap without first checking if it was safe to do so. Please verify that the' +
-      ' OptionT in question is a `Some` value before calling this function.'
+      'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
+      ' the `OptionT` in question is a `Some` value before calling this function or use a safer function like' +
+      ' `unwrapOr` which provides a default value in case this `OptionT` is a `None`.'
     );
     expect(() => one.unwrap('failed')).toThrow(
-      'Called unwrap without first checking if it was safe to do so. Please verify that the' +
-      ' OptionT in question is a `Some` value before calling this function.'
+      'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
+      ' the `OptionT` in question is a `Some` value before calling this function or use a safer function like' +
+      ' `unwrapOr` which provides a default value in case this `OptionT` is a `None`.'
     );
 
     one.isSome(); // trigger internal inspection flag
