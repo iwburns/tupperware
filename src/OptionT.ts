@@ -83,22 +83,6 @@ export default abstract class OptionT<T> {
    * containing `message` if this [[OptionT]] is a `None` or a default `message` if one is
    * not provided.
    *
-   * #### Note 1 ####
-   * Throws a `nullshield:unchecked_unwrap` error if you attempt to call it before first checking
-   * if the [[OptionT]] is a safe to unwrap (in other words, it must be a `Some` value).
-   *
-   * To avoid this issue, either check that the given [[OptionT]] is a `Some` value (with
-   * [[OptionT.isSome]] or [[OptionT.isNone]]) or use [[OptionT.unwrapOr]] instead which allows you
-   * to specify a default value in the case where the given [[OptionT]] is a `None`.
-   *
-   * #### Note 2 ####
-   * Throws a `nullshield:unwrap_on_none` error if you attempt to call it on a `None` value after
-   * first checking that the [[OptionT]] is safe to unwrap.
-   *
-   * To avoid this issue, either make sure that your logic is correct concerning whether or not
-   * you should be `unwrap`-ing this value or use [[OptionT.unwrapOr]] instead which allows you
-   * to specify a default value in the case where the given [[OptionT]] is a `None`.
-   *
    * ```
    * const maybeOne = OptionT.some(1);
    * // this will throw, because we haven't yet checked if `maybeOne` is a `Some` value
@@ -125,6 +109,20 @@ export default abstract class OptionT<T> {
    *
    * @param {string} message
    * @returns {T}
+   * @throws a `nullshield:unchecked_unwrap` error if you attempt to call it before first checking
+   * if the [[OptionT]] is a safe to unwrap (in other words, it must be a `Some` value).
+   * @throws a `nullshield:unwrap_on_none` error if you attempt to call it on a `None` value after
+   * first checking that the [[OptionT]] is safe to unwrap.
+   *
+   * ## `nullshield:unchecked_unwrap:` ##
+   * To avoid this issue, either check that the given [[OptionT]] is a `Some` value (with
+   * [[OptionT.isSome]] or [[OptionT.isNone]]) or use [[OptionT.unwrapOr]] instead which allows you
+   * to specify a default value in the case where the given [[OptionT]] is a `None`.
+   *
+   * ## `nullshield:unwrap_on_none:` ##
+   * To avoid this issue, either make sure that your logic is correct concerning whether or not
+   * you should be `unwrap`-ing this value or use [[OptionT.unwrapOr]] instead which allows you
+   * to specify a default value in the case where the given [[OptionT]] is a `None`.
    */
   abstract unwrap(message?: string): T;
 
@@ -132,15 +130,6 @@ export default abstract class OptionT<T> {
    * Returns the value contained by this [[OptionT]] if it is a `Some`.  Throws an error
    * containing `message` if this [[OptionT]] is a `None` or a default `message` if one is
    * not provided.
-   *
-   * #### Note ####
-   * It is usually more ergonomic to unwrap an [[OptionT]] with [[OptionT.unwrapOr]] or to
-   * conditionally do something with the contained value with [[OptionT.map]] or a similar
-   * function instead of using [[OptionT.forceUnwrap]].
-   *
-   * However, there are cases where [[OptionT.forceUnwrap]] may be useful.  With that in
-   * mind, please note: this function will always print a console warning regardless of
-   * whether or not the [[OptionT]] in question is a `Some`.
    *
    * ```
    * const maybeOne = OptionT.some(1);
@@ -153,8 +142,25 @@ export default abstract class OptionT<T> {
    * const two = maybeTwo.forceUnwrap('could not unwrap a Some');
    * ```
    *
+   * #### Note ####
+   * It is usually more ergonomic to unwrap an [[OptionT]] with [[OptionT.unwrapOr]] or to
+   * conditionally do something with the contained value with [[OptionT.map]] or a similar
+   * function instead of using [[OptionT.forceUnwrap]].
+   *
+   * However, there are cases where [[OptionT.forceUnwrap]] may be useful.  With that in
+   * mind, please note: this function will always print a `nullshield:force_unwrap_warning`
+   * regardless of whether or not the [[OptionT]] in question is a `Some`.
+   *
    * @param {string} message
    * @returns {T}
+   * @throws `nullshield:force_unwrap_on_none` if this function is called on an [[OptionT]]
+   * which happens to be a `None`.
+   *
+   * ## `nullshield:force_unwrap_on_none` ##
+   * The only way to avoid this is to not call this function on an [[OptionT]] which happens
+   * to be a `None`.  This means you must either know for certain that the [[OptionT]] in
+   * question is a `Some`, or you must verify it manually with [[OptionT.isSome]] or a
+   * similar function.
    */
   abstract forceUnwrap(message?: string): T;
 
