@@ -122,13 +122,13 @@ export default abstract class OptionT<T> {
    * not provided.
    *
    * #### Note ####
-   * This function is not recommended for normal/production use.  It is almost always
-   * preferable to use [[OptionT.unwrap]] after first having confirmed that your [[OptionT]]
-   * is a `Some` value.
+   * It is usually more ergonomic to unwrap an [[OptionT]] with [[OptionT.unwrapOr]] or to
+   * conditionally do something with the contained value with [[OptionT.map]] or a similar
+   * function instead of using [[OptionT.forceUnwrap]].
    *
-   * This function is provided for the sole purpose of quick prototyping.  As such, this function
-   * will always print a console warning regardless of whether or not it was technically safe to
-   * call this function on the given [[OptionT]].
+   * However, there are cases where [[OptionT.forceUnwrap]] may be useful.  With that in
+   * mind, please note: this function will always print a console warning regardless of
+   * whether or not the [[OptionT]] in question is a `Some`.
    *
    * ```
    * const maybeOne = OptionT.some(1);
