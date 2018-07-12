@@ -115,9 +115,14 @@ export default abstract class OptionT<T> {
    * first checking that the [[OptionT]] is safe to unwrap.
    *
    * ## `nullshield:unchecked_unwrap:` ##
-   * To avoid this issue, either check that the given [[OptionT]] is a `Some` value (with
-   * [[OptionT.isSome]] or [[OptionT.isNone]]) or use [[OptionT.unwrapOr]] instead which allows you
-   * to specify a default value in the case where the given [[OptionT]] is a `None`.
+   * The most direct way to avoid this issue is to either check that the given [[OptionT]] is a
+   * `Some` value (with [[OptionT.isSome]] or [[OptionT.isNone]]) or use [[OptionT.unwrapOr]]
+   * instead which allows you to specify a default value in the case where the given [[OptionT]]
+   * is a `None`.
+   *
+   * However, oftentimes you may not want to simply get the value out of the [[OptionT]]; instead
+   * you may want to conditionally use that value in some sort of computation.  In those cases
+   * it's likely more clean/clear to use [[OptionT.map]] or a similar function instead.
    *
    * ## `nullshield:unwrap_on_none:` ##
    * To avoid this issue, either make sure that your logic is correct concerning whether or not
