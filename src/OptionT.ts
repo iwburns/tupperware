@@ -85,19 +85,89 @@ export default abstract class OptionT<T> {
    *
    * ```
    * const maybeOne = OptionT.some(1);
-   * // this won't throw, because it's a Some value.
+   * // this will throw, because we haven't yet checked if `maybeOne` is a `Some` value
    * const one = maybeOne.unwrap('could not unwrap a Some');
+   *
+   * if (maybeOne.isSome()) {
+   *   // this will not throw, because we just confirmed it's a `Some`
+   *   const oneAgain = maybeOne.unwrap('could not unwrap a Some');
+   * }
    *
    * // but:
    * const maybeTwo = OptionT.none();
-   * // this will throw, because it's a None value.
+   * // this will still throw, because we haven't checked what it is.
    * const two = maybeTwo.unwrap('could not unwrap a Some');
+   *
+   * if (maybeTwo.isSome()) {
+   *   // safe to unwrap, won't throw an error; also won't run because maybeTwo is a `None`
+   *   const twoAgain = maybeTwo.unwrap('could not unwrap a Some');
+   * } else {
+   *   // this will throw, because `None` values cannot be unwrapped
+   *   const twoAgain = maybeTwo.unwrap('could not unwrap a Some');
+   * }
    * ```
    *
    * @param {string} message
    * @returns {T}
+   * @throws a `nullshield:unchecked_unwrap` error if you attempt to call it before first checking
+   * if the [[OptionT]] is a safe to unwrap (in other words, it must be a `Some` value).
+   * @throws a `nullshield:unwrap_on_none` error if you attempt to call it on a `None` value after
+   * first checking that the [[OptionT]] is safe to unwrap.
+   *
+   * ## `nullshield:unchecked_unwrap:` ##
+   * The most direct way to avoid this issue is to either check that the given [[OptionT]] is a
+   * `Some` value (with [[OptionT.isSome]] or [[OptionT.isNone]]) or use [[OptionT.unwrapOr]]
+   * instead which allows you to specify a default value in the case where the given [[OptionT]]
+   * is a `None`.
+   *
+   * However, oftentimes you may not want to simply get the value out of the [[OptionT]]; instead
+   * you may want to conditionally use that value in some sort of computation.  In those cases
+   * it's likely more clean/clear to use [[OptionT.map]] or a similar function instead.
+   *
+   * ## `nullshield:unwrap_on_none:` ##
+   * To avoid this issue, either make sure that your logic is correct concerning whether or not
+   * you should be `unwrap`-ing this value or use [[OptionT.unwrapOr]] instead which allows you
+   * to specify a default value in the case where the given [[OptionT]] is a `None`.
    */
   abstract unwrap(message?: string): T;
+
+  /**
+   * Returns the value contained by this [[OptionT]] if it is a `Some`.  Throws an error
+   * containing `message` if this [[OptionT]] is a `None` or a default `message` if one is
+   * not provided.
+   *
+   * ```
+   * const maybeOne = OptionT.some(1);
+   * // this won't throw, because it's a Some value.
+   * const one = maybeOne.forceUnwrap('could not unwrap a Some');
+   *
+   * // but:
+   * const maybeTwo = OptionT.none();
+   * // this will throw, because it's a None value.
+   * const two = maybeTwo.forceUnwrap('could not unwrap a Some');
+   * ```
+   *
+   * #### Note ####
+   * It is usually more ergonomic to unwrap an [[OptionT]] with [[OptionT.unwrapOr]] or to
+   * conditionally do something with the contained value with [[OptionT.map]] or a similar
+   * function instead of using [[OptionT.forceUnwrap]].
+   *
+   * However, there are cases where [[OptionT.forceUnwrap]] may be useful.  With that in
+   * mind, please note: this function will always print a `nullshield:force_unwrap_warning`
+   * regardless of whether or not the [[OptionT]] in question is a `Some`.
+   *
+   * @param {string} message
+   * @returns {T}
+   * @throws `nullshield:force_unwrap_on_none` if this function is called on an [[OptionT]]
+   * which happens to be a `None`.
+   *
+   * ## `nullshield:force_unwrap_on_none` ##
+   * The only way to avoid this is to not call this function on an [[OptionT]] which happens
+   * to be a `None`.  This means you must either know for certain that the [[OptionT]] in
+   * question is a `Some`, or you must verify it manually with [[OptionT.isSome]] or a
+   * similar function.
+   */
+  abstract forceUnwrap(message?: string): T;
 
   /**
    * Returns the value contained by this [[OptionT]] if it is a `Some`.  Returns `other` if
@@ -335,16 +405,21 @@ export default abstract class OptionT<T> {
  */
 class Some<T> extends OptionT<T> {
   private value: T;
+  private hasBeenInspected: boolean;
+
   constructor(value: T) {
     super();
     this.value = value;
+    this.hasBeenInspected = false;
   }
 
   isSome(): boolean {
+    this.hasBeenInspected = true;
     return true;
   }
 
   isNone(): boolean {
+    this.hasBeenInspected = true;
     return false;
   }
 
@@ -353,6 +428,20 @@ class Some<T> extends OptionT<T> {
   }
 
   unwrap(message?: string): T {
+    if (!this.hasBeenInspected) {
+      throw new Error(
+        'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
+          ' the `OptionT` in question is a `Some` value before calling this function or use a safer function like' +
+          ' `unwrapOr` which provides a default value in case this `OptionT` is a `None`.'
+      );
+    }
+    return this.value;
+  }
+
+  forceUnwrap(message?: string): T {
+    console.warn(
+      'nullshield:force_unwrap_warning: Called forceUnwrap on a `Some` value.  This is not recommended usage.'
+    );
     return this.value;
   }
 
@@ -369,6 +458,7 @@ class Some<T> extends OptionT<T> {
   }
 
   and<U>(other: OptionT<U>): OptionT<U> {
+    this.hasBeenInspected = true;
     return other;
   }
 
@@ -407,15 +497,20 @@ class Some<T> extends OptionT<T> {
  * inside the same `OptionT` API defined by [[OptionT]].
  */
 class None extends OptionT<any> {
+  private hasBeenInspected: boolean;
+
   constructor() {
     super();
+    this.hasBeenInspected = false;
   }
 
   isSome(): boolean {
+    this.hasBeenInspected = true;
     return false;
   }
 
   isNone(): boolean {
+    this.hasBeenInspected = true;
     return true;
   }
 
@@ -424,10 +519,27 @@ class None extends OptionT<any> {
   }
 
   unwrap(message?: string): never {
-    if (typeof message !== 'undefined' && message !== null) {
-      throw new Error(message);
+    if (!this.hasBeenInspected) {
+      throw new Error(
+        'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
+          ' the `OptionT` in question is a `Some` value before calling this function or use a safer function like' +
+          ' `unwrapOr` which provides a default value in case this `OptionT` is a `None`.'
+      );
     }
-    throw new Error('Called unwrap on a None value.');
+    if (typeof message !== 'undefined' && message !== null) {
+      throw new Error(`nullshield:unwrap_on_none: ${message}`);
+    }
+    throw new Error('nullshield:unwrap_on_none: Called unwrap on a None value.');
+  }
+
+  forceUnwrap(message?: string): never {
+    console.warn(
+      'nullshield:force_unwrap_warning: Called forceUnwrap on a `None` value.  This is not recommended usage.'
+    );
+    if (typeof message !== 'undefined' && message !== null) {
+      throw new Error(`nullshield:force_unwrap_on_none: ${message}`);
+    }
+    throw new Error('nullshield:force_unwrap_on_none: Called forceUnwrap on a None value.');
   }
 
   unwrapOr<T>(other: T): T {
@@ -443,6 +555,7 @@ class None extends OptionT<any> {
   }
 
   and<U>(other: OptionT<U>): OptionT<U> {
+    this.hasBeenInspected = true;
     return new None() as OptionT<U>;
   }
 

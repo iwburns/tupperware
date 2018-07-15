@@ -24,18 +24,32 @@ describe('#OptionT - Some', () => {
     expect(one.toString()).toEqual('Some( 1 )');
   });
 
-  it('should have the function expect', () => {
-    const one = OptionT.some(1);
-
-    expectASome(one);
-    expect(one.unwrap('it failed')).toEqual(1);
-  });
-
   it('should have the function unwrap', () => {
     const one = OptionT.some(1);
 
-    expectASome(one);
+    expect(() => one.unwrap()).toThrow(
+      'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
+      ' the `OptionT` in question is a `Some` value before calling this function or use a safer function like' +
+      ' `unwrapOr` which provides a default value in case this `OptionT` is a `None`.'
+    );
+    expect(() => one.unwrap('failed')).toThrow(
+      'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
+      ' the `OptionT` in question is a `Some` value before calling this function or use a safer function like' +
+      ' `unwrapOr` which provides a default value in case this `OptionT` is a `None`.'
+    );
+
+    one.isSome(); // trigger internal inspection flag
+
     expect(one.unwrap()).toEqual(1);
+    expect(one.unwrap('failed')).toEqual(1);
+  });
+
+  it('should have the function forceUnwrap', () => {
+    const one = OptionT.some(1);
+    expectASome(one);
+
+    expect(one.forceUnwrap()).toEqual(1);
+    expect(one.forceUnwrap('failed')).toEqual(1);
   });
 
   it('should have the function unwrapOr', () => {
