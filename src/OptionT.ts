@@ -9,16 +9,15 @@ export interface OptMatch<T, U, V> {
 /**
  * ## OptionT
  *
- * An abstract class representing an optional value. There are only two concrete classes extending this
- * one: [[Some]] and [[None]].
+ * An abstract class representing an optional value. There are only two concrete classes extending
+ * this one: [[Some]] and [[None]].
  *
- * `Some`-values contain an internal value while `None`-values represent the absense of
- * a given value.  What makes these two types useful is that they both offer the
- * same API to the consumer.
+ * `Some`-values contain an internal value while `None`-values represent the absense of a given
+ * value. What makes these two types useful is that they both offer the same API to the consumer.
  *
- * This means that you can have a function that returns an `OptionT` and you can
- * use the returned values right away without having to check what type the are or
- * if they're valid in one way or another.
+ * This means that you can have a function that returns an `OptionT` and you can use the returned
+ * values right away without having to check what type the are or if they're valid in one way or
+ * another.
  *
  * For example:
  * ```
@@ -38,12 +37,12 @@ export interface OptMatch<T, U, V> {
  *   .forEach(console.log);   // if we have a `Some` pass its value into console.log, otherwise do nothing
  * ```
  *
+ * @param T The type of the value contained within this [[OptionT]].
  */
 export default abstract class OptionT<T> {
   /**
-   * Creates an [[OptionT]] with the given value.  If `null` or `undefined` is provided
-   * a [[None]] will be returned, otherwise a [[Some]] containing the given value will
-   * be returned.
+   * Creates an [[OptionT]] with the given value. If `null` or `undefined` is provided a [[None]]
+   * will be returned, otherwise a [[Some]] containing the given value will be returned.
    *
    * ```
    * const one = OptionT.of(1);     // one.unwrapOr(0) === 1
@@ -52,6 +51,7 @@ export default abstract class OptionT<T> {
    * ```
    *
    * @param value An optional value to create an [[OptionT]] with.
+   * @param A The type of the value that the new [[OptionT]] will contain.
    * @returns Either a [[Some]] or a [[None]] depending on the `value` passed in.
    */
   static of<A>(value?: A): OptionT<A> {
@@ -62,8 +62,8 @@ export default abstract class OptionT<T> {
   }
 
   /**
-   * Creates a [[Some]] with the given value.  If `null` or `undefined` is provided
-   * this method with throw an error.
+   * Creates a [[Some]] with the given value. If `null` or `undefined` is provided this method with
+   * throw an error.
    *
    * ```
    * const one = OptionT.some(1);      // one.unwrapOr(0) === 1
@@ -72,6 +72,7 @@ export default abstract class OptionT<T> {
    * ```
    *
    * @param value A value to create a [[Some]] with.
+   * @param A The type of the value that the new [[Some]] will contain.
    * @returns A [[Some]] instance containing `value`.
    */
   static some<A>(value: A): OptionT<A> {
@@ -82,8 +83,8 @@ export default abstract class OptionT<T> {
   }
 
   /**
-   * Creates a [[None]] with the given value.  If something other than `null` or
-   * `undefined` is provided this method with throw an error.
+   * Creates a [[None]] with the given value. If something other than `null` or `undefined` is
+   * provided this method with throw an error.
    *
    * ```
    * const one = OptionT.none(1);      // throws an error
@@ -159,7 +160,7 @@ export default abstract class OptionT<T> {
    * [[OptionT]] is a [[None]] (because it cannot be unwrapped).
    *
    * The only safe way to call this function is to first make sure that this [[OptionT]] is a
-   * [[Some]] (by calling [[OptionT.isSome]] or [[OptionT.isNone]]).
+   * [[Some]] (by calling [[isSome]] or [[isNone]]).
    *
    * ```
    * const one = OptionT.some(1);
@@ -190,18 +191,17 @@ export default abstract class OptionT<T> {
    *
    * ## `nullshield:unchecked_unwrap:` ##
    * The most direct way to avoid this issue is to either check that the given [[OptionT]] is a
-   * [[Some]] value (with [[OptionT.isSome]] or [[OptionT.isNone]]) or to use [[OptionT.unwrapOr]]
-   * instead which allows you to specify a default value to fall back on in the case where this
-   * [[OptionT]] is a [[None]].
+   * [[Some]] value (with [[isSome]] or [[isNone]]) or to use [[unwrapOr]] instead which allows you
+   * to specify a default value to fall back on in the case where this [[OptionT]] is a [[None]].
    *
    * However, oftentimes you may not want to simply get the value out of the [[OptionT]]; instead
-   * you may want to conditionally use that value in some sort of computation.  In those cases
-   * it's likely more clean/clear to use [[OptionT.map]] or a similar function instead.
+   * you may want to conditionally use that value in some sort of computation.  In those cases it's
+   * likely more clean/clear to use [[map]] or a similar function instead.
    *
    * ## `nullshield:unwrap_on_none:` ##
    * To avoid this issue, either make sure that your logic is correct concerning whether or not
-   * you should be `unwrap`-ing this value or use [[OptionT.unwrapOr]] instead which allows you
-   * to specify a default value to fall back on in the case where this [[OptionT]] is a [[None]].
+   * you should be `unwrap`-ing this value or use [[unwrapOr]] instead which allows you to specify
+   * a default value to fall back on in the case where this [[OptionT]] is a [[None]].
    */
   abstract unwrap(message?: string): T;
 
@@ -222,13 +222,13 @@ export default abstract class OptionT<T> {
    * ```
    *
    * #### Note ####
-   * It is usually more ergonomic to unwrap an [[OptionT]] with [[OptionT.unwrapOr]] or to
-   * conditionally do something with the contained value with [[OptionT.map]] or a similar
-   * function instead of using [[OptionT.forceUnwrap]].
+   * It is usually more ergonomic to unwrap an [[OptionT]] with [[unwrapOr]] or to conditionally do
+   * something with the contained value with [[map]] or a similar function instead of using
+   * [[forceUnwrap]].
    *
-   * However, there are cases where [[OptionT.forceUnwrap]] may be useful.  With that in
-   * mind, please note: this function will always print a `nullshield:force_unwrap_warning`
-   * regardless of whether or not the [[OptionT]] in question is a [[Some]].
+   * However, there are cases where [[forceUnwrap]] may be useful.  With that in mind, please note:
+   * this function will always print a `nullshield:force_unwrap_warning` regardless of whether or
+   * not the [[OptionT]] in question is a [[Some]].
    *
    * @param message An optional message to be included in the error that this function may throw.
    * @returns The value contained within this [[OptionT]].
@@ -237,7 +237,7 @@ export default abstract class OptionT<T> {
    * ## `nullshield:force_unwrap_on_none` ##
    * The only way to avoid this is to not call this function on a [[None]]. This means you must
    * either know for certain that the [[OptionT]] in question is a [[Some]], or you must verify
-   * it manually with [[OptionT.isSome]] or a similar function.
+   * it manually with [[isSome]] or a similar function.
    */
   abstract forceUnwrap(message?: string): T;
 
@@ -272,8 +272,8 @@ export default abstract class OptionT<T> {
    *
    * #### Note ####
    * The argument `func` will __not__ be evaluated unless this [[OptionT]] is a [[None]]. This
-   * means [[OptionT.unwrapOrElse]] is ideal for cases when you need to fall back on a value that
-   * needs to be computed (and may be expensive to compute).
+   * means [[unwrapOrElse]] is ideal for cases when you need to fall back on a value that needs to
+   * be computed (and may be expensive to compute).
    *
    * @param func A function returning the fall-back value if this [[OptionT]] is a [[None]].
    * @returns The value in this [[OptionT]] if it is a [[Some]], otherwise returns the return value
@@ -285,32 +285,33 @@ export default abstract class OptionT<T> {
    * Maps an [[OptionT]]&lt;T&gt; to an [[OptionT]]&lt;U&gt; by applying `func` to the value
    * contained in this [[OptionT]].
    *
-   * If this [[OptionT]] is a `Some` value, the returned value will be the return of `func`
-   * wrapped in a new [[OptionT]] (resulting in a `Some` value); otherwise the returned value
-   * will be a new `None` value.
-   *
-   * ### Note:
-   * If the return value of `func` is `null` or `undefined`, the [[OptionT]] that is returned
-   * is guaranteed to be a `None` value.
+   * If this [[OptionT]] is a [[Some]], the returned value will be the return of `func` wrapped in
+   * a new [[OptionT]] (resulting in a new [[Some]] value); otherwise the returned value will be a
+   * new [[None]].
    *
    * ```
-   * const maybeOne = OptionT.some(1);
-   * const maybeTwo = maybeOne.map(x => x * 2);
-   * // maybeTwo.isSome() === true
-   * // maybeTwo.unwrap() === 2
+   * const one = OptionT.some(1);
+   * const two = one.map(x => x * 2);
+   * // two.unwrapOr(3) === 2
    *
-   * const maybeThree = OptionT.none();
-   * const maybeSix = maybeThree.map(x => x * 2);
-   * // maybeSix.isNone() === true
+   * const three = OptionT.none();
+   * const six = three.map(x => x * 2);
+   * // six.unwrapOr(7) === 7
    * ```
+   * #### Note: ####
+   * If the return value of `func` is `null` or `undefined`, the [[OptionT]] that is returned is
+   * guaranteed to be a [[None]].
    *
-   * @param {(val: T) => U} func
-   * @returns {OptionT<U>}
+   * @param func A function to apply to this [[OptionT]]'s contained value.
+   * @param U Both the return type of `func` and the type of the value contained in the returned
+   * [[OptionT]].
+   * @returns The return value of `func` wrapped up as a new [[OptionT]].
    */
   abstract map<U>(func: (val: T) => U): OptionT<U>;
 
   /**
-   * Returns a `None` value if this [[OptionT]] is a `None`; otherwise returns `other`.
+   * Compares two [[OptionT]] values. Returns `other` if this [[OptionT]] is a [[Some]]; otherwise
+   * returns [[None]]. This allows chained comparison of [[OptionT]] values.
    *
    * ```
    * const one = OptionT.some(1);
@@ -327,14 +328,19 @@ export default abstract class OptionT<T> {
    * // fourAgain.isSome() === false
    * ```
    *
-   * @param {OptionT<U>} other
-   * @returns {OptionT<U>}
+   * @param other Another [[OptionT]] to use in the comparison.
+   * @param U The type of the value contained in the `other` [[OptionT]].
+   * @returns `other` if this [[OptionT]] is a [[Some]], otherwise returns [[None]].
    */
   abstract and<U>(other: OptionT<U>): OptionT<U>;
 
   /**
-   * Returns a `None` value if this [[OptionT]] is a `None`; otherwise calls `func` and returns
+   * Returns a [[None]] value if this [[OptionT]] is a [[None]]; otherwise calls `func` and returns
    * the result.
+   *
+   * This function behaves similarly to [[map]] except that in this function `func` returns an
+   * [[OptionT]]. This means [[flatMap]] doesn't auto-wrap the return value from `func` while
+   * [[map]] does.
    *
    * ```
    * const square = x => OptionT.some(x * x);
@@ -352,14 +358,19 @@ export default abstract class OptionT<T> {
    * const resultAgain = two.flatMap(nothing).flatMap(square);
    * // resultAgain.isSome() === false
    * ```
+   * #### Note: ####
+   * This function is sometimes also called `andThen` in other libraries.
    *
-   * @param {(val: T) => OptionT<U>} func
-   * @returns {OptionT<U>}
+   * @param func The function to call with this [[OptionT]]'s inner value.
+   * @param U The type of the value inside the returned [[OptionT]].
+   * @returns A [[None]] if this [[OptionT]] is a [[None]]; otherwise passes this [[OptionT]]'s
+   * inner value to `func` and returns the resulting [[OptionT]].
    */
   abstract flatMap<U>(func: (val: T) => OptionT<U>): OptionT<U>;
 
   /**
-   * Returns 'this' [[OptionT]] if it is a `Some` value; otherwise returns `other`.
+   * Compares two [[OptionT]] values. Returns `this` [[OptionT]] if it is a [[Some]] value;
+   * otherwise returns the `other` [[OptionT]].
    *
    * ```
    * const one = OptionT.some(1);
@@ -374,14 +385,13 @@ export default abstract class OptionT<T> {
    * // eitherAgain.unwrap() === 1
    * ```
    *
-   * @param {OptionT<any>} other
-   * @returns {OptionT<any>}
+   * @param other Another [[OptionT]] to compare to `this` one.
+   * @returns `this` if it is a [[Some]], otherwise returns `other`.
    */
   abstract or(other: OptionT<any>): OptionT<any>;
 
   /**
-   * Returns 'this' [[OptionT]] if it is a `Some` value; otherwise calls `func` and returns the
-   * result.
+   * Returns `this` [[OptionT]] if it is a [[Some]]; otherwise calls `func` and returns the result.
    *
    * ```
    * const one = OptionT.some(1);
@@ -395,81 +405,92 @@ export default abstract class OptionT<T> {
    * // eitherAgain.isSome() === true
    * // eitherAgain.unwrap() === 1
    * ```
+   * #### Note: ####
+   * The argument `func` will __not__ be evaluated unless this [[OptionT]] is a [[None]]. This
+   * means [[orElse]] is ideal for cases when you need to fall back on a value that needs to be
+   * computed (and may be expensive to compute).
    *
-   * @param {() => OptionT<any>} func
-   * @returns {OptionT<any>}
+   * @param func A function returning an alternate [[OptionT]] if `this` one is a [[None]].
+   * @returns `this` [[OptionT]] if it is a [[Some]], otherwise `func`'s return value is returned.
    */
   abstract orElse(func: () => OptionT<any>): OptionT<any>;
 
   /**
-   * Calls the appropriate function in `options` and returns the result.
-   *
-   * If 'this' [[OptionT]] is a `Some` value, `options.some` is called;
-   * otherwise `options.none` is called.
-   *
-   * See [[OptMatch]] for more details.
+   * Calls the appropriate function in `options` and returns the result. If `this` [[OptionT]] is a
+   * [[Some]], `options.some` is called with its inner value; otherwise `options.none` is called.
    *
    * ```
-   * const maybeOne = OptionT.some(1);
+   * const one = OptionT.some(1);
    *
-   * const doubled = maybeOne.match({
+   * const doubled = one.match({
    *   some: (val) => val * 2, // double it
-   *   none: () => 0,          // we'll pretend None implies a 0
+   *   none: () => 0,          // we'll pretend `None` implies a 0
    * });
-   *
    * // doubled === 2
    *
-   * const maybeTwo = OptionT.none();
+   * const two = OptionT.none();
    *
-   * const tripled = maybeTwo.match({
-   *   some: (val) => val * 3,
-   *   none: () => 0,
+   * const tripled = two.match({
+   *   some: (val) => val * 3, // tripple it
+   *   none: () => 0,          // again, `None` implies a 0
    * });
    *
    * // tripled === 0
    * ```
+   * #### Note: ####
+   * See the [[OptMatch]] interface for more details on the structure allowed.
    *
-   * @param {OptMatch<T, U, V>} options
-   * @returns {V | U}
+   * @param options An object adhering to the [[OptMatch]] interface.
+   * @param U The type of the return value in the case where `this` [[OptionT]] is a [[Some]].
+   * @param V The type of the return value in the case where `this` [[OptionT]] is a [[None]].
+   * @returns The return value from whichever function specified in `options` is called.
    */
   abstract match<U, V>(options: OptMatch<T, U, V>): U | V;
 
   /**
-   * Returns `this` [[OptionT]] if it is a `Some` value and if `condition` returns `true`;
-   * otherwise returns a `None` value.
+   * Filters an [[OptionT]] based on the given `condition` function.
    *
    * ```
    * const one = OptionT.some(1);
    *
    * const greaterThanZero = one.filter(x => x > 0);
+   * // greaterThanZero.isSome() === true
    * // greaterThanZero.unwrap() === 1
    *
    * const lessThanZero = one.filter(x => x < 0);
-   * // lessThanZero.isNone() === true
+   * // lessThanZero.isSome() === false
    * ```
    *
-   * @param {(val: T) => boolean} condition
-   * @returns {OptionT<T>}
+   * @param condition A function returning `true` or `false` based on `this` [[OptionT]]'s inner
+   * value.
+   * @returns `this` [[OptionT]] if it is a [[Some]] and if `condition` returns `true`, otherwise
+   * returns a [[None]].
    */
   abstract filter(condition: (val: T) => boolean): OptionT<T>;
 
   /**
-   * Calls `func` with the contained value if this [[OptionT]] is a `Some` value;
-   * otherwise does nothing.
-   *
-   * Note: This is intended for causing side-effects.  If you need a return value, consider
-   * using [[match]] instead.
+   * Calls `func` with the contained value if `this` [[OptionT]] is a [[Some]]; otherwise does
+   * nothing.
    *
    * ```
-   * const one = OptionT.some(1);
-   *
    * let val = 0;
    *
+   * const one = OptionT.some(1);
    * one.forEach(x => { val = x; });
    * // val === 1
-   * ```
    *
-   * @param {(val: any) => void} func
+   * val = 0;
+   *
+   * const two = OptionT.none();
+   * two.forEach(x => { val = x; });
+   * // val === 0
+   * ```
+   * #### Note: ####
+   * This function is intended for causing side-effects and therefore does not return anything. If
+   * you need a return value, consider using [[match]] instead.
+   *
+   * @param func A function to call if `this` [[OptionT]] is a [[Some]]. `This` [[OptionT]]'s inner
+   * value is passed to `func` if it is called.
    */
   abstract forEach(func: (val: any) => void): void;
 }
