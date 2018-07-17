@@ -51,7 +51,8 @@ export default abstract class OptionT<T> {
    * const nope = OptionT.of();     // nope.unwrapOr(0) === 0
    * ```
    *
-   * @param value an optional value to create an [[OptionT]] with.
+   * @param value An optional value to create an [[OptionT]] with.
+   * @returns Either a [[Some]] or a [[None]] depending on the `value` passed in.
    */
   static of<A>(value?: A): OptionT<A> {
     if (value === null || typeof value === 'undefined') {
@@ -70,7 +71,8 @@ export default abstract class OptionT<T> {
    * const nope = OptionT.some();      // throws an error
    * ```
    *
-   * @param value a value to create a [[Some]] with
+   * @param value A value to create a [[Some]] with.
+   * @returns A [[Some]] instance containing `value`.
    */
   static some<A>(value: A): OptionT<A> {
     if (value === null || typeof value === 'undefined') {
@@ -89,7 +91,8 @@ export default abstract class OptionT<T> {
    * const nope = OptionT.none();      // nope.unwrapOr(0) === 0
    * ```
    *
-   * @param value? a value to create a [[None]] with
+   * @param value? A value to create a [[None]] with
+   * @returns A [[None]] instance.
    */
   static none<A>(value?: A): OptionT<A> {
     if (value === null || typeof value === 'undefined') {
@@ -99,30 +102,40 @@ export default abstract class OptionT<T> {
   }
 
   /**
-   * Returns `true` if this [[OptionT]] is a `Some`, returns false if it is a `None`.
+   * Checks whether or not the given [[OptionT]] is a [[Some]].
    *
    * ```
    * const one = OptionT.some(1);
    * if (one.isSome()) { // always going to be true.
    *   // ...
    * }
-   * ```
    *
-   * @returns {boolean}
-   */
-  abstract isSome(): boolean;
-
-  /**
-   * Returns `true` if this [[OptionT]] is a `None`, returns false if it is a `Some`.
-   *
-   * ```
-   * const nope = OptionT.none();
-   * if (nope.isNone()) { // always going to be true.
+   * const two = OptionT.none();
+   * if (two.isSome()) { // always going to be false.
    *   // ...
    * }
    * ```
    *
-   * @returns {boolean}
+   * @returns `true` if this [[OptionT]] is a [[Some]], otherwise returns `false`.
+   */
+  abstract isSome(): boolean;
+
+  /**
+   * Checks whether or not the given [[OptionT]] is a [[None]],
+   *
+   * ```
+   * const one = OptionT.some(1);
+   * if (one.isNone()) { // always going to be false.
+   *   // ...
+   * }
+   *
+   * const two = OptionT.none();
+   * if (two.isNone()) { // always going to be true.
+   *   // ...
+   * }
+   * ```
+   *
+   * @returns `true` if this [[OptionT]] is a [[None]], otherwise returns `false`.
    */
   abstract isNone(): boolean;
 
@@ -130,55 +143,56 @@ export default abstract class OptionT<T> {
    * Returns `None()` if this [[OptionT]] is a `None`, returns `Some( val )` if it is a `Some`.
    *
    * ```
-   * OptionT.some(1).toString() //Some( 1 )
-   * OptionT.none().toString() //None()
+   * const one = OptionT.some(1);
+   * console.log(one.toString()); // Some( 1 )
+   *
+   * const two = OptionT.none();
+   * console.log(two.toString()); // None()
    * ```
    *
-   * @returns {boolean}
+   * @returns A string representation of this [[OptionT]].
    */
   abstract toString(): string;
 
   /**
-   * Returns the value contained by this [[OptionT]] if it is a `Some`.  Throws an error
-   * containing `message` if this [[OptionT]] is a `None` or a default `message` if one is
-   * not provided.
+   * Returns the value contained by this [[OptionT]] if it is a [[Some]]; throws an error if this
+   * [[OptionT]] is a [[None]] (because it cannot be unwrapped).
+   *
+   * The only safe way to call this function is to first make sure that this [[OptionT]] is a
+   * [[Some]] (by calling [[OptionT.isSome]] or [[OptionT.isNone]]).
    *
    * ```
-   * const maybeOne = OptionT.some(1);
-   * // this will throw, because we haven't yet checked if `maybeOne` is a `Some` value
-   * const one = maybeOne.unwrap('could not unwrap a Some');
+   * const one = OptionT.some(1);
+   * console.log(one.unwrap()); // will throw; we didn't check if it was safe to call `unwrap`
    *
-   * if (maybeOne.isSome()) {
-   *   // this will not throw, because we just confirmed it's a `Some`
-   *   const oneAgain = maybeOne.unwrap('could not unwrap a Some');
+   * if (one.isSome()) {
+   *   console.log(one.unwrap()); // will not throw; we know it's safe to call `unwrap`
    * }
    *
-   * // but:
-   * const maybeTwo = OptionT.none();
-   * // this will still throw, because we haven't checked what it is.
-   * const two = maybeTwo.unwrap('could not unwrap a Some');
+   * // however:
+   * const two = OptionT.none();
+   * console.log(two.unwrap()); // with throw; we didn't check if it was safe to call `unwrap`
    *
-   * if (maybeTwo.isSome()) {
-   *   // safe to unwrap, won't throw an error; also won't run because maybeTwo is a `None`
-   *   const twoAgain = maybeTwo.unwrap('could not unwrap a Some');
+   * if (two.isSome()) {
+   *   console.log(two.unwrap()); // will not throw; also won't run b/c two is a `None`
    * } else {
-   *   // this will throw, because `None` values cannot be unwrapped
-   *   const twoAgain = maybeTwo.unwrap('could not unwrap a Some');
+   *   console.log(two.unwrap()); // will throw; two is a `None` so it can't be `unwrap`ed
    * }
    * ```
    *
-   * @param {string} message
-   * @returns {T}
-   * @throws a `nullshield:unchecked_unwrap` error if you attempt to call it before first checking
-   * if the [[OptionT]] is a safe to unwrap (in other words, it must be a `Some` value).
-   * @throws a `nullshield:unwrap_on_none` error if you attempt to call it on a `None` value after
-   * first checking that the [[OptionT]] is safe to unwrap.
+   * @param message An optional message to be included in the error that this function may throw.
+   * @returns The value contained within this [[OptionT]].
+   * @throws A `nullshield:unchecked_unwrap` error if you attempt to call this function before
+   * first checking if this [[OptionT]] is a safe to unwrap. "Safe to unwrap" means that this
+   * [[OptionT]] is a [[Some]].
+   * @throws A `nullshield:unwrap_on_none` error if you attempted to call this function on a
+   * [[None]] value.
    *
    * ## `nullshield:unchecked_unwrap:` ##
    * The most direct way to avoid this issue is to either check that the given [[OptionT]] is a
-   * `Some` value (with [[OptionT.isSome]] or [[OptionT.isNone]]) or use [[OptionT.unwrapOr]]
-   * instead which allows you to specify a default value in the case where the given [[OptionT]]
-   * is a `None`.
+   * [[Some]] value (with [[OptionT.isSome]] or [[OptionT.isNone]]) or to use [[OptionT.unwrapOr]]
+   * instead which allows you to specify a default value to fall back on in the case where this
+   * [[OptionT]] is a [[None]].
    *
    * However, oftentimes you may not want to simply get the value out of the [[OptionT]]; instead
    * you may want to conditionally use that value in some sort of computation.  In those cases
@@ -187,24 +201,24 @@ export default abstract class OptionT<T> {
    * ## `nullshield:unwrap_on_none:` ##
    * To avoid this issue, either make sure that your logic is correct concerning whether or not
    * you should be `unwrap`-ing this value or use [[OptionT.unwrapOr]] instead which allows you
-   * to specify a default value in the case where the given [[OptionT]] is a `None`.
+   * to specify a default value to fall back on in the case where this [[OptionT]] is a [[None]].
    */
   abstract unwrap(message?: string): T;
 
   /**
-   * Returns the value contained by this [[OptionT]] if it is a `Some`.  Throws an error
-   * containing `message` if this [[OptionT]] is a `None` or a default `message` if one is
-   * not provided.
+   * Returns the value contained by this [[OptionT]] if it is a [[Some]]; throws an error if this
+   * [[OptionT]] is a [[None]] (because it cannot be unwrapped).
+   *
+   * This function will __not__ throw an error if you fail to check if this [[OptionT]] is safe to
+   * unwrap before doing so. However, it will always print a console warning because this function
+   * is inherently dangerous to use.
    *
    * ```
-   * const maybeOne = OptionT.some(1);
-   * // this won't throw, because it's a Some value.
-   * const one = maybeOne.forceUnwrap('could not unwrap a Some');
+   * const one = OptionT.some(1);
+   * console.log(one.forceUnwrap()); // won't throw, but will always console.warn()
    *
-   * // but:
-   * const maybeTwo = OptionT.none();
-   * // this will throw, because it's a None value.
-   * const two = maybeTwo.forceUnwrap('could not unwrap a Some');
+   * const two = OptionT.none();
+   * console.log(two.forceUnwrap()); // will throw because two is a `None`
    * ```
    *
    * #### Note ####
@@ -214,24 +228,22 @@ export default abstract class OptionT<T> {
    *
    * However, there are cases where [[OptionT.forceUnwrap]] may be useful.  With that in
    * mind, please note: this function will always print a `nullshield:force_unwrap_warning`
-   * regardless of whether or not the [[OptionT]] in question is a `Some`.
+   * regardless of whether or not the [[OptionT]] in question is a [[Some]].
    *
-   * @param {string} message
-   * @returns {T}
-   * @throws `nullshield:force_unwrap_on_none` if this function is called on an [[OptionT]]
-   * which happens to be a `None`.
+   * @param message An optional message to be included in the error that this function may throw.
+   * @returns The value contained within this [[OptionT]].
+   * @throws A `nullshield:force_unwrap_on_none` if this function is called on a [[None]].
    *
    * ## `nullshield:force_unwrap_on_none` ##
-   * The only way to avoid this is to not call this function on an [[OptionT]] which happens
-   * to be a `None`.  This means you must either know for certain that the [[OptionT]] in
-   * question is a `Some`, or you must verify it manually with [[OptionT.isSome]] or a
-   * similar function.
+   * The only way to avoid this is to not call this function on a [[None]]. This means you must
+   * either know for certain that the [[OptionT]] in question is a [[Some]], or you must verify
+   * it manually with [[OptionT.isSome]] or a similar function.
    */
   abstract forceUnwrap(message?: string): T;
 
   /**
-   * Returns the value contained by this [[OptionT]] if it is a `Some`.  Returns `other` if
-   * this [[OptionT]] is a `None`.
+   * Returns the value contained by this [[OptionT]] if it is a [[Some]], otherwise returns `other`
+   * as a default value.
    *
    * ```
    * const maybeOne = OptionT.some(1);
@@ -241,14 +253,14 @@ export default abstract class OptionT<T> {
    * const two = maybeTwo.unwrapOr(3); // two === 3
    * ```
    *
-   * @param {T} other
-   * @returns {T}
+   * @param other A default value to fall back on if this [[OptionT]] is a [[None]].
+   * @returns The value in this [[OptionT]] if it is a [[Some]], otherwise returns `other`.
    */
   abstract unwrapOr(other: T): T;
 
   /**
-   * Returns the value contained by this [[OptionT]] if it is a `Some`.  Returns the return
-   * value of `func` if this [[OptionT]] is a `None`.
+   * Returns the value contained by this [[OptionT]] if it is a [[Some]], otherwise calls `func`
+   * and returns the result.
    *
    * ```
    * const maybeOne = OptionT.some(1);
@@ -258,8 +270,14 @@ export default abstract class OptionT<T> {
    * const two = maybeTwo.unwrapOrElse(() => 3); // two === 3
    * ```
    *
-   * @param {() => T} func
-   * @returns {T}
+   * #### Note ####
+   * The argument `func` will __not__ be evaluated unless this [[OptionT]] is a [[None]]. This
+   * means [[OptionT.unwrapOrElse]] is ideal for cases when you need to fall back on a value that
+   * needs to be computed (and may be expensive to compute).
+   *
+   * @param func A function returning the fall-back value if this [[OptionT]] is a [[None]].
+   * @returns The value in this [[OptionT]] if it is a [[Some]], otherwise returns the return value
+   * of `func`.
    */
   abstract unwrapOrElse(func: () => T): T;
 
