@@ -12,7 +12,7 @@ export interface OptMatch<T, U, V> {
  * An abstract class representing an optional value. There are only two concrete classes extending
  * this one: [[Some]] and [[None]].
  *
- * `Some`-values contain an internal value while `None`-values represent the absense of a given
+ * `Some`-values contain an internal value while `None`-values represent the absence of a given
  * value. What makes these two types useful is that they both offer the same API to the consumer.
  *
  * This means that you can have a function that returns an `OptionT` and you can use the returned
