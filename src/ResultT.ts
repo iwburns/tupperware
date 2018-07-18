@@ -9,10 +9,45 @@ export interface ResultMatch<T, E, U, F> {
 }
 
 /**
- * An abstract class describing the `ResultT` type.
+ * ## ResultT
  *
- * Items of this type can either be an `Ok` value (implying the absence of an error),
- * or an `Err` value (implying the presence of an error).
+ * An abstract class representing the result of some computation (that may have failed).  There are
+ * only two concrete classes extending this one: [[Ok]] and [[Err]].
+ *
+ * `Ok`-values represent a computation result that returned successfully while `Err`-values
+ * represent a failed computation.  Similar to [[OptionT]]'s [[Some]] and [[None]], these two types
+ * are useful because they share the same API.
+ *
+ * This means you could have a function that returns a [[ResultT]] and use the value straight away
+ * without having to do a bunch of type checking to determine what happened during the computation.
+ *
+ * For example:
+ * ```
+ * // with this we can parse an integer out of a string and never have to check for `NaN`s again
+ * function safeParseInt(val) {
+ *   const parsed = Number.parseInt(val, 10);
+ *   if (Number.isNan(parsed)) {
+ *     return ResultT.err(`Failed to parse an integer from the string "${val}".`);
+ *   }
+ *   return ResultT.ok(parsed);
+ * }
+ *
+ * const num = getSomeNumber();                  // maybe this returns a string (for some reason)
+ * const parsed = safeParseInt(num).unwrapOr(0); // if it parsed properly, we can get the value
+ *                                               // but if it didn't we'll just default back to 0
+ *
+ * // or if we want to be more explicit (or do more complex things)
+ * const parsed = safeParseInt(num).match({
+ *   ok: (val) => { return val; },      // this function will be called if we got an `Ok` back
+ *   err: (e) => {                      // and this one will be called if we got an `Err` back
+ *      console.error(e);
+ *      return computeSomethingElse();
+ *   },
+ * });
+ * ```
+ *
+ * @param T The type of the value contained within this [[ResultT]] if it is an [[Ok]] value.
+ * @param E The type of the value contained within this [[ResultT]] if it is an [[Err]] value.
  */
 export default abstract class ResultT<T, E> {
   // tslint:disable-next-line:no-empty
