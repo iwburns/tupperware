@@ -21,7 +21,7 @@ export interface OptMatch<T, U, V> {
  *
  * For example:
  * ```
- * // with a function like this we can pull values out of objects without knowing if they exist or not
+ * // with this we can pull values out of objects without knowing if they exist or not
  * function getProperty(obj, propName) {
  *   if (typeof obj[propName] !== 'undefined' && obj[propName] !== null) {
  *     return OptionT.some(obj[propName]);
@@ -30,11 +30,12 @@ export interface OptMatch<T, U, V> {
  * }
  *
  * const data = getSomeData();                  // maybe we don't know what this looks like
- * getProperty(data, 'c').forEach(console.log); // if c is there console.log it, otherwise don't do anything
+ * getProperty(data, 'c').forEach(console.log); // if c exists pass it to console.log
+ *                                              // otherwise don't do anything
  *
  * getProperty(data, 'username')
- *   .map(x => `Hello, ${x}`) // if we have a `Some` transform it into a new OptionT with this function
- *   .forEach(console.log);   // if we have a `Some` pass its value into console.log, otherwise do nothing
+ *   .map(x => `Hello, ${x}`) // if username exists, map it to an Option containing a greeting
+ *   .forEach(console.log);   // if we just created a greeting, console.log it
  * ```
  *
  * @param T The type of the value contained within this [[OptionT]].
@@ -528,9 +529,10 @@ class Some<T> extends OptionT<T> {
   unwrap(message?: string): T {
     if (!this.hasBeenInspected) {
       throw new Error(
-        'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
-          ' the `OptionT` in question is a `Some` value before calling this function or use a safer function like' +
-          ' `unwrapOr` which provides a default value in case this `OptionT` is a `None`.'
+        'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do' +
+          ' so. Please verify that the `OptionT` in question is a `Some` value before calling' +
+          ' this function or use a safer function like `unwrapOr` which provides a default value' +
+          ' in case this `OptionT` is a `None`.'
       );
     }
     return this.value;
@@ -538,7 +540,8 @@ class Some<T> extends OptionT<T> {
 
   forceUnwrap(message?: string): T {
     console.warn(
-      'nullshield:force_unwrap_warning: Called forceUnwrap on a `Some` value.  This is not recommended usage.'
+      'nullshield:force_unwrap_warning: Called forceUnwrap on a `Some` value.  This is not' +
+        ' recommended usage.'
     );
     return this.value;
   }
@@ -619,9 +622,10 @@ class None extends OptionT<any> {
   unwrap(message?: string): never {
     if (!this.hasBeenInspected) {
       throw new Error(
-        'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
-          ' the `OptionT` in question is a `Some` value before calling this function or use a safer function like' +
-          ' `unwrapOr` which provides a default value in case this `OptionT` is a `None`.'
+        'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do' +
+          ' so. Please verify that the `OptionT` in question is a `Some` value before calling' +
+          ' this function or use a safer function like `unwrapOr` which provides a default value' +
+          ' in case this `OptionT` is a `None`.'
       );
     }
     if (typeof message !== 'undefined' && message !== null) {
@@ -632,7 +636,8 @@ class None extends OptionT<any> {
 
   forceUnwrap(message?: string): never {
     console.warn(
-      'nullshield:force_unwrap_warning: Called forceUnwrap on a `None` value.  This is not recommended usage.'
+      'nullshield:force_unwrap_warning: Called forceUnwrap on a `None` value.  This is not' +
+        ' recommended usage.'
     );
     if (typeof message !== 'undefined' && message !== null) {
       throw new Error(`nullshield:force_unwrap_on_none: ${message}`);
