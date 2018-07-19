@@ -50,9 +50,6 @@ export interface ResultMatch<T, E, U, F> {
  * @param E The type of the value contained within this [[ResultT]] if it is an [[Err]] value.
  */
 export default abstract class ResultT<T, E> {
-  // tslint:disable-next-line:no-empty
-  constructor() {}
-
   /**
    * Creates an [[Ok]] with the given value.
    *
@@ -413,7 +410,7 @@ export default abstract class ResultT<T, E> {
 }
 
 class Ok<T> extends ResultT<T, any> {
-  private value: T;
+  private readonly value: T;
 
   constructor(val: T) {
     super();
@@ -481,7 +478,7 @@ class Ok<T> extends ResultT<T, any> {
 }
 
 class Err<E> extends ResultT<any, E> {
-  private error: E;
+  private readonly error: E;
 
   constructor(err: E) {
     super();
