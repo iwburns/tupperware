@@ -415,9 +415,12 @@ export default abstract class ResultT<T, E> {
  * A type representing the result of a __successful__ computation.
  *
  * This type is not intended to be used or instantiated directly. Instead, [[Ok]] instances can be created with
- * [[ResultT.ok]] and can then be manipulated with any function available on [[ResultT]].
+ * [[ResultT.ok]] and can then be manipulated with any method available on [[ResultT]].
  *
  * Please see the [[ResultT]] documentation for more information.
+ *
+ * #### Note: ####
+ * All [[Ok]] methods are documented at the [[ResultT]] level.
  *
  * @param T The type of the value contained in this [[Ok]] instance.
  */
@@ -502,9 +505,12 @@ class Ok<T> extends ResultT<T, any> {
  * A type representing the result of a __failed__ computation.
  *
  * This type is not intended to be used or instantiated directly. Instead, [[Err]] instances can be created with
- * [[ResultT.err]] and can then be manipulated with any function available on [[ResultT]].
+ * [[ResultT.err]] and can then be manipulated with any method available on [[ResultT]].
  *
  * Please see the [[ResultT]] documentation for more information.
+ *
+ * #### Note: ####
+ * All [[Err]] methods are documented at the [[ResultT]] level.
  *
  * @param E The type of the value contained in this [[Err]] instance.
  */
