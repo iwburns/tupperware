@@ -497,15 +497,36 @@ export default abstract class OptionT<T> {
 }
 
 /**
- * A class representing the `Some`-type variant of the `OptionT` type.
+ * ## Some
  *
- * Instances of this class wrap their contained value inside the
- * `OptionT` API defined by [[OptionT]].
+ * A type that represents the __presence__ of a value.
+ *
+ * This type is not intended to be used or instantiated directly. Instead, [[Some]] instances can
+ * be created with [[OptionT.some]] and can then be manipulated with any method available on
+ * [[OptionT]].
+ *
+ * Please see the [[OptionT]] documentation for more information.
+ *
+ * #### Note: ####
+ * All [[Some]] methods are documented at the [[OptionT]] level.
+ *
+ * @param T The type of the value contained in this [[Some]] instance.
  */
 class Some<T> extends OptionT<T> {
-  private value: T;
+
+  /**
+   * @hidden
+   */
+  private readonly value: T;
+
+  /**
+   * @hidden
+   */
   private hasBeenInspected: boolean;
 
+  /**
+   * @hidden
+   */
   constructor(value: T) {
     super();
     this.value = value;
@@ -592,14 +613,29 @@ class Some<T> extends OptionT<T> {
 }
 
 /**
- * A class representing the `None`-type variant of the `OptionT` type.
+ * ## None
  *
- * Instances of this class contain no internal value.  They simply wrap the concept of 'nothing'
- * inside the same `OptionT` API defined by [[OptionT]].
+ * A type that represents the __absence__ of a value.
+ *
+ * This type is not intended to be used or instantiated directly. Instead, [[None]] instances can
+ * be created with [[OptionT.none]] and can then be manipulated with any method available on
+ * [[OptionT]].
+ *
+ * Please see the [[OptionT]] documentation for more information.
+ *
+ * #### Note: ####
+ * All [[None]] methods are documented at the [[OptionT]] level.
  */
 class None extends OptionT<any> {
+
+  /**
+   * @hidden
+   */
   private hasBeenInspected: boolean;
 
+  /**
+   * @hidden
+   */
   constructor() {
     super();
     this.hasBeenInspected = false;
