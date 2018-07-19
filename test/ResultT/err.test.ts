@@ -1,5 +1,5 @@
 import { ResultT } from '../../src/nullshield';
-import { expectAnErr, expectASome, expectANone, expectAnOk } from '../util';
+import { expectAnErr, expectANone } from '../util';
 
 describe('#ResultT - Err', () => {
   it('should have the function isOk', () => {
@@ -59,14 +59,13 @@ describe('#ResultT - Err', () => {
   it('should have the function unwrapOrElse', () => {
     const r = ResultT.err('parse error') as ResultT<string, any>;
     expectAnErr(r);
-    // tslint:disable-next-line:handle-callback-err
-    expect(r.unwrapOrElse(err => 'other string')).toEqual('other string');
+    expect(r.unwrapOrElse(() => 'other string')).toEqual('other string');
   });
 
   it('should have the function map', () => {
     const r = ResultT.err(1) as ResultT<number, any>;
     expectAnErr(r);
-    const m = r.map(v => 2);
+    const m = r.map(() => 2);
     expectAnErr(m);
     expect(m.unwrapErr()).toEqual(1);
   });
@@ -74,7 +73,7 @@ describe('#ResultT - Err', () => {
   it('should have the function mapErr', () => {
     const r = ResultT.err(1) as ResultT<number, any>;
     expectAnErr(r);
-    const m = r.mapErr(v => 2);
+    const m = r.mapErr(() => 2);
     expectAnErr(m);
     expect(m.unwrapErr()).toEqual(2);
   });
@@ -82,7 +81,7 @@ describe('#ResultT - Err', () => {
   it('should have the function flatMap', () => {
     const r = ResultT.err('error');
     expectAnErr(r);
-    const double = x => ResultT.ok(x * 2) as ResultT<number, string>;
+    const double = (x: any) => ResultT.ok(x * 2) as ResultT<number, string>;
 
     const m = r.flatMap(double);
     expectAnErr(m);
@@ -92,7 +91,7 @@ describe('#ResultT - Err', () => {
   it('should have the function orElse', () => {
     const r = ResultT.err(1);
     expectAnErr(r);
-    const changeError = e => ResultT.err('new error');
+    const changeError = () => ResultT.err('new error');
     const m = r.orElse(changeError);
     expectAnErr(m);
     expect(m.unwrapErr()).toEqual('new error');
@@ -102,8 +101,8 @@ describe('#ResultT - Err', () => {
     const r = ResultT.err('error');
     expectAnErr(r);
     const m = r.match({
-      ok: _ => 2,
-      err: _ => 'new error',
+      ok: () => 2,
+      err: () => 'new error',
     });
     expect(m).toEqual('new error');
   });

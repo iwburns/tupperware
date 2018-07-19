@@ -1,5 +1,5 @@
 import { OptionT } from '../../src/nullshield';
-import { expectANone, expectASome } from '../util';
+import { expectANone } from '../util';
 
 describe('#OptionT - None', () => {
   it('should have the function isSome', () => {
@@ -66,11 +66,11 @@ describe('#OptionT - None', () => {
   });
 
   it('should have the function map', () => {
-    const none = OptionT.none();
+    const none = OptionT.none<number>();
 
     expectANone(none);
 
-    const mapResult = none.map((x: number) => x * 2);
+    const mapResult = none.map(x => x * 2);
     expect(mapResult.isNone()).toEqual(true);
   });
 

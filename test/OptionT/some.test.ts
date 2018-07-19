@@ -71,7 +71,7 @@ describe('#OptionT - Some', () => {
 
     expectASome(one);
 
-    const two = one.map(val => 2);
+    const two = one.map(() => 2);
 
     expectASome(two);
     expect(two.isSome()).toEqual(true);

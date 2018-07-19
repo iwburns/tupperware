@@ -425,7 +425,6 @@ export default abstract class ResultT<T, E> {
  * @param T The type of the value contained in this [[Ok]] instance.
  */
 class Ok<T> extends ResultT<T, any> {
-
   /**
    * @hidden
    */
@@ -515,7 +514,6 @@ class Ok<T> extends ResultT<T, any> {
  * @param E The type of the value contained in this [[Err]] instance.
  */
 class Err<E> extends ResultT<any, E> {
-
   /**
    * @hidden
    */

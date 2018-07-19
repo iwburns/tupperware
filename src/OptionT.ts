@@ -513,7 +513,6 @@ export default abstract class OptionT<T> {
  * @param T The type of the value contained in this [[Some]] instance.
  */
 class Some<T> extends OptionT<T> {
-
   /**
    * @hidden
    */
@@ -627,7 +626,6 @@ class Some<T> extends OptionT<T> {
  * All [[None]] methods are documented at the [[OptionT]] level.
  */
 class None extends OptionT<any> {
-
   /**
    * @hidden
    */
