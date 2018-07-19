@@ -409,9 +409,28 @@ export default abstract class ResultT<T, E> {
   abstract match<U, F>(options: ResultMatch<T, E, U, F>): U | F;
 }
 
+/**
+ * ## Ok
+ *
+ * A type representing the result of a __successful__ computation.
+ *
+ * This type is not intended to be used or instantiated directly. Instead, [[Ok]] instances can be created with
+ * [[ResultT.ok]] and can then be manipulated with any function available on [[ResultT]].
+ *
+ * Please see the [[ResultT]] documentation for more information.
+ *
+ * @param T The type of the value contained in this [[Ok]] instance.
+ */
 class Ok<T> extends ResultT<T, any> {
+
+  /**
+   * @hidden
+   */
   private readonly value: T;
 
+  /**
+   * @hidden
+   */
   constructor(val: T) {
     super();
     this.value = val;
@@ -477,9 +496,28 @@ class Ok<T> extends ResultT<T, any> {
   }
 }
 
+/**
+ * ## Err
+ *
+ * A type representing the result of a __failed__ computation.
+ *
+ * This type is not intended to be used or instantiated directly. Instead, [[Err]] instances can be created with
+ * [[ResultT.err]] and can then be manipulated with any function available on [[ResultT]].
+ *
+ * Please see the [[ResultT]] documentation for more information.
+ *
+ * @param E The type of the value contained in this [[Err]] instance.
+ */
 class Err<E> extends ResultT<any, E> {
+
+  /**
+   * @hidden
+   */
   private readonly error: E;
 
+  /**
+   * @hidden
+   */
   constructor(err: E) {
     super();
     this.error = err;
