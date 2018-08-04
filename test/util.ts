@@ -55,3 +55,28 @@ export function expectAnErr(val) : void {
   expect(val.isOk()).toBe(false);
   expect(val.isErr()).toBe(true);
 }
+
+export function expectAValidation(val): void {
+  expect(val).toHaveProperty('isSuccess'); expect(val.isSuccess).toBeInstanceOf(Function);
+  expect(val).toHaveProperty('isFailure'); expect(val.isFailure).toBeInstanceOf(Function);
+  expect(val).toHaveProperty('getSuccess'); expect(val.getSuccess).toBeInstanceOf(Function);
+  expect(val).toHaveProperty('getFailure'); expect(val.getFailure).toBeInstanceOf(Function);
+  expect(val).toHaveProperty('assert'); expect(val.assert).toBeInstanceOf(Function);
+  expect(val).toHaveProperty('flatMap'); expect(val.flatMap).toBeInstanceOf(Function);
+  expect(val).toHaveProperty('or'); expect(val.or).toBeInstanceOf(Function);
+  expect(val).toHaveProperty('orElse'); expect(val.orElse).toBeInstanceOf(Function);
+  expect(val).toHaveProperty('mapSuccess'); expect(val.mapSuccess).toBeInstanceOf(Function);
+  expect(val).toHaveProperty('mapFailure'); expect(val.mapFailure).toBeInstanceOf(Function);
+}
+
+export function expectASuccess(val): void {
+  expectAValidation(val);
+  expect(val.isSuccess()).toBe(true);
+  expect(val.isFailure()).toBe(false);
+}
+
+export function expectAFailure(val): void {
+  expectAValidation(val);
+  expect(val.isSuccess()).toBe(false);
+  expect(val.isFailure()).toBe(true);
+}
