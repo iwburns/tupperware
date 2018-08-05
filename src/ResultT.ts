@@ -9,63 +9,125 @@ export interface ResultMatch<T, E, U, F> {
 }
 
 /**
- * An abstract class describing the `ResultT` type.
+ * ## ResultT
  *
- * Items of this type can either be an `Ok` value (implying the absence of an error),
- * or an `Err` value (implying the presence of an error).
+ * An abstract class representing the result of some computation (that may have failed).  There are
+ * only two concrete classes extending this one: [[Ok]] and [[Err]].
+ *
+ * `Ok`-values represent a computation result that returned successfully while `Err`-values
+ * represent a failed computation.  Similar to [[OptionT]]'s [[Some]] and [[None]], these two types
+ * are useful because they share the same API.
+ *
+ * This means you could have a function that returns a [[ResultT]] and use the value straight away
+ * without having to do a bunch of type checking to determine what happened during the computation.
+ *
+ * For example:
+ * ```
+ * // with this we can parse an integer out of a string and never have to check for `NaN`s again
+ * function safeParseInt(val) {
+ *   const parsed = Number.parseInt(val, 10);
+ *   if (Number.isNan(parsed)) {
+ *     return ResultT.err(`Failed to parse an integer from the string "${val}".`);
+ *   }
+ *   return ResultT.ok(parsed);
+ * }
+ *
+ * const num = getSomeNumber();                  // maybe this returns a string (for some reason)
+ * const parsed = safeParseInt(num).unwrapOr(0); // if it parsed properly, we can get the value
+ *                                               // but if it didn't we'll just default back to 0
+ *
+ * // or if we want to be more explicit (or do more complex things)
+ * const parsed = safeParseInt(num).match({
+ *   ok: (val) => { return val; },      // this function will be called if we got an `Ok` back
+ *   err: (e) => {                      // and this one will be called if we got an `Err` back
+ *      console.error(e);
+ *      return computeSomethingElse();
+ *   },
+ * });
+ * ```
+ *
+ * @param T The type of the value contained within this [[ResultT]] if it is an [[Ok]] value.
+ * @param E The type of the value contained within this [[ResultT]] if it is an [[Err]] value.
  */
 export default abstract class ResultT<T, E> {
-  // tslint:disable-next-line:no-empty
-  constructor() {}
-
-  static ok<T>(val: T): ResultT<T, any> {
-    return new Ok(val);
+  /**
+   * Creates an [[Ok]] with the given value.
+   *
+   * ```
+   * const one = ResultT.ok(1);
+   * // one.unwrap() === 1
+   * ```
+   *
+   * @param value The value with which to create the [[Ok]] instance.
+   * @param U The type of value that the new [[Ok]] will contain.
+   * @returns An [[Ok]] instance containing `value`.
+   */
+  static ok<U>(value: U): ResultT<U, any> {
+    return new Ok(value);
   }
 
-  static err<E>(error: E): ResultT<any, E> {
+  /**
+   * Creates an [[Err]] with the given value.
+   *
+   * ```
+   * const one = ResultT.err(1);
+   * // one.unwrapErr() === 1
+   * ```
+   *
+   * @param error The value with which to create the [[Err]] instance.
+   * @param F The type of value that the new [[Err]] will contain.
+   * @returns An [[Err]] instance containing `value`.
+   */
+  static err<F>(error: F): ResultT<any, F> {
     return new Err(error);
   }
 
   /**
-   * Returns `true` if this [[ResultT]] is an `Ok`, returns `false` if it is an `Err`.
+   * Checks whether or not the given [[ResultT]] is an [[Ok]].
    *
    * ```
    * const one = ResultT.ok(1);
    * // one.isOk() === true
    * ```
    *
-   * @returns {boolean}
+   * @returns `true` if this [[ResultT]] is an [[Ok]], otherwise returns `false`.
    */
   abstract isOk(): boolean;
 
   /**
-   * Returns `true` if this [[ResultT]] is an `Err`, returns `false` if it is an `Ok`.
+   * Checks whether or not the given [[ResultT]] is an [[Err]].
    *
    * ```
-   * const one = ResultT.err('Failed to parse integer');
+   * const one = ResultT.err(1);
    * // one.isErr() === true
    * ```
    *
-   * @returns {boolean}
+   * @returns `true` if this [[ResultT]] is an [[Err]], otherwise returns `false`.
    */
   abstract isErr(): boolean;
 
   /**
-   * Returns `Ok( val )` if this [[ResultT]] is an `Ok`, returns `Err( err )` if it is an `Err`.
+   * Returns `Ok( val )` if this [[ResultT]] is an [[Ok]], returns `Err( err )` if it is an
+   * [[Err]].
    *
    * ```
-   * ResultT.ok(1).toString() //Ok( 1 )
-   * ResultT.err('parsing failure').toString() //Err( parsing failure )
+   * const one = ResultT.ok(1);
+   * // one.toString() === "Ok( 1 )"
+   *
+   * const two = ResultT.err(2);
+   * // two.toString() === "Err( 2 )"
    * ```
    *
-   * @returns {string}
+   * @returns A string representation of this [[ResultT]].
    */
   abstract toString(): string;
 
   /**
-   * Tries to return the internal `Ok` value of this [[ResultT]].
-   * Returns a `Some` containing the value if it is an `Ok`,
-   * returns a `None` if it is an `Err`.
+   * Tries to return the internal [[Ok]] value of this [[ResultT]]. Returns a [[Some]] containing
+   * the value if it is an [[Ok]], returns a [[None]] if it is an [[Err]].
+   *
+   * You can also think of this function as transforming a [[ResultT]] into an [[OptionT]], where
+   * the [[Some]] comes from the [[Ok]] and the [[Err]] (if it exists) is thrown away.
    *
    * ```
    * const one = ResultT.ok(1);
@@ -80,13 +142,17 @@ export default abstract class ResultT<T, E> {
    * // maybeOne.isNone() === true
    * ```
    *
-   * @returns {OptionT<T>}
+   * @returns A [[Some]] containing this [[ResultT]]'s value if it is an [[Ok]], otherwise returns
+   * a [[None]].
    */
   abstract getOk(): OptionT<T>;
 
   /**
-   * Tries to return the internal `Err` value of this [[ResultT]].  Returns a `Some` containing the
-   * value if it is an `Err`, returns a `None` if it is an `Ok`.
+   * Tries to return the internal [[Err]] value of this [[ResultT]]. Returns a [[Some]] containing
+   * the value if it is an [[Err]], returns a [[None]] if it is an [[Ok]].
+   *
+   * You can also think of this function as transforming a [[ResultT]] into an [[OptionT]], where
+   * the [[Some]] comes from the [[Err]] and the [[Ok]] (if it exists) is thrown away.
    *
    * ```
    * const one = ResultT.err('parsing error');
@@ -101,13 +167,14 @@ export default abstract class ResultT<T, E> {
    * // maybeOne.isNone() === true
    * ```
    *
-   * @returns {OptionT<E>}
+   * @returns A [[Some]] containing this [[ResultT]]'s value if it is an [[Err]], otherwise returns
+   * a [[None]].
    */
   abstract getErr(): OptionT<E>;
 
   /**
-   * Returns the value contained by this [[ResultT]] if it is an `Ok`.  Throws an error
-   * containing `message` if it is an `Err` or a default message if none is provided.
+   * Returns the value contained by this [[ResultT]] if it is an [[Ok]]. Throws an error containing
+   * `message` if it is an [[Err]] or a default message if none is provided.
    *
    * ```
    * const maybeOne = ResultT.ok(1);
@@ -120,14 +187,14 @@ export default abstract class ResultT<T, E> {
    * const one = maybeOne.unwrap("couldn't unwrap an Ok");
    * ```
    *
-   * @param {string} message
-   * @returns {T}
+   * @param message A message to use in the thrown error if this [[ResultT]] is an [[Err]].
+   * @returns This [[ResultT]]'s contained value if it is an [[Ok]].
    */
   abstract unwrap(message?: string): T;
 
   /**
-   * Returns the value contained by this [[ResultT]] if it is an `Err`.  Throws an error
-   * containing `message` if it is an `Ok` or a default message if none is provided.
+   * Returns the value contained by this [[ResultT]] if it is an [[Err]]. Throws an error
+   * containing `message` if it is an [[Ok]] or a default message if none is provided.
    *
    * ```
    * const maybeError = ResultT.ok(1);
@@ -140,14 +207,14 @@ export default abstract class ResultT<T, E> {
    * const error = maybeError.unwrapErr("couldn't unwrap an Err");
    * ```
    *
-   * @param {string} message
-   * @returns {T}
+   * @param message A message to use in the thrown error if this [[ResultT]] is an [[Ok]].
+   * @returns This [[ResultT]]'s contained value if it is an [[Err]].
    */
   abstract unwrapErr(message?: string): E;
 
   /**
-   * Returns the value contained by this [[ResultT]] if it is an `Ok`, otherwise
-   * returns `other`.
+   * Returns the value contained by this [[ResultT]] if it is an [[Ok]], otherwise returns `other`
+   * as a default value.
    *
    * ```
    * const maybeOne = ResultT.ok(1);
@@ -159,14 +226,14 @@ export default abstract class ResultT<T, E> {
    * // one === 2
    * ```
    *
-   * @param {T} other
-   * @returns {T}
+   * @param other A default value to fall back on if this [[ResultT]] is an [[Err]].
+   * @returns The value in this [[ResultT]] if it is an [[Ok]], otherwise returns `other`.
    */
   abstract unwrapOr(other: T): T;
 
   /**
-   * Returns the value contained by this [[ResultT]] if it is an 'Ok', otherwise
-   * calls `func` with the `Err` value and returns the result.
+   * Returns the value contained by this [[ResultT]] if it is an [[Ok]], otherwise calls `func`
+   * with the [[Err]] value and returns the result.
    *
    * ```
    * const maybeOne = ResultT.ok(1);
@@ -178,18 +245,24 @@ export default abstract class ResultT<T, E> {
    * // one === 11
    * ```
    *
-   * @param {(err: E) => T} func
-   * @returns {T}
+   * #### Note ####
+   * The argument `func` will __not__ be evaluated unless this [[ResultT]] is an [[Err]]. This
+   * means [[unwrapOrElse]] is ideal for cases when you need to fall back on a value that needs to
+   * be computed (and may be expensive to compute).
+   *
+   * @param func A function returning the fall-back value if this [[ResultT]] is an [[Err]].
+   * @returns The value in this [[ResultT]] if it is an [[Ok]], otherwise returns the return value
+   * of `func`.
    */
   abstract unwrapOrElse(func: (err: E) => T): T;
 
   /**
-   * Maps a [[ResultT]]<T, E> to an [[ResultT]]<U, E> by applying `func` to the value
-   * contained in this [[ResultT]].
+   * Maps a [[ResultT]]<T, E> to an [[ResultT]]<U, E> by applying `func` to the value contained in
+   * this [[ResultT]].
    *
-   * If this [[ResultT]] is an `Ok` value, the returned value will be the return of `func`
-   * wrapped in a new [[ResultT]] (resulting in an `Ok` value); otherwise the returned value
-   * will be a new `Err` value.
+   * If this [[ResultT]] is an [[Ok]], the returned value will be the return of `func` wrapped in a
+   * new [[ResultT]] (resulting in a new [[Ok]]); otherwise the returned value will be a new
+   * [[Err]].
    *
    * ```
    * const maybeOne = ResultT.ok(1);
@@ -197,14 +270,16 @@ export default abstract class ResultT<T, E> {
    * // maybeTwo.isOk() === true
    * // maybeTwo.unwrap() === 2
    *
-   * const maybeThree = ResultT.err(2);
+   * const maybeThree = ResultT.err(1);
    * const maybeSix = maybeThree.map(x => x * 2);
    * // maybeSix.isErr() === true
-   * // maybeSix.unwrapErr() === 2
+   * // maybeSix.unwrapErr() === 1
    * ```
    *
-   * @param {(val: T) => U} func
-   * @returns {ResultT<U, E>}
+   * @param func A function to apply to this [[ResultT]]'s contained value.
+   * @param U Both the return type of `func` and the type contained in the new [[Ok]] returned by
+   * `map` (unless `map` returns an [[Err]]).
+   * @returns The return value of `func` wrapped up as a new [[ResultT]].
    */
   abstract map<U>(func: (val: T) => U): ResultT<U, E>;
 
@@ -212,9 +287,9 @@ export default abstract class ResultT<T, E> {
    * Maps a [[ResultT]]<T, E> to an [[ResultT]]<T, F> by applying `func` to the value
    * contained in this [[ResultT]].
    *
-   * If this [[ResultT]] is an `Err` value, the returned value will be the return of `func`
-   * wrapped in a new [[ResultT]] (resulting in an `Err` value); otherwise the returned value
-   * will be a new `Ok` value.
+   * If this [[ResultT]] is an [[Err]], the returned value will be the return of `func` wrapped in
+   * a new [[ResultT]] (resulting in a new [[Err]]); otherwise the returned value will be a new
+   * [[Ok]].
    *
    * ```
    * const maybeOne = ResultT.ok(1);
@@ -228,14 +303,20 @@ export default abstract class ResultT<T, E> {
    * // maybeSix.unwrapErr() === 4
    * ```
    *
-   * @param {(val: E) => F} func
-   * @returns {ResultT<T, F>}
+   * @param func A function to apply to this [[ResultT]]'s contained value.
+   * @param F Both the return type of `func` and the type contained in the new [[Err]] returned by
+   * `map` (unless `map` returns an [[Ok]]).
+   * @returns The return value of `func` wrapped up as a new [[ResultT]].
    */
   abstract mapErr<F>(func: (val: E) => F): ResultT<T, F>;
 
   /**
-   * Returns an `Err` value if this [[ResultT]] is an `Err`; otherwise calls `func` and returns
+   * Returns an [[Err]] if this [[ResultT]] is an [[Err]]; otherwise calls `func` and returns
    * the result.
+   *
+   * This function behaves similarly to [[map]] and [[mapErr]] except that in this function, `func`
+   * returns a [[ResultT]].  This means [[flatMap]] doesn't auto-wrap the return value from `func`
+   * while [[map]] and [[mapErr]] both do.
    *
    * ```
    * const square = x => ResultT.ok(x * x);
@@ -256,14 +337,19 @@ export default abstract class ResultT<T, E> {
    * // resultAgain.unwrap() === 'it broke!'
    * ```
    *
-   * @param {(ok: T) => ResultT<U, E>} func
-   * @returns {ResultT<U, E>}
+   * #### Note: ####
+   * This function is sometimes called `andThen` in other libraries.
+   *
+   * @param func The function to call with this [[ResultT]]'s inner value (if it is an [[Ok]]).
+   * @param U The type of the inner value contained in `func`'s return value (if this [[ResultT]]
+   * is an [[Ok]].
+   * @returns An [[Err]] if this [[ResultT]] is an [[Err]]; otherwise passes this [[ResultT]]'s
+   * inner value to `func` and returns the resulting [[ResultT]].
    */
   abstract flatMap<U>(func: (ok: T) => ResultT<U, E>): ResultT<U, E>;
 
   /**
-   * Returns 'this' [[ResultT]] if it is an `Ok` value; otherwise calls `func` and returns the
-   * result.
+   * Returns `this` [[ResultT]] if it is an [[Ok]]; otherwise calls `func` and returns the result.
    *
    * ```
    * const okay = ResultT.ok(1);
@@ -278,25 +364,26 @@ export default abstract class ResultT<T, E> {
    * // eitherAgain.unwrap() === 1
    * ```
    *
-   * @param {(err: E) => ResultT<T, F>} func
-   * @returns {ResultT<T, F>}
+   * #### Note ####
+   * The argument `func` will __not__ be evaluated unless this [[ResultT]] is an [[Err]]. This
+   * means [[orElse]] is ideal for cases when you need to fall back on a value that needs to
+   * be computed (and may be expensive to compute).
+   *
+   * @param func A function returning an alternate [[ResultT]] if this one is an [[Err]].
+   * @returns `this` [[ResultT]] if it is an [[Ok]], otherwise `func`'s return value is returned.
    */
-  abstract orElse<F>(func: (err: E) => ResultT<T, F>): ResultT<T, F>;
+  abstract orElse(func: (err: E) => ResultT<T, any>): ResultT<T, any>;
 
   /**
-   * Calls the appropriate function in `options` and returns the result.
-   *
-   * If 'this' [[ResultT]] is an `Ok` value, `options.ok` is called;
-   * otherwise `options.err` is called.
-   *
-   * See [[ResultMatch]] for more details.
+   * Calls the appropriate function in `options` and returns the result. If `this` [[ResultT]] is
+   * an [[Ok]], `options.ok` is called; otherwise `options.err` is called.
    *
    * ```
    * const maybeOne = ResultT.ok(1);
    *
    * const doubled = maybeOne.match({
    *   ok: (val) => val * 2, // double it
-   *   err: (err) => 0,         // we'll pretend None implies a 0
+   *   err: (err) => 0,      // we'll pretend an Err implies a 0
    * });
    *
    * // doubled === 2
@@ -311,15 +398,41 @@ export default abstract class ResultT<T, E> {
    * // tripled === 0
    * ```
    *
-   * @param {ResultMatch<T, E, U, F>} options
-   * @returns {U | F}
+   * #### Note: ####
+   * See [[ResultMatch]] for more details on the structure allowed.
+   *
+   * @param options An object adhering to the [[ResultMatch]] interface.
+   * @param U The type of the return value in the case where `this` [[ResultT]] is an [[Ok]].
+   * @param F The type of the return value in the case where `this` [[ResultT]] is an [[Err]].
+   * @returns The return value from whichever function specified in `options` is called.
    */
   abstract match<U, F>(options: ResultMatch<T, E, U, F>): U | F;
 }
 
+/**
+ * ## Ok
+ *
+ * A type representing the result of a __successful__ computation.
+ *
+ * This type is not intended to be used or instantiated directly. Instead, [[Ok]] instances can be created with
+ * [[ResultT.ok]] and can then be manipulated with any method available on [[ResultT]].
+ *
+ * Please see the [[ResultT]] documentation for more information.
+ *
+ * #### Note: ####
+ * All [[Ok]] methods are documented at the [[ResultT]] level.
+ *
+ * @param T The type of the value contained in this [[Ok]] instance.
+ */
 class Ok<T> extends ResultT<T, any> {
-  private value: T;
+  /**
+   * @hidden
+   */
+  private readonly value: T;
 
+  /**
+   * @hidden
+   */
   constructor(val: T) {
     super();
     this.value = val;
@@ -385,9 +498,30 @@ class Ok<T> extends ResultT<T, any> {
   }
 }
 
+/**
+ * ## Err
+ *
+ * A type representing the result of a __failed__ computation.
+ *
+ * This type is not intended to be used or instantiated directly. Instead, [[Err]] instances can be created with
+ * [[ResultT.err]] and can then be manipulated with any method available on [[ResultT]].
+ *
+ * Please see the [[ResultT]] documentation for more information.
+ *
+ * #### Note: ####
+ * All [[Err]] methods are documented at the [[ResultT]] level.
+ *
+ * @param E The type of the value contained in this [[Err]] instance.
+ */
 class Err<E> extends ResultT<any, E> {
-  private error: E;
+  /**
+   * @hidden
+   */
+  private readonly error: E;
 
+  /**
+   * @hidden
+   */
   constructor(err: E) {
     super();
     this.error = err;

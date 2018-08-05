@@ -2,5 +2,6 @@
   "extends": [
     "tslint-config-standard",
     "tslint-config-prettier"
-  ]
+  ],
+  "max-line-length": [true, 100]
 }

@@ -1,5 +1,5 @@
 import { ResultT } from '../../src/nullshield';
-import { expectAnOk, expectASome, expectANone, expectAnErr } from '../util';
+import { expectAnOk, expectANone } from '../util';
 
 describe('#ResultT - Ok', () => {
   it('should have the function isOk', () => {
@@ -60,7 +60,7 @@ describe('#ResultT - Ok', () => {
   it('should have the function unwrapOrElse', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
-    expect(r.unwrapOrElse(e => 2)).toEqual(1);
+    expect(r.unwrapOrElse(() => 2)).toEqual(1);
   });
 
   it('should have the function map', () => {
@@ -74,7 +74,7 @@ describe('#ResultT - Ok', () => {
   it('should have the function mapErr', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
-    const m = r.mapErr(v => 2);
+    const m = r.mapErr(() => 2);
     expectAnOk(m);
     expect(m.unwrap()).toEqual(1);
   });
@@ -82,7 +82,7 @@ describe('#ResultT - Ok', () => {
   it('should have the function flatMap', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
-    const double = x => ResultT.ok(x * 2);
+    const double = (x: any) => ResultT.ok(x * 2);
 
     const m = r.flatMap(double);
     expectAnOk(m);
@@ -92,7 +92,7 @@ describe('#ResultT - Ok', () => {
   it('should have the function orElse', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
-    const changeError = e => ResultT.err('new error') as ResultT<number, string>;
+    const changeError = () => ResultT.err('new error') as ResultT<number, string>;
     const m = r.orElse(changeError);
     expectAnOk(m);
     expect(m.unwrap()).toEqual(1);
@@ -102,8 +102,8 @@ describe('#ResultT - Ok', () => {
     const r = ResultT.ok(1);
     expectAnOk(r);
     const m = r.match({
-      ok: _ => 2,
-      err: _ => 'new error',
+      ok: () => 2,
+      err: () => 'new error',
     });
     expect(m).toEqual(2);
   });
