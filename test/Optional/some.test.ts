@@ -1,23 +1,23 @@
-import { OptionT } from '../../src/nullshield';
+import { Optional } from '../../src/nullshield';
 import { expectASome, expectANone } from '../util';
 
-describe('#OptionT - Some', () => {
+describe('#Optional - Some', () => {
   it('should have the function isSome', () => {
-    const one = OptionT.some(1);
+    const one = Optional.some(1);
 
     expectASome(one);
     expect(one.isSome()).toEqual(true);
   });
 
   it('should have the function isNone', () => {
-    const one = OptionT.some(1);
+    const one = Optional.some(1);
 
     expectASome(one);
     expect(one.isNone()).toEqual(false);
   });
 
   it('should have the function toString', () => {
-    const one = OptionT.some(1);
+    const one = Optional.some(1);
 
     expectASome(one);
 
@@ -25,17 +25,17 @@ describe('#OptionT - Some', () => {
   });
 
   it('should have the function unwrap', () => {
-    const one = OptionT.some(1);
+    const one = Optional.some(1);
 
     expect(() => one.unwrap()).toThrow(
       'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
-      ' the `OptionT` in question is a `Some` value before calling this function or use a safer function like' +
-      ' `unwrapOr` which provides a default value in case this `OptionT` is a `None`.'
+      ' the `Optional` in question is a `Some` value before calling this function or use a safer function like' +
+      ' `unwrapOr` which provides a default value in case this `Optional` is a `None`.'
     );
     expect(() => one.unwrap('failed')).toThrow(
       'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
-      ' the `OptionT` in question is a `Some` value before calling this function or use a safer function like' +
-      ' `unwrapOr` which provides a default value in case this `OptionT` is a `None`.'
+      ' the `Optional` in question is a `Some` value before calling this function or use a safer function like' +
+      ' `unwrapOr` which provides a default value in case this `Optional` is a `None`.'
     );
 
     one.isSome(); // trigger internal inspection flag
@@ -45,7 +45,7 @@ describe('#OptionT - Some', () => {
   });
 
   it('should have the function forceUnwrap', () => {
-    const one = OptionT.some(1);
+    const one = Optional.some(1);
     expectASome(one);
 
     expect(one.forceUnwrap()).toEqual(1);
@@ -53,21 +53,21 @@ describe('#OptionT - Some', () => {
   });
 
   it('should have the function unwrapOr', () => {
-    const one = OptionT.some(1);
+    const one = Optional.some(1);
 
     expectASome(one);
     expect(one.unwrapOr(10)).toEqual(1);
   });
 
   it('should have the function unwrapOrElse', () => {
-    const one = OptionT.some(1);
+    const one = Optional.some(1);
 
     expectASome(one);
     expect(one.unwrapOrElse(() => 2)).toEqual(1);
   });
 
   it('should have the function map', () => {
-    const one = OptionT.some(1);
+    const one = Optional.some(1);
 
     expectASome(one);
 
@@ -89,18 +89,18 @@ describe('#OptionT - Some', () => {
   });
 
   it('should have the function and', () => {
-    const one = OptionT.some(1);
+    const one = Optional.some(1);
 
     expectASome(one);
 
-    const two = OptionT.some(2);
+    const two = Optional.some(2);
     const maybeTwo = one.and(two);
 
     expectASome(two);
     expect(maybeTwo.isSome()).toEqual(true);
     expect(maybeTwo.unwrap()).toEqual(2);
 
-    const none = OptionT.none();
+    const none = Optional.none();
     const maybeThree = one.and(none);
 
     expectANone(maybeThree);
@@ -108,12 +108,12 @@ describe('#OptionT - Some', () => {
   });
 
   it('should have the function flatMap', () => {
-    const one = OptionT.some(1);
+    const one = Optional.some(1);
 
     expectASome(one);
 
     const maybeTwo = one.flatMap((val) => {
-      return OptionT.some(val * 2);
+      return Optional.some(val * 2);
     });
 
     expectASome(maybeTwo);
@@ -121,7 +121,7 @@ describe('#OptionT - Some', () => {
     expect(maybeTwo.unwrap()).toEqual(2);
 
     const maybeThree = one.flatMap(() => {
-      return OptionT.none();
+      return Optional.none();
     });
 
     expectANone(maybeThree);
@@ -129,18 +129,18 @@ describe('#OptionT - Some', () => {
   });
 
   it('should have the function or', () => {
-    const one = OptionT.some(1);
+    const one = Optional.some(1);
 
     expectASome(one);
 
-    const two = OptionT.some(2);
+    const two = Optional.some(2);
     const maybeOne = one.or(two);
 
     expectASome(maybeOne);
     expect(maybeOne.isSome()).toEqual(true);
     expect(maybeOne.unwrap()).toEqual(1);
 
-    const three = OptionT.none();
+    const three = Optional.none();
     const maybeOneAgain = one.or(three);
 
     expectASome(maybeOneAgain);
@@ -149,17 +149,17 @@ describe('#OptionT - Some', () => {
   });
 
   it('should have the function orElse', () => {
-    const one = OptionT.some(1);
+    const one = Optional.some(1);
 
     expectASome(one);
 
-    const maybeOne = one.orElse(() => OptionT.some(2));
+    const maybeOne = one.orElse(() => Optional.some(2));
 
     expectASome(maybeOne);
     expect(maybeOne.isSome()).toEqual(true);
     expect(maybeOne.unwrap()).toEqual(1);
 
-    const maybeOneAgain = one.orElse(() => OptionT.none());
+    const maybeOneAgain = one.orElse(() => Optional.none());
 
     expectASome(maybeOneAgain);
     expect(maybeOneAgain.isSome()).toEqual(true);
@@ -167,7 +167,7 @@ describe('#OptionT - Some', () => {
   });
 
   it('should have the function match', () => {
-    const one = OptionT.some(1);
+    const one = Optional.some(1);
 
     expectASome(one);
 
@@ -189,7 +189,7 @@ describe('#OptionT - Some', () => {
   });
 
   it('should have the function filter', () => {
-    const one = OptionT.some(1);
+    const one = Optional.some(1);
     expectASome(one);
 
     const filtered = one.filter(x => x > 0);
@@ -203,7 +203,7 @@ describe('#OptionT - Some', () => {
   });
 
   it('should have the function forEach', () => {
-    const one = OptionT.some(1);
+    const one = Optional.some(1);
     expectASome(one);
 
     let val = 0;

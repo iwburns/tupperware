@@ -11,10 +11,10 @@ A library for safely and consistently dealing with complex values in Javascript 
 ## Overview
 
 This library provides two types for dealing with optional / conditional values:
-* OptionT - A type representing an optional value.
-* ResultT - A type representing the result of some fallible computation.
+* Optional - A type representing an optional value.
+* Result - A type representing the result of some fallible computation.
 
-### OptionT
+### Optional
 A value of this type is either a `Some` or a `None`. `Some`-values contain a value internally while `None`-values represent the absence of a given value.  This is useful when you have a value that may or may not exist.  Where you might otherwise use `null` or `undefined` to represent the absense of a value, you can use a `None` value instead.
 
 Consider getting a property of an object that may or may not exist:
@@ -35,7 +35,7 @@ Instead you could do this:
 ```javascript
 const data = getSomeData();
 
-let optC = getProperty(data, 'c');  // assume getProperty() returns an OptionT
+let optC = getProperty(data, 'c');  Optional
 let c = optC.unwrapOr(0);           // we can use unwrapOr to safely get the value or
                                     // a default value if c wasn't present on data
 
@@ -45,7 +45,7 @@ Or if we want to avoid doing anything when `c` doesn't exist:
 ```javascript
 const data = getSomeData();
 
-let optC = getProperty(data, 'c');  // again, getProperty() returns an OptionT
+let optC = getProperty(data, 'c');  Optional
 
 optC.forEach(doSomething);          // forEach will call doSomething with optC's internal
                                     // value if it exists, otherwise nothing happens
@@ -56,13 +56,13 @@ Note: This library doesn't provide a `getProperty()` function but one could imag
 ```javascript
 function getProperty(obj, propName) {
   if (typeof obj[propName] !== 'undefined' && obj[propName] !== null) {
-    return OptionT.some(obj[propName]); // return a `Some`-value containing the value internally
+    return Optional.some(obj[propName]); // return a `Some`-value containing the value internally
   }
-  return OptionT.none(); // otherwise return a `None`-value
+  return Optional.none(); // otherwise return a `None`-value
 }
 ```
 
-### ResultT
+### Result
 A value of this type is either an `Ok` or an `Err`.  Both of these contain an internal value, but they each convey a different meaning.  `Ok` is used to represent an operation that succeeded and returned some kind of successful result.  `Err` is used to represent an operation that failed and returned some kind of error.
 
 Consider parsing a number out of a string:
@@ -73,7 +73,7 @@ const aNumber = getANumber(); // we may not know if this is a valid number
 
 const result = parseInt(aNumber, 10); // do our parsing
 
-const parsed = 0; // default it
+let parsed = 0; // default it
 
 if (!Number.isNaN(result)) { // if it didn't fail, hold on to the parsed value
   parsed = result;
@@ -85,7 +85,7 @@ Instead you could do this:
 ```javascript
 const aNumber = getANumber(); // we may not know if this is a valid number
 
-const result = safeParseInt(aNumber, 10); // assume safeParseInt returns a ResultT
+const result = safeParseInt(aNumber, 10); Result
 
 const parsed = result.unwrapOr(0);  // we can use unwrapOr to safely get the value or
                                     // a default value if the result was an Err-value
@@ -96,7 +96,7 @@ Or if you want to handle both cases explicitly:
 ```javascript
 const aNumber = getANumber(); // we may not know if this is a valid number
 
-const result = safeParseInt(aNumber, 10); // again, safeParseInt returns a `ResultT`
+const result = safeParseInt(aNumber, 10); Result
 
 // result.match will call the given ok function if the result is an Ok-value
 // and it will call the given err function if it is an Err-value
@@ -113,10 +113,10 @@ function safeParseInt(num, radix) {
   let parsed = parseInt(num, radix);
   if (Number.isNaN(parsed)) {
     // return an Err-value with a meaningful error message
-    return ResultT.Err(`Could not parse the value: ${num} as an integer with radix: ${radix}`);
+    return Result.Err(`Could not parse the value: ${num} as an integer with radix: ${radix}`);
   }
   // otherwise return an Ok-value with the parsed value inside
-  return ResultT.Ok(parsed);
+  return Result.Ok(parsed);
 }
 ```
 
