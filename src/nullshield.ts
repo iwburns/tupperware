@@ -1,2 +1,2 @@
-export { default as OptionT } from './OptionT';
+export { default as Optional } from './Optional';
 export { default as ResultT } from './ResultT';

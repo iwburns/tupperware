@@ -11,10 +11,10 @@ A library for safely and consistently dealing with complex values in Javascript 
 ## Overview
 
 This library provides two types for dealing with optional / conditional values:
-* OptionT - A type representing an optional value.
+* Optional - A type representing an optional value.
 * ResultT - A type representing the result of some fallible computation.
 
-### OptionT
+### Optional
 A value of this type is either a `Some` or a `None`. `Some`-values contain a value internally while `None`-values represent the absence of a given value.  This is useful when you have a value that may or may not exist.  Where you might otherwise use `null` or `undefined` to represent the absense of a value, you can use a `None` value instead.
 
 Consider getting a property of an object that may or may not exist:
@@ -35,7 +35,7 @@ Instead you could do this:
 ```javascript
 const data = getSomeData();
 
-let optC = getProperty(data, 'c');  // assume getProperty() returns an OptionT
+let optC = getProperty(data, 'c');  Optional
 let c = optC.unwrapOr(0);           // we can use unwrapOr to safely get the value or
                                     // a default value if c wasn't present on data
 
@@ -45,7 +45,7 @@ Or if we want to avoid doing anything when `c` doesn't exist:
 ```javascript
 const data = getSomeData();
 
-let optC = getProperty(data, 'c');  // again, getProperty() returns an OptionT
+let optC = getProperty(data, 'c');  Optional
 
 optC.forEach(doSomething);          // forEach will call doSomething with optC's internal
                                     // value if it exists, otherwise nothing happens
@@ -56,9 +56,9 @@ Note: This library doesn't provide a `getProperty()` function but one could imag
 ```javascript
 function getProperty(obj, propName) {
   if (typeof obj[propName] !== 'undefined' && obj[propName] !== null) {
-    return OptionT.some(obj[propName]); // return a `Some`-value containing the value internally
+    return Optional.some(obj[propName]); // return a `Some`-value containing the value internally
   }
-  return OptionT.none(); // otherwise return a `None`-value
+  return Optional.none(); // otherwise return a `None`-value
 }
 ```
 

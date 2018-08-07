@@ -1,4 +1,4 @@
-export function expectAnOption(val) : void {
+export function expectAnOptional(val) : void {
   expect(val).toHaveProperty('isSome'); expect(val.isSome).toBeInstanceOf(Function);
   expect(val).toHaveProperty('isNone'); expect(val.isNone).toBeInstanceOf(Function);
   expect(val).toHaveProperty('toString'); expect(val.toString).toBeInstanceOf(Function);
@@ -16,13 +16,13 @@ export function expectAnOption(val) : void {
 }
 
 export function expectASome(val) : void {
-  expectAnOption(val);
+  expectAnOptional(val);
   expect(val.isSome()).toEqual(true);
   expect(val.isNone()).toEqual(false);
 }
 
 export function expectANone(val) : void {
-  expectAnOption(val);
+  expectAnOptional(val);
   expect(val.isSome()).toEqual(false);
   expect(val.isNone()).toEqual(true);
 }

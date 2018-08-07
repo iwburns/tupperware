@@ -1,4 +1,4 @@
-import OptionT from './OptionT';
+import Optional from './Optional';
 
 /**
  * An interface describing the argument passed to [[ResultT]]'s `match` function.
@@ -15,7 +15,7 @@ export interface ResultMatch<T, E, U, F> {
  * only two concrete classes extending this one: [[Ok]] and [[Err]].
  *
  * `Ok`-values represent a computation result that returned successfully while `Err`-values
- * represent a failed computation.  Similar to [[OptionT]]'s [[Some]] and [[None]], these two types
+ * represent a failed computation.  Similar to [[Optional]]'s [[Some]] and [[None]], these two types
  * are useful because they share the same API.
  *
  * This means you could have a function that returns a [[ResultT]] and use the value straight away
@@ -126,7 +126,7 @@ export default abstract class ResultT<T, E> {
    * Tries to return the internal [[Ok]] value of this [[ResultT]]. Returns a [[Some]] containing
    * the value if it is an [[Ok]], returns a [[None]] if it is an [[Err]].
    *
-   * You can also think of this function as transforming a [[ResultT]] into an [[OptionT]], where
+   * You can also think of this function as transforming a [[ResultT]] into an [[Optional]], where
    * the [[Some]] comes from the [[Ok]] and the [[Err]] (if it exists) is thrown away.
    *
    * ```
@@ -145,13 +145,13 @@ export default abstract class ResultT<T, E> {
    * @returns A [[Some]] containing this [[ResultT]]'s value if it is an [[Ok]], otherwise returns
    * a [[None]].
    */
-  abstract getOk(): OptionT<T>;
+  abstract getOk(): Optional<T>;
 
   /**
    * Tries to return the internal [[Err]] value of this [[ResultT]]. Returns a [[Some]] containing
    * the value if it is an [[Err]], returns a [[None]] if it is an [[Ok]].
    *
-   * You can also think of this function as transforming a [[ResultT]] into an [[OptionT]], where
+   * You can also think of this function as transforming a [[ResultT]] into an [[Optional]], where
    * the [[Some]] comes from the [[Err]] and the [[Ok]] (if it exists) is thrown away.
    *
    * ```
@@ -170,7 +170,7 @@ export default abstract class ResultT<T, E> {
    * @returns A [[Some]] containing this [[ResultT]]'s value if it is an [[Err]], otherwise returns
    * a [[None]].
    */
-  abstract getErr(): OptionT<E>;
+  abstract getErr(): Optional<E>;
 
   /**
    * Returns the value contained by this [[ResultT]] if it is an [[Ok]]. Throws an error containing
@@ -450,12 +450,12 @@ class Ok<T> extends ResultT<T, any> {
     return `Ok( ${this.value} )`;
   }
 
-  getOk(): OptionT<T> {
-    return OptionT.some(this.value);
+  getOk(): Optional<T> {
+    return Optional.some(this.value);
   }
 
-  getErr<E>(): OptionT<E> {
-    return OptionT.none();
+  getErr<E>(): Optional<E> {
+    return Optional.none();
   }
 
   unwrap(message?: string): T {
@@ -539,12 +539,12 @@ class Err<E> extends ResultT<any, E> {
     return `Err( ${this.error} )`;
   }
 
-  getOk<T>(): OptionT<T> {
-    return OptionT.none();
+  getOk<T>(): Optional<T> {
+    return Optional.none();
   }
 
-  getErr(): OptionT<E> {
-    return OptionT.some(this.error);
+  getErr(): Optional<E> {
+    return Optional.some(this.error);
   }
 
   unwrap<T>(message?: string): never {
