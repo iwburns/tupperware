@@ -1,2 +1,2 @@
 export { default as Optional } from './Optional';
-export { default as ResultT } from './ResultT';
+export { default as Result } from './Result';
