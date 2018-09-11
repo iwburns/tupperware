@@ -35,7 +35,7 @@ Instead you could do this:
 ```javascript
 const data = getSomeData();
 
-let optC = getProperty(data, 'c');  Optional
+let optC = getProperty(data, 'c');  // returns an Optional
 let c = optC.unwrapOr(0);           // we can use unwrapOr to safely get the value or
                                     // a default value if c wasn't present on data
 
@@ -45,7 +45,7 @@ Or if we want to avoid doing anything when `c` doesn't exist:
 ```javascript
 const data = getSomeData();
 
-let optC = getProperty(data, 'c');  Optional
+let optC = getProperty(data, 'c');  // returns an Optional
 
 optC.forEach(doSomething);          // forEach will call doSomething with optC's internal
                                     // value if it exists, otherwise nothing happens
