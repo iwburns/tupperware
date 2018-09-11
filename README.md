@@ -35,7 +35,7 @@ Instead you could do this:
 ```javascript
 const data = getSomeData();
 
-let optC = getProperty(data, 'c');  Optional
+let optC = getProperty(data, 'c');  // returns an Optional
 let c = optC.unwrapOr(0);           // we can use unwrapOr to safely get the value or
                                     // a default value if c wasn't present on data
 
@@ -45,7 +45,7 @@ Or if we want to avoid doing anything when `c` doesn't exist:
 ```javascript
 const data = getSomeData();
 
-let optC = getProperty(data, 'c');  Optional
+let optC = getProperty(data, 'c');  // returns an Optional
 
 optC.forEach(doSomething);          // forEach will call doSomething with optC's internal
                                     // value if it exists, otherwise nothing happens
@@ -85,7 +85,7 @@ Instead you could do this:
 ```javascript
 const aNumber = getANumber(); // we may not know if this is a valid number
 
-const result = safeParseInt(aNumber, 10); Result
+const result = safeParseInt(aNumber, 10); // returns a Result
 
 const parsed = result.unwrapOr(0);  // we can use unwrapOr to safely get the value or
                                     // a default value if the result was an Err-value
@@ -96,7 +96,7 @@ Or if you want to handle both cases explicitly:
 ```javascript
 const aNumber = getANumber(); // we may not know if this is a valid number
 
-const result = safeParseInt(aNumber, 10); Result
+const result = safeParseInt(aNumber, 10); // returns a Result
 
 // result.match will call the given ok function if the result is an Ok-value
 // and it will call the given err function if it is an Err-value
