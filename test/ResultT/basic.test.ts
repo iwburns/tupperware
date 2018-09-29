@@ -1,4 +1,4 @@
-import { Result } from '../../src/nullshield';
+import { Result } from '../../src/tupperware';
 import { expectAnOk, expectAnErr } from '../util';
 
 describe('#Result.ok', () => {

@@ -1,4 +1,4 @@
-import { Optional } from '../../src/nullshield';
+import { Optional } from '../../src/tupperware';
 import { expectASome, expectANone } from '../util';
 
 describe('#Optional.of', () => {

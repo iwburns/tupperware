@@ -1,4 +1,4 @@
-import { Optional } from '../../src/nullshield';
+import { Optional } from '../../src/tupperware';
 import { expectASome, expectANone } from '../util';
 
 describe('#Optional - Some', () => {
@@ -28,12 +28,12 @@ describe('#Optional - Some', () => {
     const one = Optional.some(1);
 
     expect(() => one.unwrap()).toThrow(
-      'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
+      'tupperware:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
       ' the `Optional` in question is a `Some` value before calling this function or use a safer function like' +
       ' `unwrapOr` which provides a default value in case this `Optional` is a `None`.'
     );
     expect(() => one.unwrap('failed')).toThrow(
-      'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
+      'tupperware:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
       ' the `Optional` in question is a `Some` value before calling this function or use a safer function like' +
       ' `unwrapOr` which provides a default value in case this `Optional` is a `None`.'
     );

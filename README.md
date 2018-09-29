@@ -1,10 +1,10 @@
-# nullshield
+# tupperware
 
-[![Build Status](https://travis-ci.org/iwburns/nullshield.svg?branch=master)](https://travis-ci.org/iwburns/nullshield)
-[![Coverage Status](https://coveralls.io/repos/github/iwburns/nullshield/badge.svg?branch=master)](https://coveralls.io/github/iwburns/nullshield?branch=master)
-[![npm](https://img.shields.io/badge/npm-npm-green.svg)](https://www.npmjs.com/package/nullshield)
-[![Documentation](https://img.shields.io/badge/docs-gh--pages-blue.svg)](https://iwburns.github.com/nullshield)
-[![GitHub license](https://img.shields.io/github/license/iwburns/nullshield.svg)](https://github.com/iwburns/nullshield/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/iwburns/tupperware.svg?branch=master)](https://travis-ci.org/iwburns/tupperware)
+[![Coverage Status](https://coveralls.io/repos/github/iwburns/tupperware/badge.svg?branch=master)](https://coveralls.io/github/iwburns/tupperware?branch=master)
+[![npm](https://img.shields.io/badge/npm-npm-green.svg)](https://www.npmjs.com/package/tupperware)
+[![Documentation](https://img.shields.io/badge/docs-gh--pages-blue.svg)](https://iwburns.github.com/tupperware)
+[![GitHub license](https://img.shields.io/github/license/iwburns/tupperware.svg)](https://github.com/iwburns/tupperware/blob/master/LICENSE)
 
 A library for safely and consistently dealing with complex values in Javascript and Typescript.
 
