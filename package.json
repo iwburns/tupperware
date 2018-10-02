@@ -1,23 +1,23 @@
 {
-  "name": "nullshield",
-  "version": "0.8.0",
-  "description": "A package containing Option and Result types",
+  "name": "@iwburns/tupperware",
+  "version": "0.1.0",
+  "description": "A package containing Optional and Result types",
   "keywords": [],
-  "main": "./dist/nullshield.umd.js",
-  "module": "./dist/nullshield.es5.js",
-  "types": "./dist/types/nullshield.d.ts",
+  "main": "./dist/tupperware.umd.js",
+  "module": "./dist/tupperware.es5.js",
+  "types": "./dist/types/tupperware.d.ts",
   "files": [
     "dist"
   ],
   "author": "Ian Burns <iwburns8@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iwburns/nullshield.git"
+    "url": "git+https://github.com/iwburns/tupperware.git"
   },
   "bugs": {
-    "url": "https://github.com/iwburns/nullshield/issues"
+    "url": "https://github.com/iwburns/tupperware/issues"
   },
-  "homepage": "https://github.com/iwburns/nullshield#readme",
+  "homepage": "https://github.com/iwburns/tupperware#readme",
   "license": "MIT",
   "engines": {
     "node": ">=6.0.0"

@@ -184,13 +184,13 @@ export default abstract class Optional<T> {
    *
    * @param message An optional message to be included in the error that this function may throw.
    * @returns The value contained within this [[Optional]].
-   * @throws A `nullshield:unchecked_unwrap` error if you attempt to call this function before
+   * @throws A `tupperware:unchecked_unwrap` error if you attempt to call this function before
    * first checking if this [[Optional]] is a safe to unwrap. "Safe to unwrap" means that this
    * [[Optional]] is a [[Some]].
-   * @throws A `nullshield:unwrap_on_none` error if you attempted to call this function on a
+   * @throws A `tupperware:unwrap_on_none` error if you attempted to call this function on a
    * [[None]] value.
    *
-   * ## `nullshield:unchecked_unwrap:` ##
+   * ## `tupperware:unchecked_unwrap:` ##
    * The most direct way to avoid this issue is to either check that the given [[Optional]] is a
    * [[Some]] value (with [[isSome]] or [[isNone]]) or to use [[unwrapOr]] instead which allows you
    * to specify a default value to fall back on in the case where this [[Optional]] is a [[None]].
@@ -199,7 +199,7 @@ export default abstract class Optional<T> {
    * you may want to conditionally use that value in some sort of computation.  In those cases it's
    * likely more clean/clear to use [[map]] or a similar function instead.
    *
-   * ## `nullshield:unwrap_on_none:` ##
+   * ## `tupperware:unwrap_on_none:` ##
    * To avoid this issue, either make sure that your logic is correct concerning whether or not
    * you should be `unwrap`-ing this value or use [[unwrapOr]] instead which allows you to specify
    * a default value to fall back on in the case where this [[Optional]] is a [[None]].
@@ -228,14 +228,14 @@ export default abstract class Optional<T> {
    * [[forceUnwrap]].
    *
    * However, there are cases where [[forceUnwrap]] may be useful.  With that in mind, please note:
-   * this function will always print a `nullshield:force_unwrap_warning` regardless of whether or
+   * this function will always print a `tupperware:force_unwrap_warning` regardless of whether or
    * not the [[Optional]] in question is a [[Some]].
    *
    * @param message An optional message to be included in the error that this function may throw.
    * @returns The value contained within this [[Optional]].
-   * @throws A `nullshield:force_unwrap_on_none` if this function is called on a [[None]].
+   * @throws A `tupperware:force_unwrap_on_none` if this function is called on a [[None]].
    *
-   * ## `nullshield:force_unwrap_on_none` ##
+   * ## `tupperware:force_unwrap_on_none` ##
    * The only way to avoid this is to not call this function on a [[None]]. This means you must
    * either know for certain that the [[Optional]] in question is a [[Some]], or you must verify
    * it manually with [[isSome]] or a similar function.
@@ -549,7 +549,7 @@ class Some<T> extends Optional<T> {
   unwrap(message?: string): T {
     if (!this.hasBeenInspected) {
       throw new Error(
-        'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do' +
+        'tupperware:unchecked_unwrap: Called unwrap without first checking if it was safe to do' +
           ' so. Please verify that the `Optional` in question is a `Some` value before calling' +
           ' this function or use a safer function like `unwrapOr` which provides a default value' +
           ' in case this `Optional` is a `None`.'
@@ -560,7 +560,7 @@ class Some<T> extends Optional<T> {
 
   forceUnwrap(message?: string): T {
     console.warn(
-      'nullshield:force_unwrap_warning: Called forceUnwrap on a `Some` value.  This is not' +
+      'tupperware:force_unwrap_warning: Called forceUnwrap on a `Some` value.  This is not' +
         ' recommended usage.'
     );
     return this.value;
@@ -656,27 +656,27 @@ class None extends Optional<any> {
   unwrap(message?: string): never {
     if (!this.hasBeenInspected) {
       throw new Error(
-        'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do' +
+        'tupperware:unchecked_unwrap: Called unwrap without first checking if it was safe to do' +
           ' so. Please verify that the `Optional` in question is a `Some` value before calling' +
           ' this function or use a safer function like `unwrapOr` which provides a default value' +
           ' in case this `Optional` is a `None`.'
       );
     }
     if (typeof message !== 'undefined' && message !== null) {
-      throw new Error(`nullshield:unwrap_on_none: ${message}`);
+      throw new Error(`tupperware:unwrap_on_none: ${message}`);
     }
-    throw new Error('nullshield:unwrap_on_none: Called unwrap on a None value.');
+    throw new Error('tupperware:unwrap_on_none: Called unwrap on a None value.');
   }
 
   forceUnwrap(message?: string): never {
     console.warn(
-      'nullshield:force_unwrap_warning: Called forceUnwrap on a `None` value.  This is not' +
+      'tupperware:force_unwrap_warning: Called forceUnwrap on a `None` value.  This is not' +
         ' recommended usage.'
     );
     if (typeof message !== 'undefined' && message !== null) {
-      throw new Error(`nullshield:force_unwrap_on_none: ${message}`);
+      throw new Error(`tupperware:force_unwrap_on_none: ${message}`);
     }
-    throw new Error('nullshield:force_unwrap_on_none: Called forceUnwrap on a None value.');
+    throw new Error('tupperware:force_unwrap_on_none: Called forceUnwrap on a None value.');
   }
 
   unwrapOr<T>(other: T): T {

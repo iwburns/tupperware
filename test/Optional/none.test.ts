@@ -1,4 +1,4 @@
-import { Optional } from '../../src/nullshield';
+import { Optional } from '../../src/tupperware';
 import { expectANone } from '../util';
 
 describe('#Optional - None', () => {
@@ -27,28 +27,28 @@ describe('#Optional - None', () => {
     const none = Optional.none();
 
     expect(() => none.unwrap()).toThrow(
-      'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
+      'tupperware:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
       ' the `Optional` in question is a `Some` value before calling this function or use a safer function like' +
       ' `unwrapOr` which provides a default value in case this `Optional` is a `None`.'
     );
     expect(() => none.unwrap('failed')).toThrow(
-      'nullshield:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
+      'tupperware:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
       ' the `Optional` in question is a `Some` value before calling this function or use a safer function like' +
       ' `unwrapOr` which provides a default value in case this `Optional` is a `None`.'
     );
 
     none.isSome(); // trigger internal inspection flag
 
-    expect(() => none.unwrap()).toThrow('nullshield:unwrap_on_none: Called unwrap on a None value.');
-    expect(() => none.unwrap('failed')).toThrow('nullshield:unwrap_on_none: failed');
+    expect(() => none.unwrap()).toThrow('tupperware:unwrap_on_none: Called unwrap on a None value.');
+    expect(() => none.unwrap('failed')).toThrow('tupperware:unwrap_on_none: failed');
   });
 
   it('should have the function forceUnwrap', () => {
     const none = Optional.none();
     expectANone(none);
 
-    expect(() => none.forceUnwrap()).toThrow('nullshield:force_unwrap_on_none: Called forceUnwrap on a None value.');
-    expect(() => none.forceUnwrap('failed')).toThrow('nullshield:force_unwrap_on_none: failed');
+    expect(() => none.forceUnwrap()).toThrow('tupperware:force_unwrap_on_none: Called forceUnwrap on a None value.');
+    expect(() => none.forceUnwrap('failed')).toThrow('tupperware:force_unwrap_on_none: failed');
   });
 
   it('should have the function unwrapOr', () => {
