@@ -1,26 +1,18 @@
 import { Optional } from '../../src/tupperware';
-import { expectASome, expectANone } from '../util';
 
 describe('#Optional - Some', () => {
   it('should have the function isSome', () => {
     const one = Optional.some(1);
-
-    expectASome(one);
     expect(one.isSome()).toEqual(true);
   });
 
   it('should have the function isNone', () => {
     const one = Optional.some(1);
-
-    expectASome(one);
     expect(one.isNone()).toEqual(false);
   });
 
   it('should have the function toString', () => {
     const one = Optional.some(1);
-
-    expectASome(one);
-
     expect(one.toString()).toEqual('Some( 1 )');
   });
 
@@ -46,104 +38,71 @@ describe('#Optional - Some', () => {
 
   it('should have the function forceUnwrap', () => {
     const one = Optional.some(1);
-    expectASome(one);
-
     expect(one.forceUnwrap()).toEqual(1);
     expect(one.forceUnwrap('failed')).toEqual(1);
   });
 
   it('should have the function unwrapOr', () => {
     const one = Optional.some(1);
-
-    expectASome(one);
     expect(one.unwrapOr(10)).toEqual(1);
   });
 
   it('should have the function unwrapOrElse', () => {
     const one = Optional.some(1);
-
-    expectASome(one);
     expect(one.unwrapOrElse(() => 2)).toEqual(1);
   });
 
   it('should have the function map', () => {
     const one = Optional.some(1);
 
-    expectASome(one);
-
     const two = one.map(() => 2);
-
-    expectASome(two);
     expect(two.isSome()).toEqual(true);
     expect(two.unwrap()).toEqual(2);
 
     const three = one.map(() => null);
-
-    expectANone(three);
-    expect(three.isSome()).toEqual(false);
+    expect(three.isSome()).toEqual(true);
+    expect(three.unwrap()).toEqual(null);
 
     const four = one.map(() => {return;});
-
-    expectANone(four);
-    expect(four.isSome()).toEqual(false);
+    expect(four.isSome()).toEqual(true);
+    expect(four.unwrap()).toEqual(undefined);
   });
 
   it('should have the function and', () => {
     const one = Optional.some(1);
-
-    expectASome(one);
-
     const two = Optional.some(2);
-    const maybeTwo = one.and(two);
 
-    expectASome(two);
+    const maybeTwo = one.and(two);
     expect(maybeTwo.isSome()).toEqual(true);
     expect(maybeTwo.unwrap()).toEqual(2);
 
     const none = Optional.none();
     const maybeThree = one.and(none);
-
-    expectANone(maybeThree);
     expect(maybeThree.isSome()).toEqual(false);
   });
 
   it('should have the function flatMap', () => {
     const one = Optional.some(1);
 
-    expectASome(one);
-
-    const maybeTwo = one.flatMap((val) => {
-      return Optional.some(val * 2);
-    });
-
-    expectASome(maybeTwo);
+    const maybeTwo = one.flatMap(val => Optional.some(val * 2));
     expect(maybeTwo.isSome()).toEqual(true);
     expect(maybeTwo.unwrap()).toEqual(2);
 
-    const maybeThree = one.flatMap(() => {
-      return Optional.none();
-    });
-
-    expectANone(maybeThree);
+    const maybeThree = one.flatMap(() => Optional.none());
     expect(maybeThree.isSome()).toEqual(false);
   });
 
   it('should have the function or', () => {
     const one = Optional.some(1);
-
-    expectASome(one);
-
     const two = Optional.some(2);
-    const maybeOne = one.or(two);
 
-    expectASome(maybeOne);
+    const maybeOne = one.or(two);
     expect(maybeOne.isSome()).toEqual(true);
     expect(maybeOne.unwrap()).toEqual(1);
 
     const three = Optional.none();
-    const maybeOneAgain = one.or(three);
 
-    expectASome(maybeOneAgain);
+    const maybeOneAgain = one.or(three);
     expect(maybeOneAgain.isSome()).toEqual(true);
     expect(maybeOneAgain.unwrap()).toEqual(1);
   });
@@ -151,25 +110,17 @@ describe('#Optional - Some', () => {
   it('should have the function orElse', () => {
     const one = Optional.some(1);
 
-    expectASome(one);
-
     const maybeOne = one.orElse(() => Optional.some(2));
-
-    expectASome(maybeOne);
     expect(maybeOne.isSome()).toEqual(true);
     expect(maybeOne.unwrap()).toEqual(1);
 
     const maybeOneAgain = one.orElse(() => Optional.none());
-
-    expectASome(maybeOneAgain);
     expect(maybeOneAgain.isSome()).toEqual(true);
     expect(maybeOneAgain.unwrap()).toEqual(1);
   });
 
   it('should have the function match', () => {
     const one = Optional.some(1);
-
-    expectASome(one);
 
     const doubled = one.match({
       some: val => val * 2,
@@ -190,22 +141,19 @@ describe('#Optional - Some', () => {
 
   it('should have the function filter', () => {
     const one = Optional.some(1);
-    expectASome(one);
 
     const filtered = one.filter(x => x > 0);
-    expectASome(filtered);
 
+    expect(filtered.isSome()).toEqual(true);
     expect(filtered.unwrap()).toEqual(1);
     expect(filtered).toBe(one); // they should be the same object
 
     const filteredAgain = one.filter(x => x < 0);
-    expectANone(filteredAgain);
+    expect(filteredAgain.isSome()).toEqual(false);
   });
 
   it('should have the function forEach', () => {
     const one = Optional.some(1);
-    expectASome(one);
-
     let val = 0;
 
     one.forEach(x => val = x);
