@@ -42,34 +42,27 @@ export interface OptMatch<T, U, V> {
  */
 export default abstract class Optional<T> {
   /**
-   * Creates an [[Optional]] with the given value. If `null` or `undefined` is provided a [[None]]
-   * will be returned, otherwise a [[Some]] containing the given value will be returned.
+   * Creates an [[Some]] with the given value.
    *
    * ```
-   * const one = Optional.of(1);     // one.unwrapOr(0) === 1
-   * const none = Optional.of(null); // none.unwrapOr(0) === 0
-   * const nope = Optional.of();     // nope.unwrapOr(0) === 0
+   * const one = Optional.of(1);
+   * // one.unwrapOr(0) === 1
    * ```
    *
-   * @param value An optional value to create an [[Optional]] with.
-   * @param A The type of the value that the new [[Optional]] will contain.
-   * @returns Either a [[Some]] or a [[None]] depending on the `value` passed in.
+   * @param value A value to create a [[Some]] with.
+   * @param A The type of the value that the new [[Some]] will contain.
+   * @returns A [[Some]] instance containing `value`.
    */
-  static of<A>(value?: A): Optional<A> {
-    if (value === null || typeof value === 'undefined') {
-      return new None();
-    }
+  static of<A>(value: A): Optional<A> {
     return new Some(value);
   }
 
   /**
-   * Creates a [[Some]] with the given value. If `null` or `undefined` is provided this method with
-   * throw an error.
+   * Creates a [[Some]] with the given value.
    *
    * ```
-   * const one = Optional.some(1);      // one.unwrapOr(0) === 1
-   * const none = Optional.some(null);  // throws an error
-   * const nope = Optional.some();      // throws an error
+   * const one = Optional.some(1);
+   * // one.unwrapOr(0) === 1
    * ```
    *
    * @param value A value to create a [[Some]] with.
@@ -77,9 +70,6 @@ export default abstract class Optional<T> {
    * @returns A [[Some]] instance containing `value`.
    */
   static some<A>(value: A): Optional<A> {
-    if (value === null || typeof value === 'undefined') {
-      throw Error('Cannot create a Some of a null or undefined value');
-    }
     return new Some(value);
   }
 
@@ -88,19 +78,35 @@ export default abstract class Optional<T> {
    * provided this method with throw an error.
    *
    * ```
-   * const one = Optional.none(1);      // throws an error
-   * const none = Optional.none(null);  // none.unwrapOr(0) === 0
-   * const nope = Optional.none();      // nope.unwrapOr(0) === 0
+   * const nope = Optional.none();
+   * // nope.unwrapOr(0) === 0
    * ```
    *
-   * @param value? A value to create a [[None]] with
    * @returns A [[None]] instance.
    */
-  static none<A>(value?: A): Optional<A> {
+  static none(): Optional<any> {
+    return new None();
+  }
+
+  /**
+   * Creates an [[Optional]] with the given value. If `null` or `undefined` is provided a [[None]]
+   * will be returned, otherwise a [[Some]] containing the given value will be returned.
+   *
+   * ```
+   * const one = Optional.fromNullable(1);     // one.unwrapOr(0) === 1
+   * const none = Optional.fromNullable(null); // none.unwrapOr(0) === 0
+   * const nope = Optional.fromNullable();     // nope.unwrapOr(0) === 0
+   * ```
+   *
+   * @param value The value to create an [[Optional]] with.
+   * @param A The type of the value that the new [[Optional]] will contain.
+   * @returns Either a [[Some]] or a [[None]] depending on the `value` provided.
+   */
+  static fromNullable<A>(value?: A): Optional<A> {
     if (value === null || typeof value === 'undefined') {
       return new None();
     }
-    throw Error('Cannot create a None of a non-null or undefined value');
+    return new Some(value);
   }
 
   /**
@@ -417,6 +423,39 @@ export default abstract class Optional<T> {
   abstract orElse(func: () => Optional<any>): Optional<any>;
 
   /**
+   * Applies the function contained in the [[Optional]] `func` to the value contained within `this`
+   * [[Optional]]. The return value is wrapped in a new [[Optional]] and returned.
+   *
+   * If `func` is a [[None]] a new [[None]] is returned.
+   *
+   * ```
+   * const makeDivider = x => {
+   *   if (x === 0) {
+   *    return Optional.none();
+   *   }
+   *   const divider = y => y / x;
+   *   return Optional.some(divider);
+   * };
+   *
+   * const div2 = makeDivider(2);  // a Some containing the divider function
+   * const div0 = makeDivider(0);  // a None, because we can't safely divide by 0
+   *
+   * const two = Optional.some(2);
+   *
+   * const one = two.ap(div2);
+   * // one.unwrapOr(5) === 1
+   *
+   * const three = two.ap(div0);
+   * // three.unwrapOr(5) === 5
+   * ```
+   * @param func An [[Optional]] containing a function.
+   * @param U The return type of the function in `func` and the type of the value contained in the
+   * returned [[Optional]].
+   * @returns The return value of `func` wrapped in a new [[Optional]].
+   */
+  abstract ap<U>(func: Optional<(val: T) => U>): Optional<U>;
+
+  /**
    * Calls the appropriate function in `options` and returns the result. If `this` [[Optional]] is a
    * [[Some]], `options.some` is called with its inner value; otherwise `options.none` is called.
    *
@@ -595,6 +634,10 @@ class Some<T> extends Optional<T> {
     return this;
   }
 
+  ap<U>(func: Optional<(val: T) => U>): Optional<U> {
+    return func.map(f => f(this.value));
+  }
+
   match<U, V>(options: OptMatch<T, U, V>): U | V {
     return options.some(this.value);
   }
@@ -706,6 +749,10 @@ class None extends Optional<any> {
 
   orElse<T>(func: () => Optional<T>): Optional<T> {
     return func();
+  }
+
+  ap(func: Optional<(val: any) => any>): Optional<any> {
+    return new None();
   }
 
   match<T, U, V>(options: OptMatch<T, U, V>): V | U {
