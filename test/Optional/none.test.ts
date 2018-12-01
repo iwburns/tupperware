@@ -53,7 +53,7 @@ describe('#Optional - None', () => {
   });
 
   it('should have the function map', () => {
-    const none = Optional.none<number>();
+    const none = Optional.none();
     const mapResult = none.map(x => x * 2);
     expect(mapResult.isNone()).toEqual(true);
   });
@@ -95,6 +95,27 @@ describe('#Optional - None', () => {
     const result = none.orElse(() => Optional.some('foobar'));
     expect(result.isSome()).toEqual(true);
     expect(result.unwrap()).toEqual('foobar');
+  });
+
+  it('should have the function ap', () => {
+    const makeDivider = (x: number) => {
+      if (x === 0) {
+        return Optional.none();
+      }
+      const divider = (y: number) => y / x;
+      return Optional.some(divider);
+    };
+
+    const div2 = makeDivider(2);
+    const div0 = makeDivider(0);
+
+    const none = Optional.none();
+
+    const maybe = none.ap(div2);
+    expect(maybe.isNone()).toEqual(true);
+
+    const three = none.ap(div0);
+    expect(three.isNone()).toEqual(true);
   });
 
   it('should have the function match', () => {

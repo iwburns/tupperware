@@ -32,7 +32,24 @@ describe('#Optional.none', () => {
   });
 
   it('should create a None even if you give it a value', () => {
-    const optional = Optional.none('value');
+    const optional = Optional.none();
+    expectANone(optional);
+  });
+});
+
+describe('#Optiona.fromNullable', () => {
+  it('should create a Some from a "normal" value', () => {
+    const optional = Optional.fromNullable(1);
+    expectASome(optional);
+  });
+
+  it('should create a None from a "null" value"', () => {
+    const optional = Optional.fromNullable(null);
+    expectANone(optional);
+  });
+
+  it('should create a None from a "undefined" value"', () => {
+    const optional = Optional.fromNullable();
     expectANone(optional);
   });
 });

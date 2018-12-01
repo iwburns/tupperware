@@ -119,6 +119,28 @@ describe('#Optional - Some', () => {
     expect(maybeOneAgain.unwrap()).toEqual(1);
   });
 
+  it('should have the function ap', () => {
+    const makeDivider = (x: number): Optional<(val: number) => number> => {
+      if (x === 0) {
+         return Optional.none();
+      }
+      const divider = (y: number) => y / x;
+      return Optional.some(divider);
+    };
+
+    const div2 = makeDivider(2);
+    const div0 = makeDivider(0);
+
+    const two = Optional.some(2);
+
+    const one = two.ap(div2);
+    expect(one.isSome()).toEqual(true);
+    expect(one.unwrap()).toEqual(1);
+
+    const three = two.ap(div0);
+    expect(three.isSome()).toEqual(false);
+  });
+
   it('should have the function match', () => {
     const one = Optional.some(1);
 

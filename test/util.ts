@@ -10,6 +10,7 @@ export function expectAnOptional(val: any): void {
   expect(val).toHaveProperty('flatMap'); expect(val.flatMap).toBeInstanceOf(Function);
   expect(val).toHaveProperty('or'); expect(val.or).toBeInstanceOf(Function);
   expect(val).toHaveProperty('orElse'); expect(val.orElse).toBeInstanceOf(Function);
+  expect(val).toHaveProperty('ap'); expect(val.ap).toBeInstanceOf(Function);
   expect(val).toHaveProperty('match'); expect(val.match).toBeInstanceOf(Function);
   expect(val).toHaveProperty('filter'); expect(val.filter).toBeInstanceOf(Function);
   expect(val).toHaveProperty('forEach'); expect(val.forEach).toBeInstanceOf(Function);
