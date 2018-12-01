@@ -1,4 +1,4 @@
-export function expectAnOptional(val) : void {
+export function expectAnOptional(val: any): void {
   expect(val).toHaveProperty('isSome'); expect(val.isSome).toBeInstanceOf(Function);
   expect(val).toHaveProperty('isNone'); expect(val.isNone).toBeInstanceOf(Function);
   expect(val).toHaveProperty('toString'); expect(val.toString).toBeInstanceOf(Function);
@@ -15,19 +15,19 @@ export function expectAnOptional(val) : void {
   expect(val).toHaveProperty('forEach'); expect(val.forEach).toBeInstanceOf(Function);
 }
 
-export function expectASome(val) : void {
+export function expectASome(val: any): void {
   expectAnOptional(val);
   expect(val.isSome()).toEqual(true);
   expect(val.isNone()).toEqual(false);
 }
 
-export function expectANone(val) : void {
+export function expectANone(val: any): void {
   expectAnOptional(val);
   expect(val.isSome()).toEqual(false);
   expect(val.isNone()).toEqual(true);
 }
 
-export function expectAResult(val) : void {
+export function expectAResult(val: any): void {
   expect(val).toHaveProperty('isOk'); expect(val.isOk).toBeInstanceOf(Function);
   expect(val).toHaveProperty('isErr'); expect(val.isErr).toBeInstanceOf(Function);
   expect(val).toHaveProperty('toString'); expect(val.toString).toBeInstanceOf(Function);
@@ -44,13 +44,13 @@ export function expectAResult(val) : void {
   expect(val).toHaveProperty('match'); expect(val.match).toBeInstanceOf(Function);
 }
 
-export function expectAnOk(val) : void {
+export function expectAnOk(val: any): void {
   expectAResult(val);
   expect(val.isOk()).toBe(true);
   expect(val.isErr()).toBe(false);
 }
 
-export function expectAnErr(val) : void {
+export function expectAnErr(val: any): void {
   expectAResult(val);
   expect(val.isOk()).toBe(false);
   expect(val.isErr()).toBe(true);
