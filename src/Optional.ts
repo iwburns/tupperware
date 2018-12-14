@@ -74,8 +74,7 @@ export default abstract class Optional<T> {
   }
 
   /**
-   * Creates a [[None]] with the given value. If something other than `null` or `undefined` is
-   * provided this method with throw an error.
+   * Creates a [[None]].
    *
    * ```
    * const nope = Optional.none();
