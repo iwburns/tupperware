@@ -24,14 +24,15 @@
   },
   "scripts": {
     "prettier": "prettier --write ./src/*",
-    "prebuild": "rimraf dist",
+    "prebuild": "npm run clean",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
     "start": "rollup -c rollup.config.ts -w",
-    "test": "jest",
+    "test": "npm run clean && jest",
     "test:watch": "jest --watch",
     "test:prod": "npm run test -- --coverage --no-cache",
     "deploy-docs": "ts-node tools/gh-pages-publish",
-    "report-coverage": "cat ./coverage/lcov.info | coveralls"
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "clean": "rimraf dist"
   },
   "jest": {
     "transform": {
@@ -81,7 +82,7 @@
     "tslint-config-prettier": "^1.15.0",
     "tslint-config-standard": "^7.1.0",
     "typedoc": "^0.11.0",
-    "typescript": "^2.9.2"
+    "typescript": "^3.2.1"
   },
   "dependencies": {}
 }
