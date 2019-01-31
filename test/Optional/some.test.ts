@@ -197,4 +197,12 @@ describe('#Optional - Some', () => {
     none.withNone(() => { val = 42; });
     expect(val).toEqual(0);
   });
+
+  it('should have the function toArray', () => {
+    const one = Optional.some(2);
+
+    const data = one.toArray();
+    expect(data.length).toEqual(1);
+    expect(data[0]).toEqual(2);
+  });
 });

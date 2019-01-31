@@ -549,6 +549,7 @@ export default abstract class Optional<T> {
    * two.withSome(x => { val = x; });
    * // val === 0
    * ```
+   *
    * #### Note: ####
    * This function is intended for causing side-effects and therefore does not return anything. If
    * you need a return value, consider using [[match]] instead.
@@ -565,15 +566,16 @@ export default abstract class Optional<T> {
    * let val = 0;
    *
    * const one = Optional.some(1);
-   * one.withSome(() => { val = 42; });
+   * one.withNone(() => { val = 42; });
    * // val === 0
    *
    * val = 0;
    *
    * const two = Optional.none();
-   * two.withSome(() => { val = 42; });
+   * two.withNone(() => { val = 42; });
    * // val === 42
    * ```
+   *
    * #### Note: ####
    * This function is intended for causing side-effects and therefore does not return anything. If
    * you need a return value, consider using [[match]] instead.
@@ -581,6 +583,26 @@ export default abstract class Optional<T> {
    * @param func A function to call if `this` [[Optional]] is a [[None]].
    */
   abstract withNone(func: () => void): void;
+
+  /**
+   * Converts an [[Optional]] into an array of either one or no values depending on whether or
+   * not this [[Optional]] is a [[Some]].
+   *
+   * ```
+   * const one = Optional.some(1);
+   * let data = one.toArray();
+   * // data.length === 1
+   * // data[0] === 1
+   *
+   * const nope = Optional.none();
+   * data = nope.toArray();
+   * // data.length === 0
+   * ```
+   *
+   * @returns an array containing this [[Optional]]'s inner value if it is a [[Some]]; otherwise
+   * an empty array.
+   */
+  abstract toArray(): Array<T>;
 }
 
 /**
@@ -708,6 +730,10 @@ class Some<T> extends Optional<T> {
   withNone(func: () => void): void {
     return;
   }
+
+  toArray(): Array<T> {
+    return [this.value];
+  }
 }
 
 /**
@@ -829,5 +855,9 @@ class None extends Optional<any> {
 
   withNone(func: () => void): void {
     func();
+  }
+
+  toArray(): Array<any> {
+    return [];
   }
 }

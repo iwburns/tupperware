@@ -156,4 +156,11 @@ describe('#Optional - None', () => {
     none.withNone(() => { val = 42; });
     expect(val).toEqual(42);
   });
+
+  it('should have the function toArray', () => {
+    const none = Optional.none();
+
+    const data = none.toArray();
+    expect(data.length).toEqual(0);
+  });
 });
