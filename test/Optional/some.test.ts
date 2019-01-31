@@ -45,6 +45,7 @@ describe('#Optional - Some', () => {
   it('should have the function unwrapOr', () => {
     const one = Optional.some(1);
     expect(one.unwrapOr(10)).toEqual(1);
+    expect(one.unwrapOr(() => 10)).toEqual(1);
   });
 
   it('should have the function unwrapOrElse', () => {

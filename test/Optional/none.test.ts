@@ -45,6 +45,7 @@ describe('#Optional - None', () => {
   it('should have the function unwrapOr', () => {
     const none = Optional.none();
     expect(none.unwrapOr(10)).toEqual(10);
+    expect(none.unwrapOr(() => 10)).toEqual(10);
   });
 
   it('should have the function unwrapOrElse', () => {

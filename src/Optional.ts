@@ -249,20 +249,26 @@ export default abstract class Optional<T> {
 
   /**
    * Returns the value contained by this [[Optional]] if it is a [[Some]], otherwise returns `other`
-   * as a default value.
+   * as a fallback.
+   *
+   * Here `other` can be either the fallback value itself, or a function that returns that value.
+   * If it is a function, `other` will not be evaluated unless it this [[Optional]] is a [[None]].
    *
    * ```
    * const maybeOne = Optional.some(1);
    * const one = maybeOne.unwrapOr(3); // one === 1
+   * const oneAgain = maybeOne.unwrapOr(() => 5); // one === 1
    *
    * const maybeTwo = Optional.none();
    * const two = maybeTwo.unwrapOr(3); // two === 3
+   * const twoAgain = maybeTwo.unwrapOr(() => 5); // two === 5
    * ```
    *
-   * @param other A default value to fall back on if this [[Optional]] is a [[None]].
+   * @param other A default value to fall back on if this [[Optional]] is a [[None]].  Can be
+   * the default itself, or a function that returns the default.
    * @returns The value in this [[Optional]] if it is a [[Some]], otherwise returns `other`.
    */
-  abstract unwrapOr(other: T): T;
+  abstract unwrapOr(other: T | (() => T)): T;
 
   /**
    * Returns the value contained by this [[Optional]] if it is a [[Some]], otherwise calls `func`
@@ -675,7 +681,7 @@ class Some<T> extends Optional<T> {
     return this.value;
   }
 
-  unwrapOr(other: T): T {
+  unwrapOr(other: T | (() => T)): T {
     return this.value;
   }
 
@@ -804,7 +810,12 @@ class None extends Optional<any> {
     throw new Error('tupperware:force_unwrap_on_none: Called forceUnwrap on a None value.');
   }
 
-  unwrapOr<T>(other: T): T {
+  unwrapOr<T>(other: T | (() => T)): T {
+    if (typeof other === 'function') {
+      // for some reason this isn't enough to prove to TSC that other is actually a function
+      // so we have to cast here.
+      return (other as () => T)();
+    }
     return other;
   }
 
