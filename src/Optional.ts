@@ -170,7 +170,6 @@ export default abstract class Optional<T> {
    *
    * ```
    * const one = Optional.some(1);
-   * console.log(one.unwrap()); // will throw; we didn't check if it was safe to call `unwrap`
    *
    * if (one.isSome()) {
    *   console.log(one.unwrap()); // will not throw; we know it's safe to call `unwrap`
@@ -178,10 +177,9 @@ export default abstract class Optional<T> {
    *
    * // however:
    * const two = Optional.none();
-   * console.log(two.unwrap()); // with throw; we didn't check if it was safe to call `unwrap`
    *
    * if (two.isSome()) {
-   *   console.log(two.unwrap()); // will not throw; also won't run b/c two is a `None`
+   *   console.log(two.unwrap()); // won't run b/c two is a `None`
    * } else {
    *   console.log(two.unwrap()); // will throw; two is a `None` so it can't be `unwrap`ed
    * }
@@ -189,20 +187,8 @@ export default abstract class Optional<T> {
    *
    * @param message An optional message to be included in the error that this function may throw.
    * @returns The value contained within this [[Optional]].
-   * @throws A `tupperware:unchecked_unwrap` error if you attempt to call this function before
-   * first checking if this [[Optional]] is a safe to unwrap. "Safe to unwrap" means that this
-   * [[Optional]] is a [[Some]].
    * @throws A `tupperware:unwrap_on_none` error if you attempted to call this function on a
    * [[None]] value.
-   *
-   * ## `tupperware:unchecked_unwrap:` ##
-   * The most direct way to avoid this issue is to either check that the given [[Optional]] is a
-   * [[Some]] value (with [[isSome]] or [[isNone]]) or to use [[unwrapOr]] instead which allows you
-   * to specify a default value to fall back on in the case where this [[Optional]] is a [[None]].
-   *
-   * However, oftentimes you may not want to simply get the value out of the [[Optional]]; instead
-   * you may want to conditionally use that value in some sort of computation.  In those cases it's
-   * likely more clean/clear to use [[map]] or a similar function instead.
    *
    * ## `tupperware:unwrap_on_none:` ##
    * To avoid this issue, either make sure that your logic is correct concerning whether or not
@@ -215,13 +201,12 @@ export default abstract class Optional<T> {
    * Returns the value contained by this [[Optional]] if it is a [[Some]]; throws an error if this
    * [[Optional]] is a [[None]] (because it cannot be unwrapped).
    *
-   * This function will __not__ throw an error if you fail to check if this [[Optional]] is safe to
-   * unwrap before doing so. However, it will always print a console warning because this function
-   * is inherently dangerous to use.
+   * This function will __always__ print a console warning because it is inherently dangerous to
+   * use.
    *
    * ```
    * const one = Optional.some(1);
-   * console.log(one.forceUnwrap()); // won't throw, but will always console.warn()
+   * console.log(one.forceUnwrap()); // will always console.warn()
    *
    * const two = Optional.none();
    * console.log(two.forceUnwrap()); // will throw because two is a `None`
@@ -636,24 +621,16 @@ class Some<T> extends Optional<T> {
   /**
    * @hidden
    */
-  private hasBeenInspected: boolean;
-
-  /**
-   * @hidden
-   */
   constructor(value: T) {
     super();
     this.value = value;
-    this.hasBeenInspected = false;
   }
 
   isSome(): boolean {
-    this.hasBeenInspected = true;
     return true;
   }
 
   isNone(): boolean {
-    this.hasBeenInspected = true;
     return false;
   }
 
@@ -662,14 +639,6 @@ class Some<T> extends Optional<T> {
   }
 
   unwrap(message?: string): T {
-    if (!this.hasBeenInspected) {
-      throw new Error(
-        'tupperware:unchecked_unwrap: Called unwrap without first checking if it was safe to do' +
-          ' so. Please verify that the `Optional` in question is a `Some` value before calling' +
-          ' this function or use a safer function like `unwrapOr` which provides a default value' +
-          ' in case this `Optional` is a `None`.'
-      );
-    }
     return this.value;
   }
 
@@ -694,7 +663,6 @@ class Some<T> extends Optional<T> {
   }
 
   and<U>(other: Optional<U>): Optional<U> {
-    this.hasBeenInspected = true;
     return other;
   }
 
@@ -760,23 +728,15 @@ class None extends Optional<any> {
   /**
    * @hidden
    */
-  private hasBeenInspected: boolean;
-
-  /**
-   * @hidden
-   */
   constructor() {
     super();
-    this.hasBeenInspected = false;
   }
 
   isSome(): boolean {
-    this.hasBeenInspected = true;
     return false;
   }
 
   isNone(): boolean {
-    this.hasBeenInspected = true;
     return true;
   }
 
@@ -785,14 +745,6 @@ class None extends Optional<any> {
   }
 
   unwrap(message?: string): never {
-    if (!this.hasBeenInspected) {
-      throw new Error(
-        'tupperware:unchecked_unwrap: Called unwrap without first checking if it was safe to do' +
-          ' so. Please verify that the `Optional` in question is a `Some` value before calling' +
-          ' this function or use a safer function like `unwrapOr` which provides a default value' +
-          ' in case this `Optional` is a `None`.'
-      );
-    }
     if (typeof message !== 'undefined' && message !== null) {
       throw new Error(`tupperware:unwrap_on_none: ${message}`);
     }
@@ -828,7 +780,6 @@ class None extends Optional<any> {
   }
 
   and<U>(other: Optional<U>): Optional<U> {
-    this.hasBeenInspected = true;
     return new None() as Optional<U>;
   }
 

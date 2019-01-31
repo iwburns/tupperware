@@ -19,19 +19,6 @@ describe('#Optional - None', () => {
   it('should have the function unwrap', () => {
     const none = Optional.none();
 
-    expect(() => none.unwrap()).toThrow(
-      'tupperware:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
-      ' the `Optional` in question is a `Some` value before calling this function or use a safer function like' +
-      ' `unwrapOr` which provides a default value in case this `Optional` is a `None`.'
-    );
-    expect(() => none.unwrap('failed')).toThrow(
-      'tupperware:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
-      ' the `Optional` in question is a `Some` value before calling this function or use a safer function like' +
-      ' `unwrapOr` which provides a default value in case this `Optional` is a `None`.'
-    );
-
-    none.isSome(); // trigger internal inspection flag
-
     expect(() => none.unwrap()).toThrow('tupperware:unwrap_on_none: Called unwrap on a None value.');
     expect(() => none.unwrap('failed')).toThrow('tupperware:unwrap_on_none: failed');
   });
