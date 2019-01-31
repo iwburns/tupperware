@@ -181,4 +181,20 @@ describe('#Optional - Some', () => {
     one.forEach(x => val = x);
     expect(val).toEqual(1);
   });
+
+  it('should have the function withSome', () => {
+    const one = Optional.some(1);
+    let val = 0;
+
+    one.withSome(x => val = x);
+    expect(val).toEqual(1);
+  });
+
+  it('should have the function withNone', () => {
+    const none = Optional.some(1);
+    let val = 0;
+
+    none.withNone(() => { val = 42; });
+    expect(val).toEqual(0);
+  });
 });
