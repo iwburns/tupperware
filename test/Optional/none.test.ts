@@ -129,22 +129,6 @@ describe('#Optional - None', () => {
     expect(val).toEqual(0);
   });
 
-  it('should have the function withSome', () => {
-    const none = Optional.none();
-    let val = 0;
-
-    none.withSome(x => val = x);
-    expect(val).toEqual(0);
-  });
-
-  it('should have the function withNone', () => {
-    const none = Optional.none();
-    let val = 0;
-
-    none.withNone(() => { val = 42; });
-    expect(val).toEqual(42);
-  });
-
   it('should have the function toArray', () => {
     const none = Optional.none();
 

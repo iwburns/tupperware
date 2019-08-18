@@ -14,8 +14,6 @@ export function expectAnOptional(val: any): void {
   expect(val).toHaveProperty('match'); expect(val.match).toBeInstanceOf(Function);
   expect(val).toHaveProperty('filter'); expect(val.filter).toBeInstanceOf(Function);
   expect(val).toHaveProperty('forEach'); expect(val.forEach).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('withSome'); expect(val.withSome).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('withNone'); expect(val.withNone).toBeInstanceOf(Function);
   expect(val).toHaveProperty('toArray'); expect(val.toArray).toBeInstanceOf(Function);
 }
 

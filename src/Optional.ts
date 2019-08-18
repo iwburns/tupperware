@@ -499,7 +499,8 @@ export default abstract class Optional<T> {
   abstract filter(condition: (val: T) => boolean): Optional<T>;
 
   /**
-   * An alias for the [[withSome]] method.
+   * Calls `func` with the contained value if `this` [[Optional]] is a [[Some]]; otherwise does
+   * nothing.
    *
    * ```
    * let val = 0;
@@ -522,58 +523,6 @@ export default abstract class Optional<T> {
    * value is passed to `func` if it is called.
    */
   abstract forEach(func: (val: any) => void): void;
-
-  /**
-   * Calls `func` with the contained value if `this` [[Optional]] is a [[Some]]; otherwise does
-   * nothing.
-   *
-   * ```
-   * let val = 0;
-   *
-   * const one = Optional.some(1);
-   * one.withSome(x => { val = x; });
-   * // val === 1
-   *
-   * val = 0;
-   *
-   * const two = Optional.none();
-   * two.withSome(x => { val = x; });
-   * // val === 0
-   * ```
-   *
-   * #### Note: ####
-   * This function is intended for causing side-effects and therefore does not return anything. If
-   * you need a return value, consider using [[match]] instead.
-   *
-   * @param func A function to call if `this` [[Optional]] is a [[Some]]. `This` [[Optional]]'s inner
-   * value is passed to `func` if it is called.
-   */
-  abstract withSome(func: (val: any) => void): void;
-
-  /**
-   * Calls `func` if `this` [[Optional]] is a [[None]]; otherwise does nothing.
-   *
-   * ```
-   * let val = 0;
-   *
-   * const one = Optional.some(1);
-   * one.withNone(() => { val = 42; });
-   * // val === 0
-   *
-   * val = 0;
-   *
-   * const two = Optional.none();
-   * two.withNone(() => { val = 42; });
-   * // val === 42
-   * ```
-   *
-   * #### Note: ####
-   * This function is intended for causing side-effects and therefore does not return anything. If
-   * you need a return value, consider using [[match]] instead.
-   *
-   * @param func A function to call if `this` [[Optional]] is a [[None]].
-   */
-  abstract withNone(func: () => void): void;
 
   /**
    * Converts an [[Optional]] into an array of either one or no values depending on whether or
@@ -694,15 +643,7 @@ class Some<T> extends Optional<T> {
   }
 
   forEach(func: (val: any) => void): void {
-    this.withSome(func);
-  }
-
-  withSome(func: (val: any) => void): void {
     func(this.value);
-  }
-
-  withNone(func: () => void): void {
-    return;
   }
 
   toArray(): Array<T> {
@@ -808,15 +749,7 @@ class None extends Optional<any> {
   }
 
   forEach(func: (val: any) => void): void {
-    this.withSome(func);
-  }
-
-  withSome(func: (val: any) => void): void {
     return;
-  }
-
-  withNone(func: () => void): void {
-    func();
   }
 
   toArray(): Array<any> {
