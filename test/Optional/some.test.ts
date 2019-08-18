@@ -19,19 +19,6 @@ describe('#Optional - Some', () => {
   it('should have the function unwrap', () => {
     const one = Optional.some(1);
 
-    expect(() => one.unwrap()).toThrow(
-      'tupperware:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
-      ' the `Optional` in question is a `Some` value before calling this function or use a safer function like' +
-      ' `unwrapOr` which provides a default value in case this `Optional` is a `None`.'
-    );
-    expect(() => one.unwrap('failed')).toThrow(
-      'tupperware:unchecked_unwrap: Called unwrap without first checking if it was safe to do so. Please verify that' +
-      ' the `Optional` in question is a `Some` value before calling this function or use a safer function like' +
-      ' `unwrapOr` which provides a default value in case this `Optional` is a `None`.'
-    );
-
-    one.isSome(); // trigger internal inspection flag
-
     expect(one.unwrap()).toEqual(1);
     expect(one.unwrap('failed')).toEqual(1);
   });
@@ -45,6 +32,7 @@ describe('#Optional - Some', () => {
   it('should have the function unwrapOr', () => {
     const one = Optional.some(1);
     expect(one.unwrapOr(10)).toEqual(1);
+    expect(one.unwrapOr(() => 10)).toEqual(1);
   });
 
   it('should have the function unwrapOrElse', () => {
@@ -180,5 +168,13 @@ describe('#Optional - Some', () => {
 
     one.forEach(x => val = x);
     expect(val).toEqual(1);
+  });
+
+  it('should have the function toArray', () => {
+    const one = Optional.some(2);
+
+    const data = one.toArray();
+    expect(data.length).toEqual(1);
+    expect(data[0]).toEqual(2);
   });
 });
