@@ -344,10 +344,10 @@ export default abstract class Result<T, E> {
    * means [[orElse]] is ideal for cases when you need to fall back on a value that needs to
    * be computed (and may be expensive to compute).
    *
-   * @param func A function returning an alternate [[Result]] if this one is an [[Err]].
+   * @param other An alternate [[Result]] or a function returning one.
    * @returns `this` [[Result]] if it is an [[Ok]], otherwise `func`'s return value is returned.
    */
-  abstract orElse(func: (err: E) => Result<T, any>): Result<T, any>;
+  abstract or(other: Result<T, any> | ((err: E) => Result<T, any>)): Result<T, any>;
 
   /**
    * Calls the appropriate function in `options` and returns the result. If `this` [[Result]] is
@@ -460,7 +460,7 @@ class Ok<T> extends Result<T, any> {
     return func(this.value);
   }
 
-  orElse<E, F>(func: (err: E) => Result<T, F>): Result<T, F> {
+  or<E, F>(other: Result<T, any> | ((err: E) => Result<T, F>)): Result<T, F> {
     return Result.ok(this.value);
   }
 
@@ -550,8 +550,13 @@ class Err<E> extends Result<any, E> {
     return Result.err(this.error);
   }
 
-  orElse<T, F>(func: (err: E) => Result<T, F>): Result<T, F> {
-    return func(this.error);
+  or<T, F>(other: Result<T, any> | ((err: E) => Result<T, F>)): Result<T, F> {
+    if (typeof other === 'function') {
+      // for some reason this isn't enough to prove to TSC that other is actually a function
+      // so we have to cast here.
+      return (other as (err: E) => Result<T, F>)(this.error);
+    }
+    return other;
   }
 
   match<T, U, F>(options: ResultMatch<T, E, U, F>): U | F {

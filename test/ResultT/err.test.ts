@@ -1,5 +1,5 @@
 import { Result } from '../../src/tupperware';
-import { expectAnErr, expectANone } from '../util';
+import {expectAnErr, expectAnOk, expectANone} from '../util';
 
 describe('#Result - Err', () => {
   it('should have the function isOk', () => {
@@ -83,13 +83,18 @@ describe('#Result - Err', () => {
     expect(m.unwrapErr()).toEqual('error');
   });
 
-  it('should have the function orElse', () => {
+  it('should have the function or', () => {
     const r = Result.err(1);
     expectAnErr(r);
     const changeError = () => Result.err('new error');
-    const m = r.orElse(changeError);
+    const m = r.or(changeError);
     expectAnErr(m);
     expect(m.unwrapErr()).toEqual('new error');
+
+    const other = Result.err('two');
+    const r2 = r.or(other);
+    expectAnErr(r2);
+    expect(r2.unwrapErr()).toEqual('two');
   });
 
   it('should have the function match', () => {

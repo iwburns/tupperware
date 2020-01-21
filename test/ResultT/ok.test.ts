@@ -84,13 +84,18 @@ describe('#Result - Ok', () => {
     expect(m.unwrap()).toEqual(2);
   });
 
-  it('should have the function orElse', () => {
+  it('should have the function or', () => {
     const r = Result.ok(1);
     expectAnOk(r);
     const changeError = () => Result.err('new error') as Result<number, string>;
-    const m = r.orElse(changeError);
+    const m = r.or(changeError);
     expectAnOk(m);
     expect(m.unwrap()).toEqual(1);
+
+    const other = Result.err('two');
+    const r2 = r.or(other);
+    expectAnOk(r2);
+    expect(r2.unwrap()).toEqual(1);
   });
 
   it('should have the function match', () => {

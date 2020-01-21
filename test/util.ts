@@ -39,7 +39,7 @@ export function expectAResult(val: any): void {
   expect(val).toHaveProperty('map'); expect(val.map).toBeInstanceOf(Function);
   expect(val).toHaveProperty('mapErr'); expect(val.mapErr).toBeInstanceOf(Function);
   expect(val).toHaveProperty('flatMap'); expect(val.flatMap).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('orElse'); expect(val.orElse).toBeInstanceOf(Function);
+  expect(val).toHaveProperty('or'); expect(val.or).toBeInstanceOf(Function);
   expect(val).toHaveProperty('match'); expect(val.match).toBeInstanceOf(Function);
 }
 
