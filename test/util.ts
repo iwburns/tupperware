@@ -4,12 +4,10 @@ export function expectAnOptional(val: any): void {
   expect(val).toHaveProperty('toString'); expect(val.toString).toBeInstanceOf(Function);
   expect(val).toHaveProperty('unwrap'); expect(val.unwrap).toBeInstanceOf(Function);
   expect(val).toHaveProperty('unwrapOr'); expect(val.unwrapOr).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('unwrapOrElse'); expect(val.unwrapOrElse).toBeInstanceOf(Function);
   expect(val).toHaveProperty('map'); expect(val.map).toBeInstanceOf(Function);
   expect(val).toHaveProperty('and'); expect(val.and).toBeInstanceOf(Function);
   expect(val).toHaveProperty('flatMap'); expect(val.flatMap).toBeInstanceOf(Function);
   expect(val).toHaveProperty('or'); expect(val.or).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('orElse'); expect(val.orElse).toBeInstanceOf(Function);
   expect(val).toHaveProperty('ap'); expect(val.ap).toBeInstanceOf(Function);
   expect(val).toHaveProperty('match'); expect(val.match).toBeInstanceOf(Function);
   expect(val).toHaveProperty('filter'); expect(val.filter).toBeInstanceOf(Function);

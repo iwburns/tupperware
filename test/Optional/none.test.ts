@@ -23,21 +23,10 @@ describe('#Optional - None', () => {
     expect(() => none.unwrap('failed')).toThrow('tupperware:unwrap_on_none: failed');
   });
 
-  it('should have the function forceUnwrap', () => {
-    const none = Optional.none();
-    expect(() => none.forceUnwrap()).toThrow('tupperware:force_unwrap_on_none: Called forceUnwrap on a None value.');
-    expect(() => none.forceUnwrap('failed')).toThrow('tupperware:force_unwrap_on_none: failed');
-  });
-
   it('should have the function unwrapOr', () => {
     const none = Optional.none();
     expect(none.unwrapOr(10)).toEqual(10);
     expect(none.unwrapOr(() => 10)).toEqual(10);
-  });
-
-  it('should have the function unwrapOrElse', () => {
-    const none = Optional.none();
-    expect(none.unwrapOrElse(() => 1)).toEqual(1);
   });
 
   it('should have the function map', () => {
@@ -59,6 +48,16 @@ describe('#Optional - None', () => {
     expect(orResult.isSome()).toEqual(true);
     expect(orResult.unwrap()).toEqual(1);
     expect(none.or(Optional.none()).isNone()).toEqual(true);
+
+    const nothing = () => Optional.none();
+    const something = () => Optional.some(1);
+
+    expect(none.or(nothing).isNone()).toEqual(true);
+    expect(none.or(something).isSome()).toEqual(true);
+
+    const result = none.or(() => Optional.some('foobar'));
+    expect(result.isSome()).toEqual(true);
+    expect(result.unwrap()).toEqual('foobar');
   });
 
   it('should have the function flatMap', () => {
@@ -69,20 +68,6 @@ describe('#Optional - None', () => {
 
     expect(none.flatMap(nothing).isNone()).toEqual(true);
     expect(none.flatMap(something).isNone()).toEqual(true);
-  });
-
-  it('should have the function orElse', () => {
-    const none = Optional.none();
-
-    const nothing = () => Optional.none();
-    const something = () => Optional.some(1);
-
-    expect(none.orElse(nothing).isNone()).toEqual(true);
-    expect(none.orElse(something).isSome()).toEqual(true);
-
-    const result = none.orElse(() => Optional.some('foobar'));
-    expect(result.isSome()).toEqual(true);
-    expect(result.unwrap()).toEqual('foobar');
   });
 
   it('should have the function ap', () => {
