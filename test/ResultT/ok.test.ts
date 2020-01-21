@@ -55,12 +55,7 @@ describe('#Result - Ok', () => {
     const r = Result.ok(1);
     expectAnOk(r);
     expect(r.unwrapOr(2)).toEqual(1);
-  });
-
-  it('should have the function unwrapOrElse', () => {
-    const r = Result.ok(1);
-    expectAnOk(r);
-    expect(r.unwrapOrElse(() => 2)).toEqual(1);
+    expect(r.unwrapOr(() => 2)).toEqual(1);
   });
 
   it('should have the function map', () => {

@@ -229,32 +229,7 @@ export default abstract class Result<T, E> {
    * @param other A default value to fall back on if this [[Result]] is an [[Err]].
    * @returns The value in this [[Result]] if it is an [[Ok]], otherwise returns `other`.
    */
-  abstract unwrapOr(other: T): T;
-
-  /**
-   * Returns the value contained by this [[Result]] if it is an [[Ok]], otherwise calls `func`
-   * with the [[Err]] value and returns the result.
-   *
-   * ```
-   * const maybeOne = Result.ok(1);
-   * const one = maybeOne.unwrapOrElse((err) => err.length);
-   * // one === 1
-   *
-   * const maybeOne = Result.err('parse error');
-   * const one = maybeOne.unwrapOrElse((err) => err.length);
-   * // one === 11
-   * ```
-   *
-   * #### Note ####
-   * The argument `func` will __not__ be evaluated unless this [[Result]] is an [[Err]]. This
-   * means [[unwrapOrElse]] is ideal for cases when you need to fall back on a value that needs to
-   * be computed (and may be expensive to compute).
-   *
-   * @param func A function returning the fall-back value if this [[Result]] is an [[Err]].
-   * @returns The value in this [[Result]] if it is an [[Ok]], otherwise returns the return value
-   * of `func`.
-   */
-  abstract unwrapOrElse(func: (err: E) => T): T;
+  abstract unwrapOr(other: T | ((err: E) => T)): T;
 
   /**
    * Maps a [[Result]]<T, E> to an [[Result]]<U, E> by applying `func` to the value contained in
@@ -469,11 +444,7 @@ class Ok<T> extends Result<T, any> {
     throw new Error('Called unwrapErr on an Ok value.');
   }
 
-  unwrapOr(other: T): T {
-    return this.value;
-  }
-
-  unwrapOrElse<E>(func: (err: E) => T): T {
+  unwrapOr<E>(other: T | ((err: E) => T)): T {
     return this.value;
   }
 
@@ -558,12 +529,13 @@ class Err<E> extends Result<any, E> {
     return this.error;
   }
 
-  unwrapOr<T>(other: T): T {
+  unwrapOr<T>(other: T | ((err: E) => T)): T {
+    if (typeof other === 'function') {
+      // for some reason this isn't enough to prove to TSC that other is actually a function
+      // so we have to cast here.
+      return (other as (err: E) => T)(this.error);
+    }
     return other;
-  }
-
-  unwrapOrElse<T>(func: (err: E) => T): T {
-    return func(this.error);
   }
 
   map<T, U>(func: (val: T) => U): Result<U, E> {

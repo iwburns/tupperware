@@ -54,12 +54,7 @@ describe('#Result - Err', () => {
     const r = Result.err(1);
     expectAnErr(r);
     expect(r.unwrapOr(2)).toEqual(2);
-  });
-
-  it('should have the function unwrapOrElse', () => {
-    const r = Result.err('parse error') as Result<string, any>;
-    expectAnErr(r);
-    expect(r.unwrapOrElse(() => 'other string')).toEqual('other string');
+    expect(r.unwrapOr(() => 'other string')).toEqual('other string');
   });
 
   it('should have the function map', () => {

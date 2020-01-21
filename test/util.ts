@@ -36,7 +36,6 @@ export function expectAResult(val: any): void {
   expect(val).toHaveProperty('unwrap'); expect(val.unwrap).toBeInstanceOf(Function);
   expect(val).toHaveProperty('unwrapErr'); expect(val.unwrapErr).toBeInstanceOf(Function);
   expect(val).toHaveProperty('unwrapOr'); expect(val.unwrapOr).toBeInstanceOf(Function);
-  expect(val).toHaveProperty('unwrapOrElse'); expect(val.unwrapOrElse).toBeInstanceOf(Function);
   expect(val).toHaveProperty('map'); expect(val.map).toBeInstanceOf(Function);
   expect(val).toHaveProperty('mapErr'); expect(val.mapErr).toBeInstanceOf(Function);
   expect(val).toHaveProperty('flatMap'); expect(val.flatMap).toBeInstanceOf(Function);
