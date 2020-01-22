@@ -214,19 +214,32 @@ export default abstract class Result<T, E> {
 
   /**
    * Returns the value contained by this [[Result]] if it is an [[Ok]], otherwise returns `other`
-   * as a default value.
+   * as a default value.  If `other` is a function, it will be called and the return value of that
+   * function will be returned.
    *
    * ```
-   * const maybeOne = Result.ok(1);
-   * const one = maybeOne.unwrapOr(2);
+   * let maybeOne = Result.ok(1);
+   * let one = maybeOne.unwrapOr(2);
    * // one === 1
    *
-   * const maybeOne = Result.err('parse error');
-   * const one = maybeOne.unwrapOr(2);
+   * one = maybeOne.unwrapOr((err) => err.length);
+   * // one === 1
+   *
+   * maybeOne = Result.err('parse error');
+   * one = maybeOne.unwrapOr(2);
    * // one === 2
+   *
+   * one = maybeOne.unwrapOr((err) => err.length);
+   * // one === 11
    * ```
    *
-   * @param other A default value to fall back on if this [[Result]] is an [[Err]].
+   * #### Note ####
+   * If `other` is a function it will __not__ be evaluated unless this [[Result]] is an [[Err]].
+   * This means using a function here is ideal for cases when you need to fall back on a value that
+   * needs to be computed (and may be expensive to compute).
+   *
+   * @param other A default value to fall back on if this [[Result]] is an [[Err]] or a function
+   * that returns one.
    * @returns The value in this [[Result]] if it is an [[Ok]], otherwise returns `other`.
    */
   abstract unwrapOr(other: T | ((err: E) => T)): T;
