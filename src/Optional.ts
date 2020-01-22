@@ -309,22 +309,36 @@ export default abstract class Optional<T> {
 
   /**
    * Compares two [[Optional]] values. Returns `this` [[Optional]] if it is a [[Some]] value;
-   * otherwise returns the `other` [[Optional]].
+   * otherwise returns the `other` [[Optional]].  If `other` is a function, it will be called
+   * and the result of that function will be returned.
    *
    * ```
    * const one = Optional.some(1);
    * const none = Optional.none();
    *
-   * const either = one.or(none);
+   * let either = one.or(none);
    * // either.isSome() === true
    * // either.unwrap() === 1
    *
-   * const eitherAgain = none.or(one);
+   * either = one.or(() => none);
+   * // either.isSome() === true
+   * // either.unwrap() === 1
+   *
+   * let eitherAgain = none.or(one);
+   * // eitherAgain.isSome() === true
+   * // eitherAgain.unwrap() === 1
+   *
+   * eitherAgain = none.orElse(() => one);
    * // eitherAgain.isSome() === true
    * // eitherAgain.unwrap() === 1
    * ```
    *
-   * @param other Another [[Optional]] to compare to `this` one.
+   * #### Note: ####
+   * If `other` is a function, it will __not__ be evaluated unless this [[Optional]] is a [[None]].
+   * This means using a function here is ideal for cases when you need to fall back on a value that
+   * needs to be computed (and may be expensive to compute).
+   *
+   * @param other Another [[Optional]] to compare to `this` one, or a function that returns one.
    * @returns `this` if it is a [[Some]], otherwise returns `other`.
    */
   abstract or(other: Optional<any> | (() => Optional<any>)): Optional<any>;
