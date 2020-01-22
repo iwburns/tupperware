@@ -73,6 +73,24 @@ describe('#Result - Err', () => {
     expect(m.unwrapErr()).toEqual(2);
   });
 
+  it('should have the function and', () => {
+    let one = Result.err('error 1');
+    let two = Result.ok(2);
+    expectAnErr(one);
+    expectAnOk(two);
+
+    let r = one.and(two);
+    expectAnErr(r);
+    expect(r.unwrapErr()).toEqual('error 1');
+
+    two = Result.err('error 2');
+    expectAnErr(two);
+
+    r = one.and(two);
+    expectAnErr(r);
+    expect(r.unwrapErr()).toEqual('error 1');
+  });
+
   it('should have the function flatMap', () => {
     const r = Result.err('error');
     expectAnErr(r);

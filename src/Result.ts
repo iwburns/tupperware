@@ -286,6 +286,32 @@ export default abstract class Result<T, E> {
   abstract mapErr<F>(func: (val: E) => F): Result<T, F>;
 
   /**
+   * Compares two [[Result]] values. Returns `other` if this [[Result]] is an [[Ok]]; otherwise
+   * returns [[Err]]. This allows chained comparison of [[Result]] values.
+   *
+   * ```
+   * const one = Result.ok(1);
+   * const two = Result.ok(2);
+   *
+   * const twoAgain = one.and(two);
+   * // twoAgain.isOk() === true
+   * // twoAgain.unwrap() === 2
+   *
+   * const three = Result.err('it broke');
+   * const four = Result.ok(4);
+   *
+   * const fourAgain = three.and(four);
+   * // fourAgain.isOk() === false
+   * // fourAgain.unwrapErr() === 'it broke'
+   * ```
+   *
+   * @param other Another [[Result]] to use in the comparison.
+   * @param U The type of the value contained in the `other` [[Result]] if it is an [[Ok]].
+   * @returns `other` if this [[Result]] is an [[Err]], otherwise returns [[Err]].
+   */
+  abstract and<U>(other: Result<U, E>): Result<U, E>;
+
+  /**
    * Returns an [[Err]] if this [[Result]] is an [[Err]]; otherwise calls `func` and returns
    * the result.
    *
@@ -305,11 +331,11 @@ export default abstract class Result<T, E> {
    * const parseError = Result.err('parsing error');
    * const result = parseError.flatMap(square).flatMap(square);
    * // result.isOk() === false
-   * // result.unwrap() === 'parsing error'
+   * // result.unwrapErr() === 'parsing error'
    *
    * const resultAgain = two.flatMap(error).flatMap(square);
    * // resultAgain.isOk() === false
-   * // resultAgain.unwrap() === 'it broke!'
+   * // resultAgain.unwrapErr() === 'it broke!'
    * ```
    *
    * #### Note: ####
@@ -456,6 +482,10 @@ class Ok<T> extends Result<T, any> {
     return Result.ok(this.value);
   }
 
+  and<U>(other: Result<U, any>): Result<U, any> {
+    return other;
+  }
+
   flatMap<E, U>(func: (ok: T) => Result<U, E>): Result<U, E> {
     return func(this.value);
   }
@@ -544,6 +574,10 @@ class Err<E> extends Result<any, E> {
 
   mapErr<T, F>(func: (val: E) => F): Result<T, F> {
     return Result.err(func(this.error));
+  }
+
+  and<U>(other: Result<U, any>): Result<U, any> {
+    return Result.err(this.error);
   }
 
   flatMap<T, U>(func: (ok: T) => Result<U, E>): Result<U, E> {

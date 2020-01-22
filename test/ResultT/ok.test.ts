@@ -1,5 +1,5 @@
 import { Result } from '../../src/tupperware';
-import { expectAnOk, expectANone } from '../util';
+import {expectAnErr, expectAnOk, expectANone} from '../util';
 
 describe('#Result - Ok', () => {
   it('should have the function isOk', () => {
@@ -72,6 +72,24 @@ describe('#Result - Ok', () => {
     const m = r.mapErr(() => 2);
     expectAnOk(m);
     expect(m.unwrap()).toEqual(1);
+  });
+
+  it('should have the function and', () => {
+    let one = Result.ok(1);
+    let two = Result.ok(2);
+    expectAnOk(one);
+    expectAnOk(two);
+
+    let r = one.and(two);
+    expectAnOk(r);
+    expect(r.unwrap()).toEqual(2);
+
+    two = Result.err('it failed');
+    expectAnErr(two);
+
+    r = one.and(two);
+    expectAnErr(r);
+    expect(r.unwrapErr()).toEqual('it failed');
   });
 
   it('should have the function flatMap', () => {
