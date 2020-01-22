@@ -310,7 +310,7 @@ export default abstract class Optional<T> {
   /**
    * Compares two [[Optional]] values. Returns `this` [[Optional]] if it is a [[Some]] value;
    * otherwise returns the `other` [[Optional]].  If `other` is a function, it will be called
-   * and the result of that function will be returned.
+   * and the return value of that function will be returned.
    *
    * ```
    * const one = Optional.some(1);
@@ -328,7 +328,7 @@ export default abstract class Optional<T> {
    * // eitherAgain.isSome() === true
    * // eitherAgain.unwrap() === 1
    *
-   * eitherAgain = none.orElse(() => one);
+   * eitherAgain = none.or(() => one);
    * // eitherAgain.isSome() === true
    * // eitherAgain.unwrap() === 1
    * ```
