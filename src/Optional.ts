@@ -198,41 +198,6 @@ export default abstract class Optional<T> {
   abstract unwrap(message?: string): T;
 
   /**
-   * Returns the value contained by this [[Optional]] if it is a [[Some]]; throws an error if this
-   * [[Optional]] is a [[None]] (because it cannot be unwrapped).
-   *
-   * This function will __always__ print a console warning because it is inherently dangerous to
-   * use.
-   *
-   * ```
-   * const one = Optional.some(1);
-   * console.log(one.forceUnwrap()); // will always console.warn()
-   *
-   * const two = Optional.none();
-   * console.log(two.forceUnwrap()); // will throw because two is a `None`
-   * ```
-   *
-   * #### Note ####
-   * It is usually more ergonomic to unwrap an [[Optional]] with [[unwrapOr]] or to conditionally do
-   * something with the contained value with [[map]] or a similar function instead of using
-   * [[forceUnwrap]].
-   *
-   * However, there are cases where [[forceUnwrap]] may be useful.  With that in mind, please note:
-   * this function will always print a `tupperware:force_unwrap_warning` regardless of whether or
-   * not the [[Optional]] in question is a [[Some]].
-   *
-   * @param message An optional message to be included in the error that this function may throw.
-   * @returns The value contained within this [[Optional]].
-   * @throws A `tupperware:force_unwrap_on_none` if this function is called on a [[None]].
-   *
-   * ## `tupperware:force_unwrap_on_none` ##
-   * The only way to avoid this is to not call this function on a [[None]]. This means you must
-   * either know for certain that the [[Optional]] in question is a [[Some]], or you must verify
-   * it manually with [[isSome]] or a similar function.
-   */
-  abstract forceUnwrap(message?: string): T;
-
-  /**
    * Returns the value contained by this [[Optional]] if it is a [[Some]], otherwise returns `other`
    * as a fallback.
    *
@@ -254,29 +219,6 @@ export default abstract class Optional<T> {
    * @returns The value in this [[Optional]] if it is a [[Some]], otherwise returns `other`.
    */
   abstract unwrapOr(other: T | (() => T)): T;
-
-  /**
-   * Returns the value contained by this [[Optional]] if it is a [[Some]], otherwise calls `func`
-   * and returns the result.
-   *
-   * ```
-   * const maybeOne = Optional.some(1);
-   * const one = maybeOne.unwrapOrElse(() => 3); // one === 1
-   *
-   * const maybeTwo = Optional.none();
-   * const two = maybeTwo.unwrapOrElse(() => 3); // two === 3
-   * ```
-   *
-   * #### Note ####
-   * The argument `func` will __not__ be evaluated unless this [[Optional]] is a [[None]]. This
-   * means [[unwrapOrElse]] is ideal for cases when you need to fall back on a value that needs to
-   * be computed (and may be expensive to compute).
-   *
-   * @param func A function returning the fall-back value if this [[Optional]] is a [[None]].
-   * @returns The value in this [[Optional]] if it is a [[Some]], otherwise returns the return value
-   * of `func`.
-   */
-  abstract unwrapOrElse(func: () => T): T;
 
   /**
    * Maps an [[Optional]]&lt;T&gt; to an [[Optional]]&lt;U&gt; by applying `func` to the value
@@ -367,50 +309,39 @@ export default abstract class Optional<T> {
 
   /**
    * Compares two [[Optional]] values. Returns `this` [[Optional]] if it is a [[Some]] value;
-   * otherwise returns the `other` [[Optional]].
+   * otherwise returns the `other` [[Optional]].  If `other` is a function, it will be called
+   * and the return value of that function will be returned.
    *
    * ```
    * const one = Optional.some(1);
    * const none = Optional.none();
    *
-   * const either = one.or(none);
+   * let either = one.or(none);
    * // either.isSome() === true
    * // either.unwrap() === 1
    *
-   * const eitherAgain = none.or(one);
+   * either = one.or(() => none);
+   * // either.isSome() === true
+   * // either.unwrap() === 1
+   *
+   * let eitherAgain = none.or(one);
+   * // eitherAgain.isSome() === true
+   * // eitherAgain.unwrap() === 1
+   *
+   * eitherAgain = none.or(() => one);
    * // eitherAgain.isSome() === true
    * // eitherAgain.unwrap() === 1
    * ```
    *
-   * @param other Another [[Optional]] to compare to `this` one.
+   * #### Note: ####
+   * If `other` is a function, it will __not__ be evaluated unless this [[Optional]] is a [[None]].
+   * This means using a function here is ideal for cases when you need to fall back on a value that
+   * needs to be computed (and may be expensive to compute).
+   *
+   * @param other Another [[Optional]] to compare to `this` one, or a function that returns one.
    * @returns `this` if it is a [[Some]], otherwise returns `other`.
    */
-  abstract or(other: Optional<any>): Optional<any>;
-
-  /**
-   * Returns `this` [[Optional]] if it is a [[Some]]; otherwise calls `func` and returns the result.
-   *
-   * ```
-   * const one = Optional.some(1);
-   * const none = Optional.none();
-   *
-   * const either = one.orElse(() => none);
-   * // either.isSome() === true
-   * // either.unwrap() === 1
-   *
-   * const eitherAgain = none.orElse(() => one);
-   * // eitherAgain.isSome() === true
-   * // eitherAgain.unwrap() === 1
-   * ```
-   * #### Note: ####
-   * The argument `func` will __not__ be evaluated unless this [[Optional]] is a [[None]]. This
-   * means [[orElse]] is ideal for cases when you need to fall back on a value that needs to be
-   * computed (and may be expensive to compute).
-   *
-   * @param func A function returning an alternate [[Optional]] if `this` one is a [[None]].
-   * @returns `this` [[Optional]] if it is a [[Some]], otherwise `func`'s return value is returned.
-   */
-  abstract orElse(func: () => Optional<any>): Optional<any>;
+  abstract or(other: Optional<any> | (() => Optional<any>)): Optional<any>;
 
   /**
    * Applies the function contained in the [[Optional]] `func` to the value contained within `this`
@@ -591,19 +522,7 @@ class Some<T> extends Optional<T> {
     return this.value;
   }
 
-  forceUnwrap(message?: string): T {
-    console.warn(
-      'tupperware:force_unwrap_warning: Called forceUnwrap on a `Some` value.  This is not' +
-        ' recommended usage.'
-    );
-    return this.value;
-  }
-
   unwrapOr(other: T | (() => T)): T {
-    return this.value;
-  }
-
-  unwrapOrElse(func: () => T): T {
     return this.value;
   }
 
@@ -619,11 +538,7 @@ class Some<T> extends Optional<T> {
     return func(this.value);
   }
 
-  or(other: Optional<T>): Optional<T> {
-    return this;
-  }
-
-  orElse(func: () => Optional<T>): Optional<T> {
+  or(other: Optional<T> | (() => Optional<T>)): Optional<T> {
     return this;
   }
 
@@ -692,17 +607,6 @@ class None extends Optional<any> {
     throw new Error('tupperware:unwrap_on_none: Called unwrap on a None value.');
   }
 
-  forceUnwrap(message?: string): never {
-    console.warn(
-      'tupperware:force_unwrap_warning: Called forceUnwrap on a `None` value.  This is not' +
-        ' recommended usage.'
-    );
-    if (typeof message !== 'undefined' && message !== null) {
-      throw new Error(`tupperware:force_unwrap_on_none: ${message}`);
-    }
-    throw new Error('tupperware:force_unwrap_on_none: Called forceUnwrap on a None value.');
-  }
-
   unwrapOr<T>(other: T | (() => T)): T {
     if (typeof other === 'function') {
       // for some reason this isn't enough to prove to TSC that other is actually a function
@@ -710,10 +614,6 @@ class None extends Optional<any> {
       return (other as () => T)();
     }
     return other;
-  }
-
-  unwrapOrElse<T>(func: () => T): T {
-    return func();
   }
 
   map<T, U>(func: (val: T) => U): Optional<U> {
@@ -728,12 +628,13 @@ class None extends Optional<any> {
     return new None() as Optional<U>;
   }
 
-  or<T>(other: Optional<T>): Optional<T> {
+  or<T>(other: Optional<T> | (() => Optional<T>)): Optional<T> {
+    if (typeof other === 'function') {
+      // for some reason this isn't enough to prove to TSC that other is actually a function
+      // so we have to cast here.
+      return (other as () => Optional<T>)();
+    }
     return other;
-  }
-
-  orElse<T>(func: () => Optional<T>): Optional<T> {
-    return func();
   }
 
   ap(func: Optional<(val: any) => any>): Optional<any> {

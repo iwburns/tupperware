@@ -23,21 +23,10 @@ describe('#Optional - Some', () => {
     expect(one.unwrap('failed')).toEqual(1);
   });
 
-  it('should have the function forceUnwrap', () => {
-    const one = Optional.some(1);
-    expect(one.forceUnwrap()).toEqual(1);
-    expect(one.forceUnwrap('failed')).toEqual(1);
-  });
-
   it('should have the function unwrapOr', () => {
     const one = Optional.some(1);
     expect(one.unwrapOr(10)).toEqual(1);
     expect(one.unwrapOr(() => 10)).toEqual(1);
-  });
-
-  it('should have the function unwrapOrElse', () => {
-    const one = Optional.some(1);
-    expect(one.unwrapOrElse(() => 2)).toEqual(1);
   });
 
   it('should have the function map', () => {
@@ -84,27 +73,27 @@ describe('#Optional - Some', () => {
     const one = Optional.some(1);
     const two = Optional.some(2);
 
-    const maybeOne = one.or(two);
+    let maybeOne = one.or(two);
     expect(maybeOne.isSome()).toEqual(true);
     expect(maybeOne.unwrap()).toEqual(1);
 
     const three = Optional.none();
 
-    const maybeOneAgain = one.or(three);
-    expect(maybeOneAgain.isSome()).toEqual(true);
-    expect(maybeOneAgain.unwrap()).toEqual(1);
-  });
-
-  it('should have the function orElse', () => {
-    const one = Optional.some(1);
-
-    const maybeOne = one.orElse(() => Optional.some(2));
+    maybeOne = one.or(three);
     expect(maybeOne.isSome()).toEqual(true);
     expect(maybeOne.unwrap()).toEqual(1);
 
-    const maybeOneAgain = one.orElse(() => Optional.none());
-    expect(maybeOneAgain.isSome()).toEqual(true);
-    expect(maybeOneAgain.unwrap()).toEqual(1);
+    maybeOne = one.or(() => Optional.some(2));
+    expect(maybeOne.isSome()).toEqual(true);
+    expect(maybeOne.unwrap()).toEqual(1);
+
+    maybeOne = one.or(() => Optional.none());
+    expect(maybeOne.isSome()).toEqual(true);
+    expect(maybeOne.unwrap()).toEqual(1);
+  });
+
+  it('should have the function orElse', () => {
+
   });
 
   it('should have the function ap', () => {

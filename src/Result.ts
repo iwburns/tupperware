@@ -214,47 +214,35 @@ export default abstract class Result<T, E> {
 
   /**
    * Returns the value contained by this [[Result]] if it is an [[Ok]], otherwise returns `other`
-   * as a default value.
+   * as a default value.  If `other` is a function, it will be called and the return value of that
+   * function will be returned.
    *
    * ```
-   * const maybeOne = Result.ok(1);
-   * const one = maybeOne.unwrapOr(2);
+   * let maybeOne = Result.ok(1);
+   * let one = maybeOne.unwrapOr(2);
    * // one === 1
    *
-   * const maybeOne = Result.err('parse error');
-   * const one = maybeOne.unwrapOr(2);
+   * one = maybeOne.unwrapOr((err) => err.length);
+   * // one === 1
+   *
+   * maybeOne = Result.err('parse error');
+   * one = maybeOne.unwrapOr(2);
    * // one === 2
-   * ```
    *
-   * @param other A default value to fall back on if this [[Result]] is an [[Err]].
-   * @returns The value in this [[Result]] if it is an [[Ok]], otherwise returns `other`.
-   */
-  abstract unwrapOr(other: T): T;
-
-  /**
-   * Returns the value contained by this [[Result]] if it is an [[Ok]], otherwise calls `func`
-   * with the [[Err]] value and returns the result.
-   *
-   * ```
-   * const maybeOne = Result.ok(1);
-   * const one = maybeOne.unwrapOrElse((err) => err.length);
-   * // one === 1
-   *
-   * const maybeOne = Result.err('parse error');
-   * const one = maybeOne.unwrapOrElse((err) => err.length);
+   * one = maybeOne.unwrapOr((err) => err.length);
    * // one === 11
    * ```
    *
    * #### Note ####
-   * The argument `func` will __not__ be evaluated unless this [[Result]] is an [[Err]]. This
-   * means [[unwrapOrElse]] is ideal for cases when you need to fall back on a value that needs to
-   * be computed (and may be expensive to compute).
+   * If `other` is a function it will __not__ be evaluated unless this [[Result]] is an [[Err]].
+   * This means using a function here is ideal for cases when you need to fall back on a value that
+   * needs to be computed (and may be expensive to compute).
    *
-   * @param func A function returning the fall-back value if this [[Result]] is an [[Err]].
-   * @returns The value in this [[Result]] if it is an [[Ok]], otherwise returns the return value
-   * of `func`.
+   * @param other A default value to fall back on if this [[Result]] is an [[Err]] or a function
+   * that returns one.
+   * @returns The value in this [[Result]] if it is an [[Ok]], otherwise returns `other`.
    */
-  abstract unwrapOrElse(func: (err: E) => T): T;
+  abstract unwrapOr(other: T | ((err: E) => T)): T;
 
   /**
    * Maps a [[Result]]<T, E> to an [[Result]]<U, E> by applying `func` to the value contained in
@@ -311,6 +299,32 @@ export default abstract class Result<T, E> {
   abstract mapErr<F>(func: (val: E) => F): Result<T, F>;
 
   /**
+   * Compares two [[Result]] values. Returns `other` if this [[Result]] is an [[Ok]]; otherwise
+   * returns [[Err]]. This allows chained comparison of [[Result]] values.
+   *
+   * ```
+   * const one = Result.ok(1);
+   * const two = Result.ok(2);
+   *
+   * const twoAgain = one.and(two);
+   * // twoAgain.isOk() === true
+   * // twoAgain.unwrap() === 2
+   *
+   * const three = Result.err('it broke');
+   * const four = Result.ok(4);
+   *
+   * const fourAgain = three.and(four);
+   * // fourAgain.isOk() === false
+   * // fourAgain.unwrapErr() === 'it broke'
+   * ```
+   *
+   * @param other Another [[Result]] to use in the comparison.
+   * @param U The type of the value contained in the `other` [[Result]] if it is an [[Ok]].
+   * @returns `other` if this [[Result]] is an [[Err]], otherwise returns [[Err]].
+   */
+  abstract and<U>(other: Result<U, E>): Result<U, E>;
+
+  /**
    * Returns an [[Err]] if this [[Result]] is an [[Err]]; otherwise calls `func` and returns
    * the result.
    *
@@ -330,11 +344,11 @@ export default abstract class Result<T, E> {
    * const parseError = Result.err('parsing error');
    * const result = parseError.flatMap(square).flatMap(square);
    * // result.isOk() === false
-   * // result.unwrap() === 'parsing error'
+   * // result.unwrapErr() === 'parsing error'
    *
    * const resultAgain = two.flatMap(error).flatMap(square);
    * // resultAgain.isOk() === false
-   * // resultAgain.unwrap() === 'it broke!'
+   * // resultAgain.unwrapErr() === 'it broke!'
    * ```
    *
    * #### Note: ####
@@ -369,10 +383,10 @@ export default abstract class Result<T, E> {
    * means [[orElse]] is ideal for cases when you need to fall back on a value that needs to
    * be computed (and may be expensive to compute).
    *
-   * @param func A function returning an alternate [[Result]] if this one is an [[Err]].
+   * @param other An alternate [[Result]] or a function returning one.
    * @returns `this` [[Result]] if it is an [[Ok]], otherwise `func`'s return value is returned.
    */
-  abstract orElse(func: (err: E) => Result<T, any>): Result<T, any>;
+  abstract or(other: Result<T, any> | ((err: E) => Result<T, any>)): Result<T, any>;
 
   /**
    * Calls the appropriate function in `options` and returns the result. If `this` [[Result]] is
@@ -469,11 +483,7 @@ class Ok<T> extends Result<T, any> {
     throw new Error('Called unwrapErr on an Ok value.');
   }
 
-  unwrapOr(other: T): T {
-    return this.value;
-  }
-
-  unwrapOrElse<E>(func: (err: E) => T): T {
+  unwrapOr<E>(other: T | ((err: E) => T)): T {
     return this.value;
   }
 
@@ -485,11 +495,15 @@ class Ok<T> extends Result<T, any> {
     return Result.ok(this.value);
   }
 
+  and<U>(other: Result<U, any>): Result<U, any> {
+    return other;
+  }
+
   flatMap<E, U>(func: (ok: T) => Result<U, E>): Result<U, E> {
     return func(this.value);
   }
 
-  orElse<E, F>(func: (err: E) => Result<T, F>): Result<T, F> {
+  or<E, F>(other: Result<T, any> | ((err: E) => Result<T, F>)): Result<T, F> {
     return Result.ok(this.value);
   }
 
@@ -558,12 +572,13 @@ class Err<E> extends Result<any, E> {
     return this.error;
   }
 
-  unwrapOr<T>(other: T): T {
+  unwrapOr<T>(other: T | ((err: E) => T)): T {
+    if (typeof other === 'function') {
+      // for some reason this isn't enough to prove to TSC that other is actually a function
+      // so we have to cast here.
+      return (other as (err: E) => T)(this.error);
+    }
     return other;
-  }
-
-  unwrapOrElse<T>(func: (err: E) => T): T {
-    return func(this.error);
   }
 
   map<T, U>(func: (val: T) => U): Result<U, E> {
@@ -574,12 +589,21 @@ class Err<E> extends Result<any, E> {
     return Result.err(func(this.error));
   }
 
+  and<U>(other: Result<U, any>): Result<U, any> {
+    return Result.err(this.error);
+  }
+
   flatMap<T, U>(func: (ok: T) => Result<U, E>): Result<U, E> {
     return Result.err(this.error);
   }
 
-  orElse<T, F>(func: (err: E) => Result<T, F>): Result<T, F> {
-    return func(this.error);
+  or<T, F>(other: Result<T, any> | ((err: E) => Result<T, F>)): Result<T, F> {
+    if (typeof other === 'function') {
+      // for some reason this isn't enough to prove to TSC that other is actually a function
+      // so we have to cast here.
+      return (other as (err: E) => Result<T, F>)(this.error);
+    }
+    return other;
   }
 
   match<T, U, F>(options: ResultMatch<T, E, U, F>): U | F {

@@ -1,5 +1,5 @@
 import { Result } from '../../src/tupperware';
-import { expectAnErr, expectANone } from '../util';
+import {expectAnErr, expectAnOk, expectANone} from '../util';
 
 describe('#Result - Err', () => {
   it('should have the function isOk', () => {
@@ -54,12 +54,7 @@ describe('#Result - Err', () => {
     const r = Result.err(1);
     expectAnErr(r);
     expect(r.unwrapOr(2)).toEqual(2);
-  });
-
-  it('should have the function unwrapOrElse', () => {
-    const r = Result.err('parse error') as Result<string, any>;
-    expectAnErr(r);
-    expect(r.unwrapOrElse(() => 'other string')).toEqual('other string');
+    expect(r.unwrapOr(() => 'other string')).toEqual('other string');
   });
 
   it('should have the function map', () => {
@@ -78,6 +73,24 @@ describe('#Result - Err', () => {
     expect(m.unwrapErr()).toEqual(2);
   });
 
+  it('should have the function and', () => {
+    let one = Result.err('error 1');
+    let two = Result.ok(2);
+    expectAnErr(one);
+    expectAnOk(two);
+
+    let r = one.and(two);
+    expectAnErr(r);
+    expect(r.unwrapErr()).toEqual('error 1');
+
+    two = Result.err('error 2');
+    expectAnErr(two);
+
+    r = one.and(two);
+    expectAnErr(r);
+    expect(r.unwrapErr()).toEqual('error 1');
+  });
+
   it('should have the function flatMap', () => {
     const r = Result.err('error');
     expectAnErr(r);
@@ -88,13 +101,18 @@ describe('#Result - Err', () => {
     expect(m.unwrapErr()).toEqual('error');
   });
 
-  it('should have the function orElse', () => {
+  it('should have the function or', () => {
     const r = Result.err(1);
     expectAnErr(r);
     const changeError = () => Result.err('new error');
-    const m = r.orElse(changeError);
+    const m = r.or(changeError);
     expectAnErr(m);
     expect(m.unwrapErr()).toEqual('new error');
+
+    const other = Result.err('two');
+    const r2 = r.or(other);
+    expectAnErr(r2);
+    expect(r2.unwrapErr()).toEqual('two');
   });
 
   it('should have the function match', () => {

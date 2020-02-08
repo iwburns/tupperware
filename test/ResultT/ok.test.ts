@@ -1,5 +1,5 @@
 import { Result } from '../../src/tupperware';
-import { expectAnOk, expectANone } from '../util';
+import {expectAnErr, expectAnOk, expectANone} from '../util';
 
 describe('#Result - Ok', () => {
   it('should have the function isOk', () => {
@@ -55,12 +55,7 @@ describe('#Result - Ok', () => {
     const r = Result.ok(1);
     expectAnOk(r);
     expect(r.unwrapOr(2)).toEqual(1);
-  });
-
-  it('should have the function unwrapOrElse', () => {
-    const r = Result.ok(1);
-    expectAnOk(r);
-    expect(r.unwrapOrElse(() => 2)).toEqual(1);
+    expect(r.unwrapOr(() => 2)).toEqual(1);
   });
 
   it('should have the function map', () => {
@@ -79,6 +74,24 @@ describe('#Result - Ok', () => {
     expect(m.unwrap()).toEqual(1);
   });
 
+  it('should have the function and', () => {
+    let one = Result.ok(1);
+    let two = Result.ok(2);
+    expectAnOk(one);
+    expectAnOk(two);
+
+    let r = one.and(two);
+    expectAnOk(r);
+    expect(r.unwrap()).toEqual(2);
+
+    two = Result.err('it failed');
+    expectAnErr(two);
+
+    r = one.and(two);
+    expectAnErr(r);
+    expect(r.unwrapErr()).toEqual('it failed');
+  });
+
   it('should have the function flatMap', () => {
     const r = Result.ok(1);
     expectAnOk(r);
@@ -89,13 +102,18 @@ describe('#Result - Ok', () => {
     expect(m.unwrap()).toEqual(2);
   });
 
-  it('should have the function orElse', () => {
+  it('should have the function or', () => {
     const r = Result.ok(1);
     expectAnOk(r);
     const changeError = () => Result.err('new error') as Result<number, string>;
-    const m = r.orElse(changeError);
+    const m = r.or(changeError);
     expectAnOk(m);
     expect(m.unwrap()).toEqual(1);
+
+    const other = Result.err('two');
+    const r2 = r.or(other);
+    expectAnOk(r2);
+    expect(r2.unwrap()).toEqual(1);
   });
 
   it('should have the function match', () => {
